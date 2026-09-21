@@ -1,0 +1,19 @@
+{
+  "name": "rness-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "rness public documentation — guide and CLI reference.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "vitepress": "1.6.4"
+  }
+}

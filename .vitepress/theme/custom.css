@@ -1,0 +1,49 @@
+/**
+ * rness brand tokens, mirrored from the landing page
+ * (rness-dev/web · src/app/globals.css). The landing is dark-only, so the docs
+ * force the dark appearance (config.ts) and the tokens live on `.dark`.
+ * Keep the two files in sync: if the landing palette changes, update it here.
+ *
+ * Source tokens (web):
+ *   --background        #09090b
+ *   --foreground        #f4f4f5
+ *   --card              #0d0d10
+ *   --surface           #0f0f12
+ *   --muted-foreground  #a1a1aa
+ *   --subtle            #8a8a94
+ *   --border            #232328
+ *   --brand             #4ade80   the green signal colour
+ *   --brand-foreground  #09090b
+ */
+
+.dark {
+  /* ─── Brand ─────────────────────────────────────────────────────────── */
+  --vp-c-brand-1: #4ade80; /* links, active nav */
+  --vp-c-brand-2: #86efac; /* hover */
+  --vp-c-brand-3: #4ade80; /* solid buttons */
+  --vp-c-brand-soft: rgba(74, 222, 128, 0.12);
+
+  --vp-button-brand-bg: #4ade80;
+  --vp-button-brand-hover-bg: #86efac;
+  --vp-button-brand-active-bg: #22c55e;
+  --vp-button-brand-text: #09090b;
+  --vp-button-brand-hover-text: #09090b;
+  --vp-button-brand-active-text: #09090b;
+  --vp-button-brand-border: transparent;
+
+  --vp-home-hero-name-color: #f4f4f5;
+
+  /* ─── Surfaces ──────────────────────────────────────────────────────── */
+  --vp-c-bg: #09090b; /* --background */
+  --vp-c-bg-alt: #0d0d10; /* --card (sidebar) */
+  --vp-c-bg-soft: #0f0f12; /* --surface */
+  --vp-c-bg-elv: #0f0f12; /* --popover */
+
+  --vp-c-text-1: #f4f4f5; /* --foreground */
+  --vp-c-text-2: #a1a1aa; /* --muted-foreground */
+  --vp-c-text-3: #8a8a94; /* --subtle */
+
+  --vp-c-divider: #232328; /* --border */
+  --vp-c-border: #232328;
+  --vp-c-gutter: #232328;
+}
