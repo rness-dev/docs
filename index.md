@@ -11,7 +11,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: CLI reference
-      link: /cli/
+      link: /cli/commands
     - theme: alt
       text: GitHub ↗
       link: https://github.com/rness-dev/rness

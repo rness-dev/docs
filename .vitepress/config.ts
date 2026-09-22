@@ -21,13 +21,23 @@ export default defineConfig({
   appearance: 'force-dark',
 
   sitemap: {
-    hostname: `${SITE_URL}/`,
+    // Same served form as the canonical links: no trailing slash anywhere.
+    // VitePress hands the home page over as an empty url, which the stream
+    // would join to the hostname as `…/docs/`.
+    hostname: SITE_URL,
+    transformItems: (items) =>
+      items.map((item) => ({
+        ...item,
+        url: item.url === '' ? SITE_URL : `${SITE_URL}/${item.url}`,
+      })),
   },
 
   // Canonical URLs point at the public host so a deployment URL never competes in search
   transformPageData(pageData) {
+    // The served form has no trailing slash (vercel.json): `cli/index.md` is
+    // `/cli`, and the home page is `SITE_URL` itself.
     const canonicalUrl = `${SITE_URL}/${pageData.relativePath}`
-      .replace(/index\.md$/, '')
+      .replace(/\/index\.md$/, '')
       .replace(/\.md$/, '')
     pageData.frontmatter.head ??= []
     pageData.frontmatter.head.push(['link', { rel: 'canonical', href: canonicalUrl }])
@@ -43,12 +53,15 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     logo: '/logo.svg',
     siteTitle: 'rness',
+    // The default logo link is `base` — `/docs/`, one redirect per click on
+    // the site's own host and through rness.dev. `/docs` is the served form.
+    logoLink: '/docs',
 
     // Navigation and sidebars are written by hand, in the same commit as the
     // page they point to: these links are not checked at build time.
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'CLI', link: '/cli/' },
+      { text: 'CLI', link: '/cli' },
     ],
     sidebar: {
       '/guide/': [
@@ -64,7 +77,7 @@ export default defineConfig({
       '/cli/': [
         {
           text: 'CLI reference',
-          items: [{ text: 'Commands', link: '/cli/' }],
+          items: [{ text: 'Commands', link: '/cli' }],
         },
       ],
     },

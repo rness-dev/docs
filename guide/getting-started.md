@@ -173,4 +173,4 @@ regenerating the block.
   scope's context is resolved, what the generated block contains.
 - [Versions](/guide/versions) — the pin, the pull request that moves it, and
   what teammates have to do (nothing).
-- [CLI reference](/cli/) — every command and option.
+- [CLI reference](/cli/commands) — every command and option.
