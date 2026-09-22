@@ -23,7 +23,9 @@ pnpm preview    # serves the build
 ```
 
 There is no test suite and no linter; `pnpm build` is the check to run before
-opening a pull request.
+opening a pull request. It also fails when the pinned `@rness/cli` has a
+command the CLI page has no `## \`rness <name>\`` section for, or the page a
+section for a command the CLI no longer has.
 
 ## Layout
 
@@ -31,7 +33,9 @@ opening a pull request.
 | --- | --- |
 | `index.md` | Home page |
 | `guide/` | Getting started, the workspace, versions |
-| `cli/index.md` | CLI reference: every command's help, verbatim, with a paragraph each |
+| `cli/commands.md` | CLI reference: a paragraph per command around the help the loader renders |
+| `.vitepress/cli.data.ts` | Runs the pinned `@rness/cli`'s `--help` at build time; the CLI page renders it |
+| `.github/dependabot.yml` | Moves that pin by pull request on each release |
 | `public/` | Static files, served under `/docs/` |
 | `.vitepress/config.ts` | Site configuration: navigation, sidebars, metadata |
 | `.vitepress/theme/` | Default VitePress theme plus the rness colour tokens |

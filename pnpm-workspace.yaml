@@ -1,2 +1,8 @@
 allowBuilds:
   esbuild: true
+
+# pnpm 12 refuses versions published less than 24 h ago (minimumReleaseAge).
+# The CLI whose help this site renders is our own package, pinned the day it
+# is released.
+minimumReleaseAgeExclude:
+  - '@rness/cli'

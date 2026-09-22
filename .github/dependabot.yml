@@ -1,0 +1,16 @@
+# The CLI reference renders `rness --help` at build time from the @rness/cli
+# pinned in package.json (.vitepress/cli.data.ts). Each release opens a pull
+# request that moves the pin, and the page follows once it is merged. Daily,
+# and without Dependabot's 3-day cooldown: the pinned CLI is our own package,
+# and a page a week behind a release is what the loader exists to prevent.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+    allow:
+      - dependency-name: "@rness/cli"
+    cooldown:
+      exclude:
+        - "@rness/cli"
