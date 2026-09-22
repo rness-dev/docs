@@ -34,8 +34,9 @@ export default defineConfig({
 
   // Canonical URLs point at the public host so a deployment URL never competes in search
   transformPageData(pageData) {
-    // The served form has no trailing slash (vercel.json): `cli/index.md` is
-    // `/cli`, and the home page is `SITE_URL` itself.
+    // The served form has no trailing slash (vercel.json): the home page is
+    // `SITE_URL` itself. No other page is an `index.md` — VitePress writes its
+    // links to those as `<dir>/`, one redirect per click through vercel.json.
     const canonicalUrl = `${SITE_URL}/${pageData.relativePath}`
       .replace(/\/index\.md$/, '')
       .replace(/\.md$/, '')
@@ -61,7 +62,7 @@ export default defineConfig({
     // page they point to: these links are not checked at build time.
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'CLI', link: '/cli' },
+      { text: 'CLI', link: '/cli/commands' },
     ],
     sidebar: {
       '/guide/': [
@@ -77,7 +78,7 @@ export default defineConfig({
       '/cli/': [
         {
           text: 'CLI reference',
-          items: [{ text: 'Commands', link: '/cli' }],
+          items: [{ text: 'Commands', link: '/cli/commands' }],
         },
       ],
     },
