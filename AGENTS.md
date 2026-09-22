@@ -1,7 +1,7 @@
 # rness docs
 
 <!-- BEGIN rness -->
-<!-- rness · scope: docs · contract: 1 · hash: bf1c3757146e · generated: run `rness sync`, never edit inside this block -->
+<!-- rness · scope: docs · contract: 1 · hash: 44324a8f181d · generated: run `rness sync`, never edit inside this block -->
 This directory is scope `docs` of rness workspace `rness-dev`. Full context lives in
 `../../.rness/` — start at its `AGENTS.md`, then task-relevant `adr/`, `specs/`, `plans/`;
 live: `rness context --scope docs`. If `.rness/` is not reachable, this is a
@@ -21,7 +21,8 @@ target product; this site is the shipped truth (ADR 0009).
   scaffold's `README.md` / `WORKSPACE.md` / `CONVENTIONS.md`, Implemented
   specs. Never the landing page.
 - Name an agent only when it is verified to read `AGENTS.md`: Claude Code,
-  Codex, Cursor (2026-09-22).
+  Codex, Cursor, GitHub Copilot — its coding agent, code review, Chat in
+  VS Code and CLI (vendor documentation, 2026-09-22).
 - A page states the version it describes when the behaviour changed between
   releases.
 

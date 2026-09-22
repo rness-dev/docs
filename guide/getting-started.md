@@ -3,8 +3,8 @@
 rness gives every AI coding agent in a GitHub organization the same context:
 the organization's standards, decisions, specifications and plans, kept as
 Markdown in one repository and written by the `rness` command into the
-`AGENTS.md` of every repository you work on. Claude Code, Codex and Cursor read
-that file; nothing else changes in your workflow.
+`AGENTS.md` of every repository you work on. Claude Code, Codex, Cursor and
+GitHub Copilot read that file; nothing else changes in your workflow.
 
 This page describes `@rness/cli` 0.5.3. Node 24 or newer is required.
 
