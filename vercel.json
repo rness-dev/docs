@@ -2,5 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": ".vitepress/dist",
   "cleanUrls": true,
-  "rewrites": [{ "source": "/docs/:path*", "destination": "/:path*" }]
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/docs/:path*",
+      "destination": "/:path*"
+    }
+  ]
 }

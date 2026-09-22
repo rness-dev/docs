@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
-const SITE_URL = 'https://rness.dev/docs'
+// Becomes https://rness.dev/docs once the domain is configured.
+const SITE_URL = 'https://rness-docs.vercel.app/docs'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
