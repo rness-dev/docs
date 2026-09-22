@@ -1,7 +1,9 @@
 import { defineConfig } from 'vitepress'
 
-// Becomes https://rness.dev/docs once the domain is configured.
-const SITE_URL = 'https://rness-docs.vercel.app/docs'
+// The public host: rness.dev rewrites /docs to this deployment (org/web,
+// next.config.ts). Canonical links and the sitemap name that host, so the
+// *.vercel.app one never competes in search.
+const SITE_URL = 'https://rness.dev/docs'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({

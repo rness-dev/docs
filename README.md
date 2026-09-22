@@ -4,9 +4,10 @@ Source of the public documentation site of
 [rness](https://github.com/rness-dev/rness), the governance layer for AI agents
 across a GitHub organization.
 
-Live at `https://rness-docs.vercel.app/docs`; `https://rness.dev/docs` once
-the domain is configured. The site documents what `@rness/cli` ships and
-nothing else — the rule is in the generated block of `AGENTS.md`.
+Live at `https://rness.dev/docs` — the landing domain rewrites `/docs` to
+this deployment (`rness-docs.vercel.app`). The site documents what
+`@rness/cli` ships and nothing else — the rule is in the generated block of
+`AGENTS.md`.
 
 ## Prerequisites
 
