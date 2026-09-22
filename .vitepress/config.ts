@@ -42,10 +42,30 @@ export default defineConfig({
     logo: '/logo.svg',
     siteTitle: 'rness',
 
-    // Navigation and sidebars are added with the pages they point to: VitePress
-    // fails the build on a dead link.
-    nav: [],
-    sidebar: {},
+    // Navigation and sidebars are written by hand, in the same commit as the
+    // page they point to: these links are not checked at build time.
+    nav: [
+      { text: 'Guide', link: '/guide/getting-started' },
+      { text: 'CLI', link: '/cli/' },
+    ],
+    sidebar: {
+      '/guide/': [
+        {
+          text: 'Guide',
+          items: [
+            { text: 'Getting started', link: '/guide/getting-started' },
+            { text: 'The workspace', link: '/guide/workspace' },
+            { text: 'Versions', link: '/guide/versions' },
+          ],
+        },
+      ],
+      '/cli/': [
+        {
+          text: 'CLI reference',
+          items: [{ text: 'Commands', link: '/cli/' }],
+        },
+      ],
+    },
 
     socialLinks: [{ icon: 'github', link: 'https://github.com/rness-dev/rness' }],
 
