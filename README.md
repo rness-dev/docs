@@ -4,9 +4,9 @@ Source of the public documentation site of
 [rness](https://github.com/rness-dev/rness), the governance layer for AI agents
 across a GitHub organization.
 
-Status on 2026-09-21: the site is a scaffold. It has a home page and no
-content pages yet, and it is not deployed. The intended address is
-`https://rness.dev/docs`.
+Live at `https://rness-docs.vercel.app/docs`; `https://rness.dev/docs` once
+the domain is configured. The site documents what `@rness/cli` ships and
+nothing else — the rule is in the generated block of `AGENTS.md`.
 
 ## Prerequisites
 
@@ -29,12 +29,12 @@ opening a pull request.
 | Path | Role |
 | --- | --- |
 | `index.md` | Home page |
-| `guide/` | Guide pages (empty) |
-| `cli/` | CLI reference pages (empty) |
+| `guide/` | Getting started, the workspace, versions |
+| `cli/index.md` | CLI reference: every command's help, verbatim, with a paragraph each |
 | `public/` | Static files, served under `/docs/` |
 | `.vitepress/config.ts` | Site configuration: navigation, sidebars, metadata |
 | `.vitepress/theme/` | Default VitePress theme plus the rness colour tokens |
-| `vercel.json` | Output directory and the `/docs/:path*` rewrite |
+| `vercel.json` | Output directory, the `/docs/:path*` rewrite, no trailing slash |
 
 Adding a page: create the Markdown file, then register it in `nav` or
 `sidebar` in `.vitepress/config.ts`. Navigation is not generated.
