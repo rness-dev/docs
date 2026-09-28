@@ -6,7 +6,7 @@ The version of `@rness/cli` a workspace runs is written in one place,
 ```json
 {
   "devDependencies": {
-    "@rness/cli": "0.6.0"
+    "@rness/cli": "0.6.1"
   }
 }
 ```
@@ -16,8 +16,49 @@ installed under `.rness/node_modules` — whatever `rness` you typed, global or
 `npx`. The whole team runs the version the organization agreed on, and moving
 it is a change to `.rness`, reviewed like any other.
 
-This page describes `@rness/cli` 0.6.0; the behaviours below arrived in 0.5.1
+This page describes `@rness/cli` 0.6.1; the behaviours below arrived in 0.5.1
 to 0.5.3, and the text says which.
+
+## Update a workspace, step by step
+
+A release reaches a workspace in two moves: the pin moves once, in the
+organization's `.rness`; then every machine installs it.
+
+**Once, for the organization**
+
+1. Wait for the pull request Dependabot opens on `<org>/.rness`, titled
+   `chore(deps-dev): bump @rness/cli from 0.6.0 to 0.6.1`
+   ([when it arrives](#a-release-opens-a-pull-request)). Without Dependabot,
+   or without waiting: run `rness upgrade` in the workspace, then commit and
+   push `.rness` ([by hand](#moving-the-pin-by-hand)).
+2. Review it — `validate.yml` has run with the new version — and merge.
+
+**On every machine, yours included**
+
+3. Pull the context:
+
+   ```sh
+   cd acme/.rness
+   git pull
+   ```
+
+4. Run any `rness` command in the workspace; `rness validate` changes
+   nothing and is a good one. It sees that the pin moved, installs it
+   (`installing @rness/cli 0.6.1 in .rness…`), then runs the command with it.
+   An option on its own (`rness --version`) does not check. Installing by
+   hand does the same: `pnpm install` in `.rness/`, or the install of the
+   manager the workspace uses.
+5. Check: inside the workspace, `rness --version` prints the copy installed
+   in `.rness/` — the new version.
+6. Run `rness sync` only when the release notes say the blocks changed
+   ([below](#what-an-upgrade-changes-in-the-repositories)); otherwise nothing
+   changes in the repositories.
+
+Without a global `rness`, type the commands through your package manager:
+`npx @rness/cli validate`, `pnpm dlx @rness/cli validate`,
+`yarn dlx @rness/cli validate` or `bunx @rness/cli validate`. Inside the
+workspace, whichever copy you launch hands the command to the one in
+`.rness/`.
 
 ## A release opens a pull request
 
@@ -46,8 +87,8 @@ writes it.
 After `git pull` in `.rness`, the pin has moved and the installed copy has
 not. The next `rness` command in that workspace installs the pin itself —
 with the workspace's package manager, frozen, so the working tree stays clean
-— announces it on stderr (`installing @rness/cli 0.5.3 in .rness…`), and
-carries on with the command. Nothing to remember, nothing to run.
+— announces it on stderr (`installing @rness/cli 0.6.1 in .rness…`), and
+carries on with the command. Nothing extra to remember or to run.
 
 Since 0.5.3 the check runs in the installed copy as well as in the launcher,
 so it works whatever `rness` a teammate typed. Two limits remain:

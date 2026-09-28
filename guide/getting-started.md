@@ -6,7 +6,7 @@ Markdown in one repository and written by the `rness` command into the
 `AGENTS.md` of every repository you work on. Claude Code, Codex, Cursor and
 GitHub Copilot read that file; nothing else changes in your workflow.
 
-This page describes `@rness/cli` 0.6.0. Node 24 or newer is required.
+This page describes `@rness/cli` 0.6.1. Node 24 or newer is required.
 
 ## Create a workspace
 
@@ -41,9 +41,11 @@ want to work on. Pass the organization to skip those first questions
 (`npm create rness acme`); with `npm create`, flags go after `--`
 (`npm create rness acme -- --yes`).
 
-The next steps `create` prints at the end run the CLI through the same package
-manager — `npx @rness/cli`, `pnpm dlx @rness/cli`, `yarn dlx @rness/cli`
-(`npx` on Yarn 1), `bunx @rness/cli` — so they work without a global install.
+The next steps `create` prints at the end, like every hint the CLI gives,
+spell rness the way you launched it: through a package manager, as
+`npx @rness/cli`, `pnpm dlx @rness/cli`, `yarn dlx @rness/cli` (`npx` on
+Yarn 1) or `bunx @rness/cli`, so they work without a global install; as
+`rness` when you typed that.
 
 ### Without a GitHub organization
 
@@ -213,5 +215,5 @@ regenerating the block.
 - [The workspace](/guide/workspace) — `rness.json`, the collections, how a
   scope's context is resolved, what the generated block contains.
 - [Versions](/guide/versions) — the pin, the pull request that moves it, and
-  what teammates have to do (nothing).
+  how to update a workspace, step by step.
 - [CLI reference](/cli/commands) — every command and option.
