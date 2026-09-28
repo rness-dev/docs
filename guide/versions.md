@@ -6,7 +6,7 @@ The version of `@rness/cli` a workspace runs is written in one place,
 ```json
 {
   "devDependencies": {
-    "@rness/cli": "0.5.3"
+    "@rness/cli": "0.6.0"
   }
 }
 ```
@@ -16,7 +16,7 @@ installed under `.rness/node_modules` — whatever `rness` you typed, global or
 `npx`. The whole team runs the version the organization agreed on, and moving
 it is a change to `.rness`, reviewed like any other.
 
-This page describes `@rness/cli` 0.5.3; the behaviours below arrived in 0.5.1
+This page describes `@rness/cli` 0.6.0; the behaviours below arrived in 0.5.1
 to 0.5.3, and the text says which.
 
 ## A release opens a pull request

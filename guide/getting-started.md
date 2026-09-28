@@ -6,7 +6,7 @@ Markdown in one repository and written by the `rness` command into the
 `AGENTS.md` of every repository you work on. Claude Code, Codex, Cursor and
 GitHub Copilot read that file; nothing else changes in your workflow.
 
-This page describes `@rness/cli` 0.5.3. Node 24 or newer is required.
+This page describes `@rness/cli` 0.6.0. Node 24 or newer is required.
 
 ## Create a workspace
 
@@ -34,10 +34,49 @@ bun create rness
 
 :::
 
-The command asks for the organization, then lists its repositories so you can
-pick the ones you want to work on. Pass the organization to skip the first
-question (`npm create rness acme`); with `npm create`, flags go after `--`
+In a terminal, the command first asks how to start: from a GitHub
+organization, or a blank local workspace (below). From an organization, it
+asks for its name, then lists its repositories so you can pick the ones you
+want to work on. Pass the organization to skip those first questions
+(`npm create rness acme`); with `npm create`, flags go after `--`
 (`npm create rness acme -- --yes`).
+
+The next steps `create` prints at the end run the CLI through the same package
+manager — `npx @rness/cli`, `pnpm dlx @rness/cli`, `yarn dlx @rness/cli`
+(`npx` on Yarn 1), `bunx @rness/cli` — so they work without a global install.
+
+### Without a GitHub organization
+
+To try rness with no organization, or no GitHub account, create a blank
+workspace:
+
+::: code-group
+
+```sh [npm]
+npm create rness my-project -- --blank
+```
+
+```sh [pnpm]
+pnpm create rness my-project --blank
+```
+
+```sh [yarn]
+yarn create rness my-project --blank
+```
+
+```sh [bun]
+bun create rness my-project --blank
+```
+
+:::
+
+It writes `my-project/.rness/` from the scaffold with a `rness.json` that has
+no `"org"`, commits it, and creates an empty `my-project/org/` and the root
+`AGENTS.md` and `CLAUDE.md`. There is no login, no SSH test and no request to
+GitHub: only the install of `.rness/` reaches the network. Bring repositories
+in with `<owner>/<repo>` or a git URL ([Add a repository](#add-a-repository)).
+To share the workspace later, set `"org"` in `.rness/rness.json` and push
+`.rness` to `github.com/<org>/.rness`.
 
 For a permanent `rness` command, install the CLI once:
 
@@ -123,7 +162,9 @@ rness add https://github.com/acme/api.git
 ```
 
 `add` clones the repository under `org/` (or adopts a clone already there)
-and declares it in `rness.json`, for the whole team. A monorepo is a
+and declares it in `rness.json`, for the whole team. A bare name (`api`) is a
+repository of the workspace's organization; a blank workspace has none, so
+give `<owner>/<repo>` or a URL there. A monorepo is a
 repository like any other; its parts become scopes:
 
 ```sh
