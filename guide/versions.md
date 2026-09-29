@@ -6,7 +6,7 @@ The version of `@rness/cli` a workspace runs is written in one place,
 ```json
 {
   "devDependencies": {
-    "@rness/cli": "0.9.1"
+    "@rness/cli": "0.11.0"
   }
 }
 ```
@@ -16,8 +16,8 @@ installed under `.rness/node_modules` — whatever `rness` you typed, global or
 `npx`. The whole team runs the version the organization agreed on, and moving
 it is a change to `.rness`, reviewed like any other.
 
-This page describes `@rness/cli` 0.9.1; the behaviours below arrived in 0.5.1
-to 0.9.1, and the text says which.
+This page describes `@rness/cli` 0.11.0; the behaviours below arrived in
+0.5.1 to 0.11.0, and the text says which.
 
 ## Update a workspace, step by step
 
@@ -28,7 +28,7 @@ machine installs the new version.
 **Once, for the organization**
 
 1. Wait for the pull request Dependabot opens on `<org>/.rness`, titled
-   `chore(deps-dev): bump @rness/cli from 0.9.0 to 0.9.1`
+   `chore(deps-dev): bump @rness/cli from 0.10.0 to 0.11.0`
    ([when it arrives](#a-release-opens-a-pull-request)). Without Dependabot,
    or without waiting: run `rness upgrade` in the workspace, then push
    `.rness` ([by hand](#moving-the-pin-by-hand)).
@@ -52,7 +52,7 @@ machine installs the new version.
 
 5. Run any `rness` command in the workspace; `rness validate` changes
    nothing and is a good one. It sees that the pin moved, installs it
-   (`installing @rness/cli 0.9.1 in .rness…`), then runs the command with it.
+   (`installing @rness/cli 0.11.0 in .rness…`), then runs the command with it.
    An option on its own (`rness --version`) does not check. Installing by
    hand does the same: `pnpm install` in `.rness/`, or the install of the
    manager the workspace uses.
@@ -95,7 +95,7 @@ writes it.
 After `git pull` in `.rness`, the pin has moved and the installed copy has
 not. The next `rness` command in that workspace installs the pin itself —
 with the workspace's package manager, frozen, so the working tree stays clean
-— announces it on stderr (`installing @rness/cli 0.9.1 in .rness…`), and
+— announces it on stderr (`installing @rness/cli 0.11.0 in .rness…`), and
 carries on with the command. Nothing extra to remember or to run.
 
 Since 0.5.3 the check runs in the installed copy as well as in the launcher,
@@ -145,12 +145,12 @@ merge, from the last commit in which rness wrote the scaffold:
 
 ```sh
 rness upgrade -y
-merging  the @rness/cli 0.9.1 scaffold
+merging  the @rness/cli 0.11.0 scaffold
 added    .github/workflows/validate.yml
 updated  .githooks/pre-commit
 merged   AGENTS.md
 …
-committed acme/.rness — chore: rness 0.9.1
+committed acme/.rness — chore: rness 0.11.0
 ```
 
 - A file the team never touched takes the new version. An edited one keeps
@@ -206,6 +206,17 @@ In 0.9.1, the target stops writing `enabledMcpjsonServers` into
 Code's own dialog. rness never removes a value it wrote: after syncing with
 0.9.0, remove `rness` from `enabledMcpjsonServers` in each repository by
 hand, and commit.
+
+In 0.10.0, the Claude Code target adds two hooks to each repository's
+`.claude/settings.json`, and writes one at the workspace root, on each
+machine. `rness upgrade` syncs: commit `.claude/settings.json` in each
+repository, as its next steps say.
+
+In 0.11.0, it writes the `rness` plugin, `.claude/skills/rness/`, in each
+repository and at the workspace root. Commit `.claude/skills/rness/` in each
+repository, as `upgrade`'s next steps list; the root's copy is on each
+machine only. Nothing in the plugin depends on the version, so a later
+upgrade does not rewrite it.
 
 ## Two managers, two guards
 

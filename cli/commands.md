@@ -63,6 +63,21 @@ own, and everything along its `extends` chain. Without `--scope`, the scope
 owning the current directory; at the workspace root, the global files only.
 `--json` prints the same as one object. No prompt, no network.
 
+## `rness status`
+
+<div v-html="data.commands.status"></div>
+
+`status` shows where every decision, specification and plan stands: a tab
+for ADRs, one for specifications, one for plans, and one for each other
+directory of `.rness/` whose Markdown files carry a `status` in their front
+matter; a line per document, newest first — its number or date, its title,
+its status. In a terminal it is a full-screen view: `←`/`→` or `Tab` change
+tab, `↑`/`↓`, `PgUp`/`PgDn` and `Home`/`End` scroll, `q` or `Esc` closes and
+gives the screen back. Off a terminal — a pipe, CI, an agent's tool — it
+prints Markdown, a table per tab; `rness status specs` prints that one. It
+reads `.rness/` and writes nothing. In Claude Code, `/rness:status` shows
+the tables ([agent targets](/guide/workspace#agent-targets)).
+
 ## `rness validate`
 
 <div v-html="data.commands.validate"></div>

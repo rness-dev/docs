@@ -173,9 +173,35 @@ rness sync                    # in a terminal, with no agents key, asks once
   `enabledMcpjsonServers` in a committed settings file would let any change
   to the `rness` entry of `.mcp.json` run unasked. Review such a change like
   code.
-- rness owns values, not files. What is missing is added; the team's own
-  settings stay as they are, in their order and indentation. A file that is
-  not valid JSON is reported and never rewritten.
+- Since 0.10.0, the same `.claude/settings.json` carries two hooks, and the
+  workspace root gets a `.claude/settings.json` with the same two, for
+  sessions started there — written on every machine, in no repository. At
+  session start, Claude Code shows a line such as `rness 0.11.0 · acme ·
+  scope web — 10 standards, 9 decisions`, and the model receives the scope's
+  documents as `rness_context` lists them; when the context may be wrong —
+  no `.rness` installed next to the repository, a `rness.json` rness refuses,
+  a pin the installed copy does not match, problems `rness validate` would
+  report — both say why. After an edit of a file under `.rness/`, the
+  problems of its front matter, or of `rness.json`, go back to the model,
+  which fixes them in the same turn; stale blocks are left to `rness sync`.
+  Each hook is one fixed `sh` line that runs the copy pinned in `.rness/`.
+  Claude Code runs hooks from a committed settings file without asking each
+  developer, including in `claude -p`; these two read `.rness/` and nothing
+  else. Verified with Claude Code 2.1.284 on 2026-09-29; the `sh` line is not
+  verified on Windows.
+- Since 0.11.0, each repository and the workspace root get a Claude Code
+  plugin, `.claude/skills/rness/`, with one command: `/rness:status [tab]`,
+  the tables of [`rness status`](/cli/commands#rness-status). Claude Code
+  loads it once the folder is trusted, in a session started there. Nothing
+  started from inside Claude Code gets the terminal, so the full-screen view
+  cannot open from there: `Ctrl+Z` suspends Claude Code, `npx @rness/cli
+  status` opens it, `q` closes it, `fg` resumes Claude Code. Verified with
+  Claude Code 2.1.284 on 2026-09-29.
+- rness owns values, not files: what is missing is added; the team's own
+  settings and hooks stay as they are, in their order and indentation. A
+  file that is not valid JSON is reported and never rewritten. The plugin is
+  the exception: its two files are rness's whole, and an edit by hand is
+  reported, then written back by `rness sync`.
 - `rness sync --check` and `rness validate` report a missing value; `sync
   --pull` does not count these files as local changes. Removing an agent
   from `agents` leaves its values in place, and `sync` says which files still

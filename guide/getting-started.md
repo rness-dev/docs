@@ -217,6 +217,16 @@ pull request of `.rness`, with the pinned version. `sync --check` is the one to
 run in a repository's CI: it fails when someone changed the context without
 regenerating the block.
 
+## See where things stand
+
+```sh
+rness status        # every decision, specification and plan, a tab per directory
+rness status plans  # open on one tab
+```
+
+In a terminal, a full-screen view you move around with the arrows; `q`
+closes it. Piped, the same as Markdown tables.
+
 ## Next
 
 - [The workspace](/guide/workspace) — `rness.json`, the collections, how a
