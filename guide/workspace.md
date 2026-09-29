@@ -5,6 +5,7 @@ A rness workspace mirrors one GitHub organization:
 ```
 <org>/
 ├── AGENTS.md        generated global block, not committed
+├── CLAUDE.md        the same global block, for Claude Code, not committed
 ├── .rness/          the organization's context — a git repository
 └── org/<repo>/      the repositories you work on, cloned; a monorepo is a
                      repository like any other, its parts declared as scopes
@@ -15,7 +16,7 @@ team; `org/` holds your clones, and nothing but `org/` records which
 repositories you chose. Two teammates can clone different repositories of the
 same organization; the catalogue is the same for both.
 
-This page describes `@rness/cli` 0.5.3.
+This page describes `@rness/cli` 0.7.0.
 
 ## `rness.json`, the catalogue
 
@@ -23,6 +24,7 @@ This page describes `@rness/cli` 0.5.3.
 {
   "contract": 1,
   "org": "acme",
+  "agents": ["claude"],
   "repos": {
     "app": { "url": "git@github.com:acme/app.git" },
     "platform": { "url": "https://github.com/acme/platform.git" }
@@ -38,6 +40,9 @@ This page describes `@rness/cli` 0.5.3.
 - `repos` — every repository rness knows about. `rness add` declares one;
   `rness create` and `rness sync` clone the ones you pick. A choice never
   removes a repository from the catalogue.
+- `agents` — the agents the team uses, for which rness writes more than the
+  block ([Agent targets](#agent-targets)). Optional: absent means never asked,
+  `[]` means none.
 - `scopes` — where context resolves: a repository, or a directory inside one,
   with an optional `extends`. `rness add platform --scopes apps/web` writes
   the scope `web` above.
@@ -122,12 +127,53 @@ standalone clone: the rules below are all you have.
   markers. `sync` rewrites it; the rest of the file is untouched.
 - Only `standards/` is written into the block. Decisions, specifications and
   plans are reached through `.rness/`, which the intro points at.
-- A `CLAUDE.md` holding `@AGENTS.md` is created next to the block for Claude
-  Code when there is none; an existing one gets that line prepended.
-- The workspace root gets a global block of its own in `<org>/AGENTS.md`.
+- In each repository, a `CLAUDE.md` holding `@AGENTS.md` is created next to
+  the block for Claude Code when there is none; an existing one gets that
+  line prepended.
+- The workspace root gets a global block of its own, in `<org>/AGENTS.md` and
+  in `<org>/CLAUDE.md` itself. Claude Code loads the root `CLAUDE.md` from
+  every repository below it; an `@AGENTS.md` there would import a file
+  outside the repository, which Claude Code gates behind a dialog. A line that
+  is exactly `@AGENTS.md` is dropped from the root file; the rest of it is
+  kept. The root files are on your machine only: run `rness sync` once after
+  upgrading to 0.6.2 or later.
 
 A block above 32 KiB is written with a warning: that is a lot of rules for an
 agent to carry on every turn.
+
+## Agent targets
+
+Every agent that reads `AGENTS.md` gets the block. For the agents the team
+declares in `rness.json`, `rness sync` also writes the files that agent needs:
+
+```sh
+rness sync --agent claude     # declare claude, then write its files
+rness sync                    # in a terminal, with no agents key, asks once
+```
+
+- `agents` belongs to the team: the files it produces are committed in each
+  repository, so they come out the same on every machine. Commit
+  `.rness/rness.json` after declaring one, and the files it wrote in each
+  repository.
+- `rness create` asks for a new workspace, with its other questions, or takes
+  `--agent claude`; a join takes the organization's list. `-y`, `--check` and
+  scripts never ask.
+- **Claude Code** (`claude`) — each clone gets `.claude/settings.json` with
+  `../../.rness` in `permissions.additionalDirectories`: a session opened in
+  the repository reads `.rness/` without a permission prompt. Claude Code
+  resolves that path against the repository and applies it once the
+  repository has been trusted in an interactive session. Verified with Claude
+  Code 2.1.284 on 2026-09-29.
+- rness owns values, not files. What is missing is added; the team's own
+  settings stay as they are, in their order and indentation. A file that is
+  not valid JSON is reported and never rewritten.
+- `rness sync --check` and `rness validate` report a missing value; `sync
+  --pull` does not count these files as local changes. Removing an agent
+  from `agents` leaves its values in place, and `sync` says which files still
+  carry them.
+- Codex, Cursor and GitHub Copilot read the `AGENTS.md` block and have no
+  target: `sync` refuses an agent name it cannot compile. A CLI older than
+  0.7.0 refuses the `agents` key: move the pin first.
 
 ## A standalone clone
 

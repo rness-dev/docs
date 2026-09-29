@@ -13,7 +13,7 @@
     "preview": "vitepress preview"
   },
   "devDependencies": {
-    "@rness/cli": "0.6.1",
+    "@rness/cli": "0.7.0",
     "@types/node": "^26.1.1",
     "vitepress": "1.6.4"
   }

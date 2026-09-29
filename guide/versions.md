@@ -6,7 +6,7 @@ The version of `@rness/cli` a workspace runs is written in one place,
 ```json
 {
   "devDependencies": {
-    "@rness/cli": "0.6.1"
+    "@rness/cli": "0.7.0"
   }
 }
 ```
@@ -16,8 +16,8 @@ installed under `.rness/node_modules` — whatever `rness` you typed, global or
 `npx`. The whole team runs the version the organization agreed on, and moving
 it is a change to `.rness`, reviewed like any other.
 
-This page describes `@rness/cli` 0.6.1; the behaviours below arrived in 0.5.1
-to 0.5.3, and the text says which.
+This page describes `@rness/cli` 0.7.0; the behaviours below arrived in 0.5.1
+to 0.7.0, and the text says which.
 
 ## Update a workspace, step by step
 
@@ -27,7 +27,7 @@ organization's `.rness`; then every machine installs it.
 **Once, for the organization**
 
 1. Wait for the pull request Dependabot opens on `<org>/.rness`, titled
-   `chore(deps-dev): bump @rness/cli from 0.6.0 to 0.6.1`
+   `chore(deps-dev): bump @rness/cli from 0.6.2 to 0.7.0`
    ([when it arrives](#a-release-opens-a-pull-request)). Without Dependabot,
    or without waiting: run `rness upgrade` in the workspace, then commit and
    push `.rness` ([by hand](#moving-the-pin-by-hand)).
@@ -44,7 +44,7 @@ organization's `.rness`; then every machine installs it.
 
 4. Run any `rness` command in the workspace; `rness validate` changes
    nothing and is a good one. It sees that the pin moved, installs it
-   (`installing @rness/cli 0.6.1 in .rness…`), then runs the command with it.
+   (`installing @rness/cli 0.7.0 in .rness…`), then runs the command with it.
    An option on its own (`rness --version`) does not check. Installing by
    hand does the same: `pnpm install` in `.rness/`, or the install of the
    manager the workspace uses.
@@ -87,7 +87,7 @@ writes it.
 After `git pull` in `.rness`, the pin has moved and the installed copy has
 not. The next `rness` command in that workspace installs the pin itself —
 with the workspace's package manager, frozen, so the working tree stays clean
-— announces it on stderr (`installing @rness/cli 0.6.1 in .rness…`), and
+— announces it on stderr (`installing @rness/cli 0.7.0 in .rness…`), and
 carries on with the command. Nothing extra to remember or to run.
 
 Since 0.5.3 the check runs in the installed copy as well as in the launcher,
@@ -130,6 +130,15 @@ the hashed body. Every block written by 0.5.1 or earlier is out of date under
 0.5.2 and later. Run `rness sync` once after that upgrade and commit the
 refreshed `AGENTS.md` in each repository; until then `rness sync --check`
 exits 1.
+
+In 0.6.2, the workspace root `CLAUDE.md` changed: it holds the global block
+instead of `@AGENTS.md`. It is on each machine only, never in a repository:
+the first `rness sync` after the upgrade rewrites it, on every machine; nothing
+to commit.
+
+In 0.7.0, `rness.json` accepts an `agents` key. Move the pin first, then
+declare an agent: a CLI older than 0.7.0 refuses the key, and every command
+of a teammate still on the old pin would stop on it.
 
 ## Two managers, two guards
 

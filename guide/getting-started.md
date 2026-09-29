@@ -6,7 +6,7 @@ Markdown in one repository and written by the `rness` command into the
 `AGENTS.md` of every repository you work on. Claude Code, Codex, Cursor and
 GitHub Copilot read that file; nothing else changes in your workflow.
 
-This page describes `@rness/cli` 0.6.1. Node 24 or newer is required.
+This page describes `@rness/cli` 0.7.0. Node 24 or newer is required.
 
 ## Create a workspace
 
@@ -37,7 +37,9 @@ bun create rness
 In a terminal, the command first asks how to start: from a GitHub
 organization, or a blank local workspace (below). From an organization, it
 asks for its name, then lists its repositories so you can pick the ones you
-want to work on. Pass the organization to skip those first questions
+want to work on. A new workspace also asks which agents the team uses
+([agent targets](/guide/workspace#agent-targets)); `--agent claude` answers
+it. Pass the organization to skip those first questions
 (`npm create rness acme`); with `npm create`, flags go after `--`
 (`npm create rness acme -- --yes`).
 
@@ -183,7 +185,12 @@ rness sync
 `org/<repo>/AGENTS.md` of your clones as a marked block, between
 `<!-- BEGIN rness -->` and `<!-- END rness -->`. The rest of the file is left
 alone. Next to it, a `CLAUDE.md` that reads `@AGENTS.md` is created for Claude
-Code when there is none.
+Code when there is none; the workspace root's `CLAUDE.md` holds the global
+block itself. When the team declared Claude Code, each repository also gets a
+`.claude/settings.json` ([agent targets](/guide/workspace#agent-targets)).
+
+Commit what `sync` wrote in each repository: `AGENTS.md`, `CLAUDE.md` and,
+for Claude Code, `.claude/settings.json`.
 
 Run `sync` after every change in `.rness/` and commit the `AGENTS.md` of each
 repository. In a terminal, `sync` offers to clone the catalogue repositories
