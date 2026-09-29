@@ -6,7 +6,7 @@ The version of `@rness/cli` a workspace runs is written in one place,
 ```json
 {
   "devDependencies": {
-    "@rness/cli": "0.9.0"
+    "@rness/cli": "0.9.1"
   }
 }
 ```
@@ -16,8 +16,8 @@ installed under `.rness/node_modules` — whatever `rness` you typed, global or
 `npx`. The whole team runs the version the organization agreed on, and moving
 it is a change to `.rness`, reviewed like any other.
 
-This page describes `@rness/cli` 0.9.0; the behaviours below arrived in 0.5.1
-to 0.9.0, and the text says which.
+This page describes `@rness/cli` 0.9.1; the behaviours below arrived in 0.5.1
+to 0.9.1, and the text says which.
 
 ## Update a workspace, step by step
 
@@ -28,19 +28,18 @@ machine installs the new version.
 **Once, for the organization**
 
 1. Wait for the pull request Dependabot opens on `<org>/.rness`, titled
-   `chore(deps-dev): bump @rness/cli from 0.8.1 to 0.9.0`
+   `chore(deps-dev): bump @rness/cli from 0.9.0 to 0.9.1`
    ([when it arrives](#a-release-opens-a-pull-request)). Without Dependabot,
-   or without waiting: run `rness upgrade` in the workspace, then commit and
-   push `.rness` ([by hand](#moving-the-pin-by-hand)).
+   or without waiting: run `rness upgrade` in the workspace, then push
+   `.rness` ([by hand](#moving-the-pin-by-hand)).
 2. Review it — `validate.yml` has run with the new version — and merge.
 3. Merge the new version's scaffold (0.8.0 and later): pull, then run
    `rness upgrade` in the workspace. It merges the CI workflow, hooks and
-   starter documents of the version the pin names, with git, and installs
-   nothing more ([the scaffold](#the-scaffold-merged-with-git)). When the
-   release notes say the agent files changed, as in 0.9.0, run `rness sync`
-   too and commit its files in each repository
-   ([below](#what-an-upgrade-changes-in-the-repositories)). Review, commit,
-   push. `rness validate` warns while this step is missing.
+   starter documents of the version the pin names, with git, syncs, and
+   commits `.rness` (0.9.1 and later). Push it, and commit in each repository
+   the files its next steps name
+   ([the scaffold](#the-scaffold-merged-with-git)). `rness validate` warns
+   while this step is missing.
 
 **On every machine, yours included**
 
@@ -53,7 +52,7 @@ machine installs the new version.
 
 5. Run any `rness` command in the workspace; `rness validate` changes
    nothing and is a good one. It sees that the pin moved, installs it
-   (`installing @rness/cli 0.9.0 in .rness…`), then runs the command with it.
+   (`installing @rness/cli 0.9.1 in .rness…`), then runs the command with it.
    An option on its own (`rness --version`) does not check. Installing by
    hand does the same: `pnpm install` in `.rness/`, or the install of the
    manager the workspace uses.
@@ -96,7 +95,7 @@ writes it.
 After `git pull` in `.rness`, the pin has moved and the installed copy has
 not. The next `rness` command in that workspace installs the pin itself —
 with the workspace's package manager, frozen, so the working tree stays clean
-— announces it on stderr (`installing @rness/cli 0.9.0 in .rness…`), and
+— announces it on stderr (`installing @rness/cli 0.9.1 in .rness…`), and
 carries on with the command. Nothing extra to remember or to run.
 
 Since 0.5.3 the check runs in the installed copy as well as in the launcher,
@@ -119,9 +118,15 @@ rness upgrade 0.5.2      # an exact version, up or down
 
 `upgrade` merges the scaffold of the target version (below), pins the
 version in `.rness/package.json` (the rest of the file untouched), installs
-with the workspace's package manager, then syncs through the new copy. The
-merge is staged, not committed: commit `.rness` once, and the commit records
-it. Without Dependabot, this is the whole upgrade.
+with the workspace's package manager, syncs through the new copy, then
+commits `.rness` — `chore: rness <version>`, one commit that records the
+merge. Push it; the next steps also name, per repository, the files the sync
+changed there, to commit. Without Dependabot, this is the whole upgrade.
+
+The commit runs `.rness`'s own hooks. When one refuses, everything stays
+staged, `upgrade` shows what the hook said and exits 1 with the commit to
+make. The commit is new in 0.9.1: the copy that runs `upgrade` decides, and
+an older one — a global `rness` below 0.9.1 — leaves it to you.
 
 `upgrade` is never delegated to the pinned copy, which is what it replaces:
 it runs the copy you typed. From 0.8.0, a global `rness` older than the pin
@@ -140,10 +145,12 @@ merge, from the last commit in which rness wrote the scaffold:
 
 ```sh
 rness upgrade -y
-merging  the @rness/cli 0.9.0 scaffold
+merging  the @rness/cli 0.9.1 scaffold
 added    .github/workflows/validate.yml
 updated  .githooks/pre-commit
 merged   AGENTS.md
+…
+committed acme/.rness — chore: rness 0.9.1
 ```
 
 - A file the team never touched takes the new version. An edited one keeps
@@ -160,10 +167,10 @@ merged   AGENTS.md
 - Merge an upgrade pull request with a merge commit, not a squash: a squash
   drops the scaffold commit, and the next upgrade falls back to an older
   base — more conflicts, never a silent loss.
+- `.rness` must have no merge in progress: commit it or abort it first.
 - `rness validate` warns while the scaffold merged in `.rness` is behind the
-  pin; a one-commit CI checkout says nothing, its history is not there. The
-  commit that records the merge shows that warning once, from the scaffold's
-  pre-commit hook: until the commit exists, the merge is not in the history.
+  pin; a one-commit CI checkout says nothing, its history is not there. A
+  merge in progress counts (0.9.1): the commit recording it does not warn.
 
 ## What an upgrade changes in the repositories
 
@@ -188,11 +195,17 @@ declare an agent: a CLI older than 0.7.0 refuses the key, and every command
 of a teammate still on the old pin would stop on it.
 
 In 0.9.0, the Claude Code target registers the [MCP server](/cli/commands#rness-mcp):
-each repository gets `.mcp.json`, and `.claude/settings.json` gains
-`enabledMcpjsonServers`. `rness upgrade` does not write them. Run
-`rness sync` once after the upgrade and commit both files in each
-repository. Until then `rness validate` reports them missing — and the
-scaffold's pre-commit hook, which runs it, refuses the commit of `.rness`.
+each repository gets `.mcp.json`. An upgrade to 0.9.0 did not write it when
+the pin and the install were already at 0.9.0 — the Dependabot case — so
+`rness validate`, and the scaffold's pre-commit hook that runs it, refused
+the commit of `.rness` until `rness sync` ran. From 0.9.1, `upgrade` always
+syncs and names the files to commit in each repository.
+
+In 0.9.1, the target stops writing `enabledMcpjsonServers` into
+`.claude/settings.json`: each developer approves the server once, in Claude
+Code's own dialog. rness never removes a value it wrote: after syncing with
+0.9.0, remove `rness` from `enabledMcpjsonServers` in each repository by
+hand, and commit.
 
 ## Two managers, two guards
 

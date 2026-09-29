@@ -166,14 +166,13 @@ rness sync                    # in a terminal, with no agents key, asks once
   Code 2.1.284 on 2026-09-29.
 - Since 0.9.0, the same target registers the [MCP server](/cli/commands#rness-mcp):
   `.mcp.json` gets `mcpServers.rness`, which runs the copy pinned in
-  `.rness/` (`node ../../.rness/node_modules/@rness/cli/dist/bin/rness.js mcp`),
-  and `.claude/settings.json` lists `rness` in `enabledMcpjsonServers`, meant
-  to spare each developer Claude Code's approval of the server. The server
-  starting from the repository and answering is verified with Claude Code
-  2.1.284 on 2026-09-29; the approval being spared is not verified yet.
-  Review a change to the `rness` entry of `.mcp.json` like code: once a
-  developer has trusted the repository, Claude Code runs that command in their
-  next session.
+  `.rness/` (`node ../../.rness/node_modules/@rness/cli/dist/bin/rness.js mcp`).
+  The server starting from the repository and answering is verified with
+  Claude Code 2.1.284 on 2026-09-29. Each developer approves it once, in
+  Claude Code's own dialog: rness does not pre-approve it (0.9.1), since
+  `enabledMcpjsonServers` in a committed settings file would let any change
+  to the `rness` entry of `.mcp.json` run unasked. Review such a change like
+  code.
 - rness owns values, not files. What is missing is added; the team's own
   settings stay as they are, in their order and indentation. A file that is
   not valid JSON is reported and never rewritten.

@@ -104,12 +104,14 @@ Another agent can run the same command from a clone.
 
 `upgrade` merges the target version's scaffold into `.rness` with git, pins
 the version in `.rness/package.json`, installs with the workspace's package
-manager, then rewrites the blocks through the new copy
+manager, syncs through the new copy — the blocks and the agent files — then
+commits `.rness`
 ([the scaffold, merged with git](/guide/versions#the-scaffold-merged-with-git)).
-It does not write agent files: when a release adds to them, run `rness sync`
-after it. It is never delegated: the copy you ran is the one that upgrades.
-Commit `.rness` afterwards; teammates' next `rness` command installs the new
-pin itself.
+The next steps say what is left: push `.rness`, and per repository the files
+the sync changed. A hook refusing the commit leaves everything staged, and
+`upgrade` exits 1. `.rness` must be clean, with no merge in progress. It is
+never delegated: the copy you ran is the one that upgrades. Teammates' next
+`rness` command installs the new pin itself.
 
 ## `rness login`
 
