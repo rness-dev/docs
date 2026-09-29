@@ -36,10 +36,11 @@ bun create rness
 
 In a terminal, the command first asks how to start: from a GitHub
 organization, or a blank local workspace (below). From an organization, it
-asks for its name, then lists its repositories so you can pick the ones you
-want to work on. A new workspace also asks which agents the team uses
-([agent targets](/guide/workspace#agent-targets)); `--agent claude` answers
-it. Pass the organization to skip those first questions
+asks where the organization lives — GitHub; GitLab and Atlassian are listed,
+disabled — then its name, then lists its repositories so you can pick the
+ones you want to work on. A new workspace also asks which agents the team
+uses ([agent targets](/guide/workspace#agent-targets)); `--agent claude`
+answers it. Pass the organization to skip those first questions
 (`npm create rness acme`); with `npm create`, flags go after `--`
 (`npm create rness acme -- --yes`).
 
@@ -141,9 +142,11 @@ readable by you only. The access token lives 8 hours and is renewed on its
 own. `GITHUB_TOKEN`, then `GH_TOKEN`, win over it — CI needs no login.
 
 rness asks for the `repo` and `read:org` scopes: GitHub has no read-only scope
-for private repositories. It only lists and clones. An organization that
-restricts OAuth apps hides its private repositories until an owner approves
-"Rness"; `create` says so, with the link.
+for private repositories. It only lists and clones. Where the workspace
+declares a [pulse](/guide/workspace#agent-pulse), it asks for `project` too,
+to write the board. An organization that restricts OAuth apps hides its
+private repositories until an owner approves "Rness"; `create` says so, with
+the link.
 
 `rness logout` forgets the login; revoke the authorization itself in GitHub's
 settings (the command prints the link).
@@ -226,6 +229,18 @@ rness status plans  # open on one tab
 
 In a terminal, a full-screen view you move around with the arrows; `q`
 closes it. Piped, the same as Markdown tables.
+
+## Show it on GitHub
+
+```sh
+rness pulse create  # once per organization: the board, then a first sync
+rness pulse sync    # as often as wanted
+```
+
+The same documents on a GitHub Project of the organization, a board per
+directory, with what an agent is at work on, marked by the Claude Code
+hooks ([Agent Pulse](/guide/workspace#agent-pulse)). Commit `rness.json` in
+`.rness` after `create`.
 
 ## Next
 

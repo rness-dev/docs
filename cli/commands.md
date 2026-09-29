@@ -25,6 +25,14 @@ under `org/`, new ones are added to the catalogue. Without a terminal or with
 whole catalogue. Logged in, it offers to create the private `<org>/.rness` on
 GitHub and push. A cancelled prompt writes nothing and exits 0.
 
+In a terminal, before the organization, it asks `Where does your
+organization live?`: GitHub, the one this version talks to; GitLab and
+Atlassian (Bitbucket + Jira) are listed, disabled. `--provider github`
+answers it off a terminal. The answer is written to `rness.json` as
+`provider` ([the catalogue](/guide/workspace#rness-json-the-catalogue)). A
+join asks too, then takes the provider the organization's `rness.json`
+names; `--blank` asks nothing.
+
 Joining is served by the version the organization pinned, whatever copy you
 ran: `create` installs `.rness/` and hands the first sync to it.
 
@@ -113,6 +121,38 @@ MCP revision `2026-07-28` and the earlier ones that open with `initialize`
 it in each repository ([agent targets](/guide/workspace#agent-targets)).
 Another agent can run the same command from a clone.
 
+## `rness pulse`
+
+<div v-html="data.commands.pulse"></div>
+
+`pulse` shows the documents of `.rness/`, and the agent at work on them, in
+the organization's GitHub Projects: a project named **Agent Pulse**, a board
+per directory ([Agent Pulse](/guide/workspace#agent-pulse)).
+
+`rness pulse create`, once per organization, needs an `org` in `rness.json`
+— a blank workspace is refused — and no pulse declared yet. It creates the
+project and at once writes `"pulse": { "project": <number> }`, and the
+`provider`, into `rness.json`; then it adds the fields and the views and runs
+a first sync, its `created` lines saying what it added. A step failing after
+the project exits 1 with the pulse declared: `rness pulse sync` completes the
+layout. Commit `rness.json` in `.rness`. A workspace with no `provider` whose
+repositories look like GitLab is refused before anything is created: write
+`"provider": "github"` if the organization is on GitHub.
+
+`rness pulse sync`, as often as wanted, creates the items that are missing,
+updates those whose title, status or collection changed, archives those
+whose document is gone, and adds the option or the board a new status or
+directory needs: `synced 49 items: 2 updated, 47 unchanged`. It remakes a
+board built by an earlier version; that board's URL changes once.
+
+Both need a login with the `project` scope ([`rness login`](#rness-login)).
+Without one, `create` offers to log in, in a terminal; with `-y` or off a
+terminal, the pulse stops with `the pulse needs a GitHub login: run rness
+login` or `the pulse needs the project scope: run rness login`. A classic
+`GITHUB_TOKEN` works when it carries the scope; a fine-grained or GitHub App
+token reports no scope, and the pulse refuses it. When GitHub cannot be
+reached, it says so (`cannot reach GitHub: …`) instead of asking for a login.
+
 ## `rness upgrade`
 
 <div v-html="data.commands.upgrade"></div>
@@ -140,6 +180,13 @@ readable by you only; the token lives 8 hours and is renewed on its own.
 `GITHUB_TOKEN`, then `GH_TOKEN`, win over it. `--setup-git` makes rness git's
 credential helper for github.com, for your own `git pull` and `git push`; it
 needs a global install.
+
+It asks for the `repo` and `read:org` scopes, and for `project` too where
+the workspace declares a pulse, or when `rness pulse create` runs it: a
+developer who never uses the [pulse](#rness-pulse) grants nothing more. A
+login made before the pulse was declared lacks the scope: run `rness login`
+again. A `provider` written in `rness.json` that this version cannot talk to
+is refused.
 
 ## `rness logout`
 
