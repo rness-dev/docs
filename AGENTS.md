@@ -1,7 +1,7 @@
 # rness docs
 
 <!-- BEGIN rness -->
-<!-- rness · scope: docs · contract: 1 · hash: 44324a8f181d · generated: run `rness sync`, never edit inside this block -->
+<!-- rness · scope: docs · contract: 1 · hash: 388901fc2645 · generated: run `rness sync`, never edit inside this block -->
 This directory is scope `docs` of rness workspace `rness-dev`. Full context lives in
 `../../.rness/` — start at its `AGENTS.md`, then task-relevant `adr/`, `specs/`, `plans/`;
 live: `rness context --scope docs`. If `.rness/` is not reachable, this is a
@@ -220,9 +220,6 @@ and choose the language’s conventional, lightweight option.
 - Run fast automated checks before slower integration or end-to-end checks.
 - Treat coverage as a diagnostic, not a target; map important claims to the
   test that proves them.
-
-The context utilities in `.rness/scripts/` use the built-in Node test runner to
-avoid adding a second test framework solely for this scaffold.
 
 <!-- rness: standards/ui.md -->
 # UI and styling standards
