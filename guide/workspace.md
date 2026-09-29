@@ -282,8 +282,8 @@ its `Collection`, its columns that collection's steps and only them; and
   restricts OAuth apps must approve "Rness", as for its private
   repositories.
 - rness sends its requests one after another. A first sync makes a draft
-  and sets up to three fields per document, about 200 requests for fifty
-  documents; later syncs touch only what changed.
+  and sets up to four fields per document, about 250 requests for fifty
+  documents; later syncs touch only the items that changed.
 
 ## A standalone clone
 
