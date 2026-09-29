@@ -121,10 +121,12 @@ merge is staged, not committed: commit `.rness` once, and the commit records
 it. Without Dependabot, this is the whole upgrade.
 
 `upgrade` is never delegated to the pinned copy, which is what it replaces:
-it runs the copy you typed. A global `rness` older than the pin answers
-"already at" and merges no scaffold — use `npx @rness/cli@latest upgrade`,
-or `pnpm rness upgrade` from inside `.rness`, which runs the pinned copy. A
-workspace pinned below 0.5.0 starts with the `npx` form.
+it runs the copy you typed. From 0.8.0, a global `rness` older than the pin
+merges the scaffold of the copy installed in `.rness`. A global below 0.8.0
+knows no scaffold: it answers "already at" and merges nothing — use
+`npx @rness/cli@latest upgrade`, or `pnpm rness upgrade` from inside
+`.rness`, which runs the pinned copy. A workspace pinned below 0.5.0 starts
+with the `npx` form.
 
 ## The scaffold, merged with git
 
