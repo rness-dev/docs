@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@rness/cli':
-        specifier: 0.8.0
-        version: 0.8.0
+        specifier: 0.9.0
+        version: 0.9.0
       '@types/node':
         specifier: ^26.1.1
         version: 26.1.1
@@ -291,8 +291,8 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
 
-  '@rness/cli@0.8.0':
-    resolution: {integrity: sha512-PZVcHGzmmQPntKhWvPUf7iP6Ja1Kgjay2D527iqZxdQIF3UuSMUgBgVhXfnH55KYlW/JmlJb/DKLmyCn/IjI6Q==}
+  '@rness/cli@0.9.0':
+    resolution: {integrity: sha512-tuZwD+3c2cmWimgOcUafnje0fSxw+SsYRjyPkXF7WHPAnRUjiX2XNmZLwq2htoDgx1QFkWcaW9amLmblA1+4wg==}
     engines: {node: '>=24'}
     hasBin: true
 
@@ -1095,7 +1095,7 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
-  '@rness/cli@0.8.0':
+  '@rness/cli@0.9.0':
     dependencies:
       '@clack/prompts': 1.8.1
       commander: 15.0.0

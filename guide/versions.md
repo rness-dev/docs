@@ -6,7 +6,7 @@ The version of `@rness/cli` a workspace runs is written in one place,
 ```json
 {
   "devDependencies": {
-    "@rness/cli": "0.8.0"
+    "@rness/cli": "0.9.0"
   }
 }
 ```
@@ -16,8 +16,8 @@ installed under `.rness/node_modules` — whatever `rness` you typed, global or
 `npx`. The whole team runs the version the organization agreed on, and moving
 it is a change to `.rness`, reviewed like any other.
 
-This page describes `@rness/cli` 0.8.0; the behaviours below arrived in 0.5.1
-to 0.8.0, and the text says which.
+This page describes `@rness/cli` 0.9.0; the behaviours below arrived in 0.5.1
+to 0.9.0, and the text says which.
 
 ## Update a workspace, step by step
 
@@ -28,7 +28,7 @@ machine installs the new version.
 **Once, for the organization**
 
 1. Wait for the pull request Dependabot opens on `<org>/.rness`, titled
-   `chore(deps-dev): bump @rness/cli from 0.7.0 to 0.8.0`
+   `chore(deps-dev): bump @rness/cli from 0.8.1 to 0.9.0`
    ([when it arrives](#a-release-opens-a-pull-request)). Without Dependabot,
    or without waiting: run `rness upgrade` in the workspace, then commit and
    push `.rness` ([by hand](#moving-the-pin-by-hand)).
@@ -36,7 +36,10 @@ machine installs the new version.
 3. Merge the new version's scaffold (0.8.0 and later): pull, then run
    `rness upgrade` in the workspace. It merges the CI workflow, hooks and
    starter documents of the version the pin names, with git, and installs
-   nothing more ([the scaffold](#the-scaffold-merged-with-git)). Review, commit,
+   nothing more ([the scaffold](#the-scaffold-merged-with-git)). When the
+   release notes say the agent files changed, as in 0.9.0, run `rness sync`
+   too and commit its files in each repository
+   ([below](#what-an-upgrade-changes-in-the-repositories)). Review, commit,
    push. `rness validate` warns while this step is missing.
 
 **On every machine, yours included**
@@ -50,15 +53,15 @@ machine installs the new version.
 
 5. Run any `rness` command in the workspace; `rness validate` changes
    nothing and is a good one. It sees that the pin moved, installs it
-   (`installing @rness/cli 0.8.0 in .rness…`), then runs the command with it.
+   (`installing @rness/cli 0.9.0 in .rness…`), then runs the command with it.
    An option on its own (`rness --version`) does not check. Installing by
    hand does the same: `pnpm install` in `.rness/`, or the install of the
    manager the workspace uses.
 6. Check: inside the workspace, `rness --version` prints the copy installed
    in `.rness/` — the new version.
-7. Run `rness sync` only when the release notes say the blocks changed
-   ([below](#what-an-upgrade-changes-in-the-repositories)); otherwise nothing
-   changes in the repositories.
+7. Run `rness sync` only when the release notes say the blocks or the agent
+   files changed ([below](#what-an-upgrade-changes-in-the-repositories));
+   otherwise nothing changes in the repositories.
 
 Without a global `rness`, type the commands through your package manager:
 `npx @rness/cli validate`, `pnpm dlx @rness/cli validate`,
@@ -93,7 +96,7 @@ writes it.
 After `git pull` in `.rness`, the pin has moved and the installed copy has
 not. The next `rness` command in that workspace installs the pin itself —
 with the workspace's package manager, frozen, so the working tree stays clean
-— announces it on stderr (`installing @rness/cli 0.8.0 in .rness…`), and
+— announces it on stderr (`installing @rness/cli 0.9.0 in .rness…`), and
 carries on with the command. Nothing extra to remember or to run.
 
 Since 0.5.3 the check runs in the installed copy as well as in the launcher,
@@ -158,7 +161,9 @@ merged   AGENTS.md
   drops the scaffold commit, and the next upgrade falls back to an older
   base — more conflicts, never a silent loss.
 - `rness validate` warns while the scaffold merged in `.rness` is behind the
-  pin; a one-commit CI checkout says nothing, its history is not there.
+  pin; a one-commit CI checkout says nothing, its history is not there. The
+  commit that records the merge shows that warning once, from the scaffold's
+  pre-commit hook: until the commit exists, the merge is not in the history.
 
 ## What an upgrade changes in the repositories
 
@@ -181,6 +186,13 @@ to commit.
 In 0.7.0, `rness.json` accepts an `agents` key. Move the pin first, then
 declare an agent: a CLI older than 0.7.0 refuses the key, and every command
 of a teammate still on the old pin would stop on it.
+
+In 0.9.0, the Claude Code target registers the [MCP server](/cli/commands#rness-mcp):
+each repository gets `.mcp.json`, and `.claude/settings.json` gains
+`enabledMcpjsonServers`. `rness upgrade` does not write them. Run
+`rness sync` once after the upgrade and commit both files in each
+repository. Until then `rness validate` reports them missing — and the
+scaffold's pre-commit hook, which runs it, refuses the commit of `.rness`.
 
 ## Two managers, two guards
 

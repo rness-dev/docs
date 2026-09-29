@@ -50,7 +50,8 @@ catalogue repositories missing from `org/` are offered for cloning first;
 with `--yes` or `--check` they are named on one `not cloned:` line instead. A
 clone `rness.json` does not know gets no block and a `not in rness.json:`
 line. `--check` writes nothing and exits 1 when a block is out of date — the
-command for a repository's CI.
+command for a repository's CI. With agents declared in `rness.json`, it also
+writes the files those agents need ([agent targets](/guide/workspace#agent-targets)).
 
 ## `rness context`
 
@@ -70,19 +71,45 @@ owning the current directory; at the workspace root, the global files only.
 front matter and allowed statuses of every ADR, specification and plan — and,
 when `org/` clones are present, every generated block: stale (its hash no
 longer matches a fresh render, or someone edited inside the markers) is a
-problem, missing is a warning. It runs alone in a checkout of `.rness/`,
-which is what the scaffold's CI workflow does. No prompt, no network.
+problem, missing is a warning. So is a value an [agent
+target](/guide/workspace#agent-targets) needs and a clone lacks. It warns when
+the scaffold merged in `.rness` is behind the pin. It runs alone in a checkout
+of `.rness/`, which is what the scaffold's CI workflow does. No prompt, no
+network.
+
+## `rness mcp`
+
+<div v-html="data.commands.mcp"></div>
+
+`mcp` is a local MCP server, started by an agent over stdio — not a command
+to type. It reads the workspace's `.rness/` and writes nothing. Four tools
+answer "what applies here" and "where was this decided":
+
+| Tool | Returns |
+| --- | --- |
+| `rness_context({ scope? })` | The scope of the working directory, or the one named, and what applies to it: standards, decisions, specifications and plans — id, status, title and path, no bodies. |
+| `rness_list({ collection, status? })` | Every document of a collection, across scopes, optionally of one status. |
+| `rness_read({ path })` | One file of `.rness/`, by its path there; 256 KiB at most, nothing outside `.rness/`. |
+| `rness_search({ query, collection? })` | The documents whose text matches, most matching first, with the matching lines. |
+
+`.rness/` is read again on each call, so an edit shows at once. It speaks the
+MCP revision `2026-07-28` and the earlier ones that open with `initialize`
+(`2025-11-25` back to `2024-11-05`). For Claude Code, `rness sync` registers
+it in each repository ([agent targets](/guide/workspace#agent-targets)).
+Another agent can run the same command from a clone.
 
 ## `rness upgrade`
 
 <div v-html="data.commands.upgrade"></div>
 
-`upgrade` pins the version in `.rness/package.json`, installs with the
-workspace's package manager, then syncs through the new copy; a failed install
-restores the file. It writes `.github/dependabot.yml` into a workspace created
-before 0.5.1 and migrates the scaffold's old CI line. It is never delegated:
-the copy you ran is the one that upgrades. Commit `.rness` afterwards;
-teammates' next `rness` command installs the new pin itself.
+`upgrade` merges the target version's scaffold into `.rness` with git, pins
+the version in `.rness/package.json`, installs with the workspace's package
+manager, then rewrites the blocks through the new copy
+([the scaffold, merged with git](/guide/versions#the-scaffold-merged-with-git)).
+It does not write agent files: when a release adds to them, run `rness sync`
+after it. It is never delegated: the copy you ran is the one that upgrades.
+Commit `.rness` afterwards; teammates' next `rness` command installs the new
+pin itself.
 
 ## `rness login`
 
