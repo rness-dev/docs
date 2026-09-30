@@ -10,10 +10,11 @@
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
-    "preview": "vitepress preview"
+    "preview": "vitepress preview",
+    "freeze": "node scripts/freeze.mjs"
   },
   "devDependencies": {
-    "@rness/cli": "0.14.0",
+    "@rness/cli": "0.15.0",
     "@types/node": "^26.1.1",
     "vitepress": "1.6.4"
   }

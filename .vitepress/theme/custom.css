@@ -47,3 +47,9 @@
   --vp-c-border: #232328;
   --vp-c-gutter: #232328;
 }
+
+/* The search keeps its place at the left of the top bar, before the
+   version-aware Guide and CLI links (theme/VersionNav.vue). */
+.VPNavBar .content-body > .search {
+  order: -1;
+}
