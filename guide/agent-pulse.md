@@ -38,8 +38,8 @@ side panel. The fields:
 | `Status` | The document's status (and `ADR status`, `Specs status`, … for each collection's board) |
 | `Collection` | ADR, Specs, Plans, … |
 | `Agent` | `working` while an agent works on it |
-| `Session` | The session working on it now: `claude · 1a2b3c4d` |
-| `Sessions` | Every session that wrote or changed it, kept after they end |
+| `Working session` | The session working on it now: `claude · 1a2b3c4d`. Emptied when the session ends. |
+| `Session history` | Every session that wrote or changed it, with its agent: `Claude Opus 5.5 · 1e9cb41b-…`. Never emptied. |
 | `Path` | The document's path in `.rness/` |
 
 ## What keeps it up to date

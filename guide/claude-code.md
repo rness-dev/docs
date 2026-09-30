@@ -66,8 +66,10 @@ agent : writes adr/0010-local-cache-sqlite.md (Proposed) and shows it
   choice would be hard to reverse. It writes nothing without your yes.
 - A new document takes its collection's first status and the next number.
   Only you move it further, for example to `Accepted` or `Approved`.
-- Each command records its session in the document's `sessions:`.
-  `claude --resume <id>` reopens that session on the machine it ran on.
+- Each command records its session and the model it ran as in the
+  document's `sessions:`, for example
+  `{ id: 1e9cb41b-…, agent: Claude Opus 5.5 }`. `claude --resume <id>`
+  reopens that session on the machine it ran on.
 - The rules they follow are your workspace's, in `.rness/CONVENTIONS.md`.
   No command commits.
 

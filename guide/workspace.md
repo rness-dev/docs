@@ -77,8 +77,8 @@ updated: 2026-09-24
 ```
 
 `rness validate` checks the front matter and the statuses. `sessions:` lists
-the Claude Code sessions that wrote or changed the document
-([Claude Code](./claude-code.md#the-rness-commands)).
+the Claude Code sessions that wrote or changed the document, each with the
+model it ran as ([Claude Code](./claude-code.md#the-rness-commands)).
 
 ## What applies where
 
