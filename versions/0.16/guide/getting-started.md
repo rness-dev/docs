@@ -104,6 +104,44 @@ acme/
 (`standards/`, `adr/`, `specs/`, `plans/`, …) and the version of rness the
 organization uses. [The workspace](./workspace.md) explains each part.
 
+## The `rness` command
+
+The workspace installs rness in `.rness/node_modules`, which is not on your
+`PATH`: a bare `rness` works only once you install it globally.
+
+::: code-group
+
+```sh [npm]
+npm install -g @rness/cli
+```
+
+```sh [pnpm]
+pnpm add -g @rness/cli
+```
+
+```sh [yarn]
+yarn global add @rness/cli   # Yarn 1; with Yarn 2+, use npm
+```
+
+```sh [bun]
+bun add -g @rness/cli
+```
+
+:::
+
+A global install never puts you on a different version from your team.
+Inside a workspace, `rness` hands every command over to the version pinned
+in `.rness/package.json`, except `create`, `upgrade`, `login` and `logout`.
+
+Without a global install, put your package manager in front of the
+command:
+
+- from anywhere in the workspace: `npx @rness/cli sync`;
+- from `.rness/`, offline: `npx rness sync`, `pnpm rness sync`,
+  `yarn rness sync` or `bunx rness sync`.
+
+This guide writes `rness …` for short.
+
 ## Write the context into every repository
 
 ```sh
@@ -118,12 +156,6 @@ files.
 Run it again whenever `.rness/` changes. `rness sync --check` writes
 nothing, and fails when a repository's block is out of date. It is the
 check to run in a repository's CI.
-
-::: tip No global install needed
-Every command works through your package manager, for example
-`npx @rness/cli sync` or `pnpm dlx @rness/cli sync`. Inside a workspace,
-whichever `rness` you launch runs the version the organization pinned.
-:::
 
 ## Look around
 
