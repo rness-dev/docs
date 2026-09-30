@@ -1,6 +1,6 @@
 # Getting started
 
-rness gives every AI coding agent in a GitHub organization the same context:
+Rness gives every AI coding agent in a GitHub organization the same context:
 the organization's standards, decisions, specifications and plans. They live
 as Markdown in one repository, `.rness`, and the `rness` command writes what
 applies into the `AGENTS.md` of every repository you work on. Claude Code,
@@ -43,12 +43,12 @@ The command asks a few questions:
    `pnpm create rness acme`.
 3. **The repositories** you want to work on, picked from the organization's
    list. Private ones appear once you are [logged in](./repositories.md#private-repositories).
-4. **The agents your team uses**, for a new workspace. rness then also
+4. **The agents your team uses**, for a new workspace. Rness then also
    writes the files those agents need, such as
    [Claude Code's](./claude-code.md).
 
 If the organization already has a `.rness` repository, you **join** it: you
-get the same context, pinned to the same rness version as your teammates.
+get the same context, pinned to the same Rness version as your teammates.
 Otherwise `create` makes a new `.rness` from a starter set. Once you are
 logged in, it offers to create the private `acme/.rness` on GitHub and push
 it, so your teammates can join.
@@ -62,7 +62,7 @@ install.
 
 ### Without a GitHub organization
 
-To try rness with no organization, or no GitHub account:
+To try Rness with no organization, or no GitHub account:
 
 ::: code-group
 
@@ -101,12 +101,12 @@ acme/
 ```
 
 `.rness/` holds `rness.json` (the list of repositories), the documents
-(`standards/`, `adr/`, `specs/`, `plans/`, …) and the version of rness the
+(`standards/`, `adr/`, `specs/`, `plans/`, …) and the version of Rness the
 organization uses. [The workspace](./workspace.md) explains each part.
 
 ## The `rness` command
 
-The workspace installs rness in `.rness/node_modules`, which is not on your
+The workspace installs Rness in `.rness/node_modules`, which is not on your
 `PATH`: a bare `rness` works only once you install it globally.
 
 ::: code-group
@@ -177,6 +177,6 @@ between tabs, and `q` closes it.
   `/rness:*` commands.
 - [Agent Pulse](./agent-pulse.md): the documents, and the agents at work,
   on a GitHub Project.
-- [Update rness](./upgrade.md): one command, and a pull request for each
+- [Update Rness](./upgrade.md): one command, and a pull request for each
   release.
 - [CLI reference](../cli/commands.md): every command and option.

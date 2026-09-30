@@ -1,6 +1,6 @@
-# Update rness
+# Update Rness
 
-Your organization uses one version of rness, pinned in
+Your organization uses one version of Rness, pinned in
 `.rness/package.json`. Every `rness` command in the workspace runs that
 version, whichever `rness` you type, so the whole team stays in step.
 Moving to a new version is a change to `.rness`, reviewed like any other.
@@ -56,7 +56,7 @@ There is nothing else to run.
 ### A pull request for each release
 
 Every `.rness` comes with `.github/dependabot.yml`. For each release of
-rness, Dependabot opens a pull request on your organization's `.rness`
+Rness, Dependabot opens a pull request on your organization's `.rness`
 that moves the pin, and the `validate` check runs with the new version
 before anyone merges.
 
@@ -68,7 +68,7 @@ before anyone merges.
 
 Dependabot checks weekly and waits 3 days after a release before opening
 the pull request, which guards against a compromised release. To get it
-sooner, give up that wait for rness only. In `.rness/.github/dependabot.yml`,
+sooner, give up that wait for Rness only. In `.rness/.github/dependabot.yml`,
 under `allow:`, at the same indentation:
 
 ```yaml
@@ -96,7 +96,7 @@ the update again.
 
 ::: details pnpm and same-day releases
 pnpm refuses packages published less than 24 hours ago. Every `.rness`
-exempts rness in its `pnpm-workspace.yaml` (`minimumReleaseAgeExclude`),
+exempts Rness in its `pnpm-workspace.yaml` (`minimumReleaseAgeExclude`),
 so an update on release day works. Only `pnpm create rness` on release day
 still picks the previous version.
 :::

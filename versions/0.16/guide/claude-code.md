@@ -1,6 +1,6 @@
 # Claude Code
 
-Every agent that reads `AGENTS.md` gets the context. For Claude Code, rness
+Every agent that reads `AGENTS.md` gets the context. For Claude Code, Rness
 does more: the context loads when a session starts, mistakes in `.rness/`
 are caught as they are made, and the `/rness:*` commands help write and
 close decisions, specifications and plans.
@@ -109,13 +109,13 @@ dialog. It is read-only and local:
 | `rness_read` | One file of `.rness/` |
 | `rness_search` | The documents that match a query, with the matching lines |
 
-Other agents can run the same server with `rness mcp`; rness writes no
+Other agents can run the same server with `rness mcp`; Rness writes no
 configuration for them.
 
-::: details What rness writes, exactly
+::: details What Rness writes, exactly
 - `.claude/settings.json` in each repository: `../../.rness` in
   `permissions.additionalDirectories`, and three hooks (session start,
-  after an edit, session end). Each hook runs the rness version pinned in
+  after an edit, session end). Each hook runs the Rness version pinned in
   `.rness/`. The hooks read `.rness/`, write nothing and install nothing.
   They reach the network only for [Agent Pulse](./agent-pulse.md).
 - `.mcp.json` in each repository: the `rness` server.
@@ -123,9 +123,9 @@ configuration for them.
 - The same settings and commands at the workspace root, for sessions
   started there, on your machine only.
 
-rness adds what is missing and leaves your own settings, hooks and servers
+Rness adds what is missing and leaves your own settings, hooks and servers
 as they are. A file that is not valid JSON is reported, never rewritten.
-The files under `.claude/skills/rness/` are rness's own: an edit by hand
+The files under `.claude/skills/rness/` are Rness's own: an edit by hand
 is reported by `rness sync --check`, then written back by `rness sync`.
 Removing `claude` from `agents` leaves these files in place, and `sync`
 says where they are.
@@ -134,11 +134,11 @@ says where they are.
 ::: details Review changes to these files
 Claude Code runs hooks from a committed settings file without asking each
 developer, and would run a changed `rness` server once approved. Review a
-change to `.claude/settings.json` or `.mcp.json` as you review code. rness
+change to `.claude/settings.json` or `.mcp.json` as you review code. Rness
 does not pre-approve its MCP server, for that reason.
 :::
 
 ::: details Other agents
-Codex, Cursor and GitHub Copilot read the `AGENTS.md` block; rness writes
+Codex, Cursor and GitHub Copilot read the `AGENTS.md` block; Rness writes
 nothing else for them. `rness sync --agent` accepts `claude` only.
 :::

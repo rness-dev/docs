@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: rness
+  name: Rness
   text: One source of truth for every agent.
   tagline: The organization's standards, decisions, specifications and plans — Markdown in git, written into the AGENTS.md of every repository by one command.
   actions:
@@ -22,5 +22,5 @@ features:
   - title: Every agent, unchanged
     details: Claude Code, Codex, Cursor and GitHub Copilot read AGENTS.md already. No new agent, no new workflow, no new configuration format.
   - title: One version for the whole team
-    details: The rness version is pinned in .rness. Each release opens a pull request there; once it is merged, each teammate's next rness command installs it.
+    details: The Rness version is pinned in .rness. Each release opens a pull request there; once it is merged, each teammate's next rness command installs it.
 ---

@@ -42,7 +42,7 @@ From anywhere else in the workspace, `npx @rness/cli --version` prints the
 same: whichever `rness` you launch hands over to the version the workspace
 pinned. A bare `npx rness` works only in `.rness/`, where that version is
 installed. Elsewhere, npx would look for a package named `rness` on npm,
-which is not rness's.
+which is not Rness's.
 
 For an older release, read its entry in the
 [changelog](https://github.com/rness-dev/rness/blob/main/packages/cli/README.md)

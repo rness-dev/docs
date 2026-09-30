@@ -32,20 +32,20 @@ rness sync --pull    # pull every clean clone first
 
 ## Private repositories
 
-Without a login, rness lists public repositories only. To reach the
+Without a login, Rness lists public repositories only. To reach the
 private ones:
 
 ```sh
 rness login
 ```
 
-rness shows a code and `https://github.com/login/device`. Approve the code
+Rness shows a code and `https://github.com/login/device`. Approve the code
 in a browser, on any machine. The login is stored in
 `~/.config/rness/auth.json` (`%APPDATA%` on Windows), readable by you
 only, and renews itself. `rness logout` forgets it.
 
-- rness asks for the `repo` and `read:org` scopes. GitHub has no read-only
-  scope for private repositories, but rness only lists and clones them.
+- Rness asks for the `repo` and `read:org` scopes. GitHub has no read-only
+  scope for private repositories, but Rness only lists and clones them.
   Where the workspace uses [Agent Pulse](./agent-pulse.md), it also asks for
   `project`, to write the board.
 - An organization that restricts OAuth apps hides its private repositories
@@ -60,7 +60,7 @@ only, and renews itself. `rness logout` forgets it.
 `https://github.com/` URLs otherwise. `--ssh` and `--https` choose without
 the test.
 
-Over HTTPS, rness's own clones and pulls use your login. For your own
+Over HTTPS, Rness's own clones and pulls use your login. For your own
 `git pull` and `git push`, `rness login` offers to act as git's credential
 helper for github.com (`rness login --setup-git`); `rness logout` undoes
 it.

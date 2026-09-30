@@ -189,12 +189,12 @@ never delegated: the copy you ran is the one that upgrades. Teammates' next
 
 <div v-html="data.commands.login"></div>
 
-`login` connects rness to your GitHub account through GitHub's device flow —
+`login` connects Rness to your GitHub account through GitHub's device flow —
 a code to approve at `https://github.com/login/device`, from any machine — so
 that `create` lists your private repositories and organizations, and clones
 over HTTPS carry the login. The login is one file under your config directory,
 readable by you only; the token lives 8 hours and is renewed on its own.
-`GITHUB_TOKEN`, then `GH_TOKEN`, win over it. `--setup-git` makes rness git's
+`GITHUB_TOKEN`, then `GH_TOKEN`, win over it. `--setup-git` makes Rness git's
 credential helper for github.com, for your own `git pull` and `git push`; it
 needs a global install.
 

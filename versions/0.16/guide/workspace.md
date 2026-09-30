@@ -38,11 +38,11 @@ both see the same context. The workspace root is not a git repository.
 | Key | Holds |
 | --- | --- |
 | `org` | The GitHub organization. Absent in a blank workspace. |
-| `repos` | Every repository rness knows about. `rness add` declares one. |
+| `repos` | Every repository Rness knows about. `rness add` declares one. |
 | `scopes` | Where context applies: a repository, or a directory inside one (the parts of a monorepo). `extends` inherits another scope's context. |
-| `agents` | The agents your team uses; rness writes their files ([Claude Code](./claude-code.md)). |
+| `agents` | The agents your team uses; Rness writes their files ([Claude Code](./claude-code.md)). |
 | `pulse` | The organization's [Agent Pulse](./agent-pulse.md) project, written by `rness pulse create`. |
-| `provider` | Where the organization lives. `github` is the one rness talks to today. |
+| `provider` | Where the organization lives. `github` is the one Rness talks to today. |
 
 Commit `rness.json` in `.rness` whenever a command changes it: it is the
 team's.

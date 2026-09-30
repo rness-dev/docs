@@ -2,7 +2,7 @@
 
 Agent Pulse is a GitHub Project of your organization. On it the team sees
 every decision, specification and plan of `.rness/`, where each one stands,
-and what an agent is working on right now. rness writes it; the team reads
+and what an agent is working on right now. Rness writes it; the team reads
 it.
 
 ## Create it
@@ -18,7 +18,7 @@ It needs:
 
 - **Issues turned on for `.rness`**, in its GitHub settings: each document
   becomes an issue of `.rness`.
-- **The `project` scope** on each developer's `rness login`. rness asks for
+- **The `project` scope** on each developer's `rness login`. Rness asks for
   it where a pulse is declared.
 
 ## What you see
@@ -72,8 +72,8 @@ GitHub unreachable), the next session start says why.
   a title, an issue closed) is written back at the next sync. It never
   reaches `.rness/`. Change the document instead.
 - **Comments are yours**: a specification's discussion can live on its
-  issue, and rness never touches comments.
-- **Your own items stay yours**: a card rness did not make is never edited,
+  issue, and Rness never touches comments.
+- **Your own items stay yours**: a card Rness did not make is never edited,
   closed or archived.
 - **A deleted document** closes its issue, as not planned.
 
@@ -89,9 +89,9 @@ GitHub unreachable), the next session start says why.
 :::
 
 ::: details Rate and size
-rness sends one request at a time. A new document costs a few requests;
+Rness sends one request at a time. A new document costs a few requests;
 an unchanged one, nothing but its share of the listing. When GitHub's rate
-limit is hit, rness waits as long as GitHub says, 10 minutes at most, and
+limit is hit, Rness waits as long as GitHub says, 10 minutes at most, and
 the next sync finishes the rest. On a board of 54 documents (2026-09-30), a
 sync with nothing to change took 4 s.
 :::
