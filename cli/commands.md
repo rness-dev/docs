@@ -127,25 +127,43 @@ Another agent can run the same command from a clone.
 
 `pulse` shows the documents of `.rness/`, and the agent at work on them, in
 the organization's GitHub Projects: a project named **Agent Pulse**, a board
-per directory ([Agent Pulse](/guide/workspace#agent-pulse)).
+per directory, each document an issue of `<org>/.rness` whose body is the
+document ([Agent Pulse](/guide/workspace#agent-pulse)).
 
 `rness pulse create`, once per organization, needs an `org` in `rness.json`
 — a blank workspace is refused — and no pulse declared yet. It creates the
 project and at once writes `"pulse": { "project": <number> }`, and the
 `provider`, into `rness.json`; then it adds the fields and the views and runs
-a first sync, its `created` lines saying what it added. A step failing after
+a first sync, its `created` line saying what it added. A step failing after
 the project exits 1 with the pulse declared: `rness pulse sync` completes the
 layout. Commit `rness.json` in `.rness`. A workspace with no `provider` whose
 repositories look like GitLab is refused before anything is created: write
 `"provider": "github"` if the organization is on GitHub.
 
-`rness pulse sync`, as often as wanted, creates the items that are missing,
-updates those whose title, status or collection changed, archives those
-whose document is gone, and adds the option or the board a new status or
-directory needs: `synced 49 items: 2 updated, 47 unchanged`. It remakes a
-board built by an earlier version; that board's URL changes once.
+Both need Issues on `<org>/.rness`. Without them they stop before writing
+anything, with:
 
-Both need a login with the `project` scope ([`rness login`](#rness-login)).
+```text
+the pulse needs Issues on <org>/.rness: turn them on in its Settings
+```
+
+`rness pulse sync`, as often as wanted, works in two passes. First each
+document gets its issue — created, converted from a 0.12.0 draft, or
+reopened — with its label and fields; then the bodies that changed are
+written, since a body links to other documents' issues. It archives the
+items whose document is gone and adds the option or the board a new status
+or directory needs. It says what it did to the issues, then to the items:
+`created 1 issue`, `reopened 1 issue`, `synced 52 items: 1 created, 2
+updated, 49 unchanged`.
+
+The first sync with 0.13.0 says `converted 52 drafts into issues of <org>/.rness`; the `synced` line counts `converted` and `archived` too. On
+one of GitHub's rate limits it waits as GitHub says, and says so as it
+begins (`waiting  60 s — GitHub's rate limit`), 10 minutes at most in all;
+past that it stops with how many changes it did not make, and the next sync
+makes them. It remakes a board built by an earlier version; that board's URL
+changes once.
+
+Both also need a login with the `project` scope ([`rness login`](#rness-login)).
 Without one, `create` offers to log in, in a terminal; with `-y` or off a
 terminal, the pulse stops with `the pulse needs a GitHub login: run rness
 login` or `the pulse needs the project scope: run rness login`. A classic

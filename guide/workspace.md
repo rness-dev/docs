@@ -193,7 +193,7 @@ rness sync                    # in a terminal, with no agents key, asks once
 - Since 0.10.0, the same `.claude/settings.json` carries two hooks, and the
   workspace root gets a `.claude/settings.json` with the same two, for
   sessions started there — written on every machine, in no repository. At
-  session start, Claude Code shows a line such as `rness 0.12.0 · acme ·
+  session start, Claude Code shows a line such as `rness 0.13.0 · acme ·
   scope web — 10 standards, 9 decisions`, and the model receives the scope's
   documents as `rness_context` lists them; when the context may be wrong —
   no `.rness` installed next to the repository, a `rness.json` rness refuses,
@@ -251,8 +251,11 @@ when an agent is at work on one; `rness pulse sync` keeps it in step
 ([commands](/cli/commands#rness-pulse)). The project is private — GitHub's
 default for a new organization project; rness does not set it.
 
-Each document is an item, a draft issue holding its title, its path and a
-link to it in `<org>/.rness`. The fields:
+Since 0.13.0, each document is an issue of `<org>/.rness`, labelled `rness`,
+added to the project, and the project is linked to `.rness`, so it shows in
+that repository's Projects tab. The issue's title is the document's, its
+body the document ([the body](#the-body)). In 0.12.0 it was a draft holding
+the title, the path and a link. The fields:
 
 | Field | Holds |
 | --- | --- |
@@ -269,21 +272,67 @@ one board per collection, named as `rness status` names its tab, filtered on
 its `Collection`, its columns that collection's steps and only them; and
 `Working`, a table filtered on `Agent: working`.
 
+- Access follows `.rness`: GitHub shows an issue of a private repository
+  only to the people who can read it. `-label:rness` leaves these issues out
+  of `.rness`'s Issues tab.
+- Issues must be on for `.rness`. Without them `pulse create` and
+  `pulse sync` refuse before writing anything, saying `the pulse needs Issues on <org>/.rness: turn them on in its Settings`.
+- State follows existence. An issue is open while its document exists;
+  when the document is gone, it is closed as not planned and its item
+  archived. One closed by hand, or by a `fixes #n` in a `.rness` commit,
+  while its document exists, is reopened at the next sync. The status is a
+  field, not the issue's state. Gone means gone for this clone's git: the
+  path is in its history and no longer in its working tree. A teammate's
+  document that this clone has not pulled yet is left alone.
 - One way: the team reads the board, rness writes it. rness reads it only to
-  find its own items, and what someone changes there by hand is overwritten
-  at the next sync. An item converted to an issue by hand is the team's:
-  left alone, and its document gets a new draft.
-- `pulse sync` remakes a board built by an earlier version: its URL changes
-  once.
+  find its own items and to tell a changed body; what someone changes there
+  by hand — a card, a field, a title, a body, an issue closed — is
+  written back at the next sync, and never reaches `.rness/`. Comments are
+  the team's: rness never writes or deletes one, and a spec's discussion
+  lives on its issue. The board is not made read-only: whoever runs an
+  agent writes it with their own login, so they need Write on the project;
+  read-only for anyone else is the project's "Manage access", by hand. The
+  project's workflows are left alone. An item of the team's — one without
+  `Path`, an issue of another repository, any other issue of `.rness` — is
+  never edited, closed or archived.
 - `working` is set and cleared by the Claude Code hooks
-  ([agent targets](#agent-targets)); no other agent marks the board.
+  ([agent targets](#agent-targets)); no other agent marks the board. A
+  document an agent has just written, with no issue yet, gets one, then is
+  marked `working` from its first edit.
 - Each developer's `rness login` needs the `project` scope for the board to
   be written — asked only where a pulse is declared. An organization that
   restricts OAuth apps must approve "Rness", as for its private
   repositories.
-- rness sends its requests one after another. A first sync makes a draft
-  and sets up to four fields per document, about 250 requests for fifty
-  documents; later syncs touch only the items that changed.
+- rness sends its requests one after another. A new document costs an issue,
+  its addition to the project, up to four fields, then its body; an
+  unchanged one, nothing but its share of the listing, which reads every
+  item's body. On one of GitHub's rate limits rness waits as long as GitHub
+  says, 10 minutes at most in all; past that it stops, saying how many
+  changes it did not make, and the next sync makes them. Measured on
+  2026-09-30 on a board of 54 documents: the migration from 0.12.0 took
+  169 s with no wait; a sync with nothing to change, 4 s; the listing, one
+  page of 852 KB in about 1 s.
+- `pulse sync` remakes a board built by an earlier version: its URL changes
+  once. Upgrading from 0.12.0: [the versions page](/guide/versions).
+
+### The body
+
+An issue's body is the document, the same bytes for the same document:
+
+- Its first line is the path and a link to the file.
+- The front matter (the status is a field) and the first heading (the
+  title) are dropped.
+- Outside code, a link to another document becomes the URL of that
+  document's issue, which opens in the board's side panel. A link to any
+  other file of `.rness` points to it on GitHub; an absolute link stays as
+  written.
+- Outside code, `@name` is written `\@name` and a bare `#12` gets a
+  zero-width space after `#`: a body notifies no one and points at no
+  wrong issue.
+- It is cut at 65,536 characters, GitHub's limit: a longer document ends at
+  the last blank line that fits, with `The rest: <link>`.
+- A last line, invisible on GitHub, `<!-- rness <digest> -->`, is how sync
+  tells a body that changed.
 
 ## A standalone clone
 

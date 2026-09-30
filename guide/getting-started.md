@@ -237,8 +237,8 @@ rness pulse create  # once per organization: the board, then a first sync
 rness pulse sync    # as often as wanted
 ```
 
-The same documents on a GitHub Project of the organization, a board per
-directory, with what an agent is at work on, marked by the Claude Code
+The same documents on a GitHub Project of the organization, each an issue
+of `.rness` with the document as its body, a board per directory, with what an agent is at work on, marked by the Claude Code
 hooks ([Agent Pulse](/guide/workspace#agent-pulse)). Commit `rness.json` in
 `.rness` after `create`.
 
