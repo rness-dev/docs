@@ -1,7 +1,7 @@
 # rness docs
 
 <!-- BEGIN rness -->
-<!-- rness · scope: docs · contract: 1 · hash: 388901fc2645 · generated: run `rness sync`, never edit inside this block -->
+<!-- rness · scope: docs · contract: 1 · hash: c9e4c1a51bfc · generated: run `rness sync`, never edit inside this block -->
 This directory is scope `docs` of rness workspace `rness-dev`. Full context lives in
 `../../.rness/` — start at its `AGENTS.md`, then task-relevant `adr/`, `specs/`, `plans/`;
 live: `rness context --scope docs`. If `.rness/` is not reachable, this is a
@@ -11,20 +11,30 @@ standalone clone: the rules below are all you have.
 <!-- rness: standards/docs/content.md -->
 # Documentation content (scope `docs`)
 
-The public documentation describes what `@rness/cli` ships — the version
-pinned in `.rness/package.json` — and nothing else. The landing page shows the
-target product; this site is the shipped truth (ADR 0009).
+The public documentation describes what `@rness/cli` ships, and nothing else.
+It is written for the people who set up and use a workspace, not for rness's
+maintainers. The landing page shows the target product; this site is the
+shipped truth (ADR 0009).
 
 - A command, flag, file or behaviour is documented only once it is in a
-  released version. No "coming soon", no stub page.
+  released version. No "coming soon", no stub page. The working copy, served
+  as "Unreleased", may run ahead of the latest release; the version menu
+  labels it.
 - Sources, in order: `rness <command> --help`, `packages/cli/README.md`, the
   scaffold's `README.md` / `WORKSPACE.md` / `CONVENTIONS.md`, Implemented
   specs. Never the landing page.
 - Name an agent only when it is verified to read `AGENTS.md`: Claude Code,
   Codex, Cursor, GitHub Copilot — its coding agent, code review, Chat in
   VS Code and CLI (vendor documentation, 2026-09-22).
-- A page states the version it describes when the behaviour changed between
-  releases.
+- Each release has its own copy of the docs, and the version menu names the
+  version a page describes (spec 0021). A page never states its version and
+  carries no release history ("Since 0.x", "In 0.9.0 …"): what a release
+  changed belongs in the changelog.
+- No references to specifications, plans or ADRs, and no internal files
+  users never touch. Compatibility is stated once, dated, where it matters.
+- Edge cases go in `::: details` blocks. A command that differs by package
+  manager is shown in a `::: code-group` with the tabs npm, pnpm, yarn and
+  bun.
 
 <!-- rness: standards/architecture.md -->
 # Architecture and repository strategy
@@ -245,8 +255,11 @@ Public documentation site of rness, built with VitePress. See
 - `pnpm build` is the only check: it compiles the theme and the pages, and
   fails on a dead link. Run it after touching `.vitepress/config.ts`, the theme
   or any page.
-- Navigation and sidebars are written by hand in `.vitepress/config.ts`; a
-  new page appears nowhere until it is registered there.
+- Edit the working copy (`guide/`, `cli/`), never `versions/`: a frozen copy
+  is the docs of a released version, rewritten only by `pnpm freeze`
+  (README, "Versions"). Links between pages are relative `.md` links.
+- The guide's sidebar order is `GUIDE` in `.vitepress/config.ts`; a new
+  page is in no sidebar until it is added there.
 - The site is served under `/docs/` (`base` in the config, the rewrite in
   `vercel.json`). Absolute paths in `head` and in CSS carry that prefix;
   Markdown links and `themeConfig` paths do not.
