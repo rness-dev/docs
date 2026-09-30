@@ -8,5 +8,17 @@
       "source": "/docs/:path*",
       "destination": "/:path*"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/guide/versions",
+      "destination": "/docs/guide/upgrade",
+      "permanent": true
+    },
+    {
+      "source": "/docs/guide/versions",
+      "destination": "/docs/guide/upgrade",
+      "permanent": true
+    }
   ]
 }

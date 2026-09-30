@@ -4,10 +4,9 @@ import { data } from '../.vitepress/cli.data'
 
 # CLI reference
 
-`@rness/cli` {{ data.version }} — the version pinned in this site's
-`package.json`. The help below is the command's own, rendered from it when the
-site is built. Inside a workspace every command except `create`, `upgrade`,
-`login` and `logout` is delegated to the copy pinned in `.rness/package.json`.
+Every command, with its own `--help` and what it does. Inside a workspace,
+every command except `create`, `upgrade`, `login` and `logout` runs the
+version pinned in `.rness/package.json`, whichever `rness` you type.
 
 <div v-html="data.root"></div>
 
@@ -29,7 +28,7 @@ In a terminal, before the organization, it asks `Where does your
 organization live?`: GitHub, the one this version talks to; GitLab and
 Atlassian (Bitbucket + Jira) are listed, disabled. `--provider github`
 answers it off a terminal. The answer is written to `rness.json` as
-`provider` ([the catalogue](/guide/workspace#rness-json-the-catalogue)). A
+`provider` ([the catalogue](../guide/workspace.md#rness-json-the-list-of-repositories)). A
 join asks too, then takes the provider the organization's `rness.json`
 names; `--blank` asks nothing.
 
@@ -59,7 +58,7 @@ with `--yes` or `--check` they are named on one `not cloned:` line instead. A
 clone `rness.json` does not know gets no block and a `not in rness.json:`
 line. `--check` writes nothing and exits 1 when a block is out of date — the
 command for a repository's CI. With agents declared in `rness.json`, it also
-writes the files those agents need ([agent targets](/guide/workspace#agent-targets)).
+writes the files those agents need ([agent targets](../guide/claude-code.md)).
 
 ## `rness context`
 
@@ -84,7 +83,7 @@ tab, `↑`/`↓`, `PgUp`/`PgDn` and `Home`/`End` scroll, `q` or `Esc` closes and
 gives the screen back. Off a terminal — a pipe, CI, an agent's tool — it
 prints Markdown, a table per tab; `rness status specs` prints that one. It
 reads `.rness/` and writes nothing. In Claude Code, `/rness:status` shows
-the tables ([agent targets](/guide/workspace#agent-targets)).
+the tables ([agent targets](../guide/claude-code.md)).
 
 ## `rness validate`
 
@@ -95,7 +94,7 @@ front matter and allowed statuses of every ADR, specification and plan — and,
 when `org/` clones are present, every generated block: stale (its hash no
 longer matches a fresh render, or someone edited inside the markers) is a
 problem, missing is a warning. So is a value an [agent
-target](/guide/workspace#agent-targets) needs and a clone lacks. It warns when
+target](../guide/claude-code.md) needs and a clone lacks. It warns when
 the scaffold merged in `.rness` is behind the pin. It runs alone in a checkout
 of `.rness/`, which is what the scaffold's CI workflow does. No prompt, no
 network.
@@ -118,7 +117,7 @@ answer "what applies here" and "where was this decided":
 `.rness/` is read again on each call, so an edit shows at once. It speaks the
 MCP revision `2026-07-28` and the earlier ones that open with `initialize`
 (`2025-11-25` back to `2024-11-05`). For Claude Code, `rness sync` registers
-it in each repository ([agent targets](/guide/workspace#agent-targets)).
+it in each repository ([agent targets](../guide/claude-code.md)).
 Another agent can run the same command from a clone.
 
 ## `rness pulse`
@@ -128,7 +127,7 @@ Another agent can run the same command from a clone.
 `pulse` shows the documents of `.rness/`, and the agent at work on them, in
 the organization's GitHub Projects: a project named **Agent Pulse**, a board
 per directory, each document an issue of `<org>/.rness` whose body is the
-document ([Agent Pulse](/guide/workspace#agent-pulse)).
+document ([Agent Pulse](../guide/agent-pulse.md)).
 
 `rness pulse create`, once per organization, needs an `org` in `rness.json`
 — a blank workspace is refused — and no pulse declared yet. It creates the
@@ -148,20 +147,19 @@ the pulse needs Issues on <org>/.rness: turn them on in its Settings
 ```
 
 `rness pulse sync`, as often as wanted, works in two passes. First each
-document gets its issue — created, converted from a 0.12.0 draft, or
-reopened — with its label and fields; then the bodies that changed are
-written, since a body links to other documents' issues. It archives the
+document gets its issue — created, or reopened — with its label and
+fields; then the bodies that changed are written, since a body links to
+other documents' issues. It archives the
 items whose document is gone and adds the option or the board a new status
 or directory needs. It says what it did to the issues, then to the items:
 `created 1 issue`, `reopened 1 issue`, `synced 52 items: 1 created, 2
 updated, 49 unchanged`.
 
-The first sync with 0.13.0 says `converted 52 drafts into issues of <org>/.rness`; the `synced` line counts `converted` and `archived` too. On
-one of GitHub's rate limits it waits as GitHub says, and says so as it
-begins (`waiting  60 s — GitHub's rate limit`), 10 minutes at most in all;
-past that it stops with how many changes it did not make, and the next sync
-makes them. It remakes a board built by an earlier version; that board's URL
-changes once.
+The `synced` line also counts the items it archived. On one of GitHub's
+rate limits it waits as GitHub says, and says so as it begins
+(`waiting  60 s — GitHub's rate limit`), 10 minutes at most in all; past
+that it stops with how many changes it did not make, and the next sync
+makes them.
 
 Both also need a login with the `project` scope ([`rness login`](#rness-login)).
 Without one, `create` offers to log in, in a terminal; with `-y` or off a
@@ -179,7 +177,7 @@ reached, it says so (`cannot reach GitHub: …`) instead of asking for a login.
 the version in `.rness/package.json`, installs with the workspace's package
 manager, syncs through the new copy — the blocks and the agent files — then
 commits `.rness`
-([the scaffold, merged with git](/guide/versions#the-scaffold-merged-with-git)).
+([the scaffold, merged with git](../guide/upgrade.md#update)).
 The next steps say what is left: push `.rness`, and per repository the files
 the sync changed. A hook refusing the commit leaves everything staged, and
 `upgrade` exits 1. `.rness` must be clean, with no merge in progress. It is

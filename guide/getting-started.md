@@ -1,18 +1,19 @@
 # Getting started
 
 rness gives every AI coding agent in a GitHub organization the same context:
-the organization's standards, decisions, specifications and plans, kept as
-Markdown in one repository and written by the `rness` command into the
-`AGENTS.md` of every repository you work on. Claude Code, Codex, Cursor and
-GitHub Copilot read that file; nothing else changes in your workflow.
+the organization's standards, decisions, specifications and plans. They live
+as Markdown in one repository, `.rness`, and the `rness` command writes what
+applies into the `AGENTS.md` of every repository you work on. Claude Code,
+Codex, Cursor and GitHub Copilot already read that file, so nothing else
+changes in your workflow.
 
-This page describes `@rness/cli` 0.7.0. Node 24 or newer is required.
+You need Node 24 or newer, and git.
 
 ## Create a workspace
 
-A workspace mirrors one GitHub organization. Run the command with the package
-manager you use — the workspace's own dependencies are installed with the same
-one:
+A workspace mirrors one GitHub organization. Create it with the package
+manager you use; the workspace installs its own dependencies with the same
+one.
 
 ::: code-group
 
@@ -34,26 +35,34 @@ bun create rness
 
 :::
 
-In a terminal, the command first asks how to start: from a GitHub
-organization, or a blank local workspace (below). From an organization, it
-asks where the organization lives — GitHub; GitLab and Atlassian are listed,
-disabled — then its name, then lists its repositories so you can pick the
-ones you want to work on. A new workspace also asks which agents the team
-uses ([agent targets](/guide/workspace#agent-targets)); `--agent claude`
-answers it. Pass the organization to skip those first questions
-(`npm create rness acme`); with `npm create`, flags go after `--`
-(`npm create rness acme -- --yes`).
+The command asks a few questions:
 
-The next steps `create` prints at the end, like every hint the CLI gives,
-spell rness the way you launched it: through a package manager, as
-`npx @rness/cli`, `pnpm dlx @rness/cli`, `yarn dlx @rness/cli` (`npx` on
-Yarn 1) or `bunx @rness/cli`, so they work without a global install; as
-`rness` when you typed that.
+1. **How to start**: from a GitHub organization, or a blank local workspace
+   (below).
+2. **The organization**: its name. Pass it to skip the question:
+   `pnpm create rness acme`.
+3. **The repositories** you want to work on, picked from the organization's
+   list. Private ones appear once you are [logged in](./repositories.md#private-repositories).
+4. **The agents your team uses**, for a new workspace. rness then also
+   writes the files those agents need, such as
+   [Claude Code's](./claude-code.md).
+
+If the organization already has a `.rness` repository, you **join** it: you
+get the same context, pinned to the same rness version as your teammates.
+Otherwise `create` makes a new `.rness` from a starter set. Once you are
+logged in, it offers to create the private `acme/.rness` on GitHub and push
+it, so your teammates can join.
+
+::: details Flags with npm, and the hints the CLI prints
+With `npm create`, flags go after `--`: `npm create rness acme -- --yes`.
+The next steps `create` prints are written the way you launched it
+(`npx @rness/cli`, `pnpm dlx @rness/cli`, …), so they work without a global
+install.
+:::
 
 ### Without a GitHub organization
 
-To try rness with no organization, or no GitHub account, create a blank
-workspace:
+To try rness with no organization, or no GitHub account:
 
 ::: code-group
 
@@ -75,108 +84,25 @@ bun create rness my-project --blank
 
 :::
 
-It writes `my-project/.rness/` from the scaffold with a `rness.json` that has
-no `"org"`, commits it, and creates an empty `my-project/org/` and the root
-`AGENTS.md` and `CLAUDE.md`. There is no login, no SSH test and no request to
-GitHub: only the install of `.rness/` reaches the network. Bring repositories
-in with `<owner>/<repo>` or a git URL ([Add a repository](#add-a-repository)).
-To share the workspace later, set `"org"` in `.rness/rness.json` and push
-`.rness` to `github.com/<org>/.rness`.
-
-For a permanent `rness` command, install the CLI once:
-
-```sh
-npm i -g @rness/cli
-rness create acme
-```
-
-Inside a workspace, every `rness` you run delegates to the copy pinned in
-`.rness/package.json`: the whole team runs the version the organization agreed
-on, whatever is installed globally.
+A blank workspace makes no request to GitHub, and needs no login. Add
+repositories by `<owner>/<repo>` or by URL
+([Repositories](./repositories.md)). To share it later, set `"org"` in
+`.rness/rness.json` and push `.rness` to `github.com/<org>/.rness`.
 
 ## What appears on disk
 
 ```
 acme/
-├── AGENTS.md        generated global block — the root is not a git repository
-├── .rness/          the organization's context: a git repository
+├── AGENTS.md        the organization-wide rules, for a session opened here
+├── .rness/          the organization's context — a git repository
 └── org/
     ├── app/         the repositories you picked, cloned
     └── api/
 ```
 
-`.rness/` is the organization's context repository. It holds:
-
-- `rness.json` — the catalogue: every repository rness knows about, and the
-  scopes where context resolves;
-- `standards/`, `adr/`, `specs/`, `plans/`, `skills/` — the collections
-  rness resolves per scope; `standards/` is what reaches the agents. `docs/`
-  holds current-state notes for maintainers;
-- `package.json` — the pinned `@rness/cli`;
-- `.github/workflows/validate.yml` and `.github/dependabot.yml` — a check on
-  every pull request, and a pull request for every release.
-
-`rness create` creates `.rness/` from a scaffold when the organization has
-none yet, and joins the existing one otherwise: a teammate runs the same
-command with the same organization and gets a workspace pinned to the same
-version, cloning the repositories they pick.
-
-A new workspace has to reach GitHub before teammates can join it. Logged in
-(see below), `create` offers to create the private repository `acme/.rness`
-and push the context. Otherwise it prints the two manual steps: create the
-empty repository on github.com, then `git remote add origin … && git push`.
-
-## Private repositories
-
-Without a login only public repositories are listed. To reach the private ones:
-
-```sh
-rness login
-```
-
-`rness login` connects rness to your GitHub account through GitHub's device
-flow: it shows a code and `https://github.com/login/device`; you approve the
-code in a browser, on any machine. The login is one file,
-`~/.config/rness/auth.json` (`$XDG_CONFIG_HOME`, `%APPDATA%` on Windows),
-readable by you only. The access token lives 8 hours and is renewed on its
-own. `GITHUB_TOKEN`, then `GH_TOKEN`, win over it — CI needs no login.
-
-rness asks for the `repo` and `read:org` scopes: GitHub has no read-only scope
-for private repositories. It only lists and clones. Where the workspace
-declares a [pulse](/guide/workspace#agent-pulse), it asks for `project` too,
-to write the board. An organization that restricts OAuth apps hides its
-private repositories until an owner approves "Rness"; `create` says so, with
-the link.
-
-`rness logout` forgets the login; revoke the authorization itself in GitHub's
-settings (the command prints the link).
-
-### SSH or HTTPS
-
-`create` and `add` test your SSH access to github.com once
-(`ssh -T git@github.com`) and write `git@github.com:` URLs when GitHub accepts
-your key, `https://github.com/` ones otherwise; `--ssh` and `--https` decide
-without the test. Over HTTPS, rness's own clones and pulls carry the login.
-For your own `git pull` and `git push`, `rness login` offers to make rness
-git's credential helper for github.com (`--setup-git`); `logout` undoes it.
-
-## Add a repository
-
-```sh
-rness add api
-rness add acme/api
-rness add https://github.com/acme/api.git
-```
-
-`add` clones the repository under `org/` (or adopts a clone already there)
-and declares it in `rness.json`, for the whole team. A bare name (`api`) is a
-repository of the workspace's organization; a blank workspace has none, so
-give `<owner>/<repo>` or a URL there. A monorepo is a
-repository like any other; its parts become scopes:
-
-```sh
-rness add platform --scopes apps/web,packages/ui
-```
+`.rness/` holds `rness.json` (the list of repositories), the documents
+(`standards/`, `adr/`, `specs/`, `plans/`, …) and the version of rness the
+organization uses. [The workspace](./workspace.md) explains each part.
 
 ## Write the context into every repository
 
@@ -184,68 +110,41 @@ rness add platform --scopes apps/web,packages/ui
 rness sync
 ```
 
-`sync` resolves the context of every scope and writes it into the
-`org/<repo>/AGENTS.md` of your clones as a marked block, between
-`<!-- BEGIN rness -->` and `<!-- END rness -->`. The rest of the file is left
-alone. Next to it, a `CLAUDE.md` that reads `@AGENTS.md` is created for Claude
-Code when there is none; the workspace root's `CLAUDE.md` holds the global
-block itself. When the team declared Claude Code, each repository also gets a
-`.claude/settings.json` ([agent targets](/guide/workspace#agent-targets)).
+`sync` writes the rules that apply to each repository into its `AGENTS.md`,
+between two markers. The rest of the file stays yours. Commit what it
+wrote in each repository, usually `AGENTS.md`, `CLAUDE.md` and the agent's
+files.
 
-Commit what `sync` wrote in each repository: `AGENTS.md`, `CLAUDE.md` and,
-for Claude Code, `.claude/settings.json`.
+Run it again whenever `.rness/` changes. `rness sync --check` writes
+nothing, and fails when a repository's block is out of date. It is the
+check to run in a repository's CI.
 
-Run `sync` after every change in `.rness/` and commit the `AGENTS.md` of each
-repository. In a terminal, `sync` offers to clone the catalogue repositories
-you do not have; `rness sync --all` clones them all, `rness sync --pull` pulls
-every clean clone first.
+::: tip No global install needed
+Every command works through your package manager, for example
+`npx @rness/cli sync` or `pnpm dlx @rness/cli sync`. Inside a workspace,
+whichever `rness` you launch runs the version the organization pinned.
+:::
 
-## See what an agent sees
-
-```sh
-rness context                 # the scope owning the current directory
-rness context --scope api
-rness context --scope api --json
-```
-
-## Check it
+## Look around
 
 ```sh
-rness validate      # the .rness/ tree against its contract, and every block
-rness sync --check  # writes nothing; exit 1 when a block is out of date
+rness status        # where every decision, specification and plan stands
+rness context       # what an agent sees in the current repository
+rness validate      # checks .rness/ and every generated block
 ```
 
-The scaffold's `.github/workflows/validate.yml` runs `rness validate` on every
-pull request of `.rness`, with the pinned version. `sync --check` is the one to
-run in a repository's CI: it fails when someone changed the context without
-regenerating the block.
-
-## See where things stand
-
-```sh
-rness status        # every decision, specification and plan, a tab per directory
-rness status plans  # open on one tab
-```
-
-In a terminal, a full-screen view you move around with the arrows; `q`
-closes it. Piped, the same as Markdown tables.
-
-## Show it on GitHub
-
-```sh
-rness pulse create  # once per organization: the board, then a first sync
-rness pulse sync    # as often as wanted
-```
-
-The same documents on a GitHub Project of the organization, each an issue
-of `.rness` with the document as its body, a board per directory, with what an agent is at work on, marked by the Claude Code
-hooks ([Agent Pulse](/guide/workspace#agent-pulse)). Commit `rness.json` in
-`.rness` after `create`.
+`rness status` opens a full-screen view in a terminal: the arrow keys move
+between tabs, and `q` closes it.
 
 ## Next
 
-- [The workspace](/guide/workspace) — `rness.json`, the collections, how a
-  scope's context is resolved, what the generated block contains.
-- [Versions](/guide/versions) — the pin, the pull request that moves it, and
-  how to update a workspace, step by step.
-- [CLI reference](/cli/commands) — every command and option.
+- [The workspace](./workspace.md): `rness.json`, the documents, and what
+  reaches each repository.
+- [Repositories](./repositories.md): add one, reach private ones.
+- [Claude Code](./claude-code.md): the context at session start, and the
+  `/rness:*` commands.
+- [Agent Pulse](./agent-pulse.md): the documents, and the agents at work,
+  on a GitHub Project.
+- [Update rness](./upgrade.md): one command, and a pull request for each
+  release.
+- [CLI reference](../cli/commands.md): every command and option.
