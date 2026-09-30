@@ -3,3 +3,7 @@ node_modules/
 .vitepress/cache/
 *.log
 .DS_Store
+
+# env files: the PostHog token is set on the Vercel project (README)
+.env*
+!.env.example

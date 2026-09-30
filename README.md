@@ -88,7 +88,8 @@ base path (`base` in `.vitepress/config.ts`); the landing domain reaches it
 through a rewrite.
 
 Analytics are optional. With `VITE_POSTHOG_PROJECT_TOKEN` set at build time
-(on the Vercel project, for Production and Preview), the theme loads PostHog
+(on the Vercel project, for Production and Preview; locally in `.env.local`,
+from `.env.example`), the theme loads PostHog
 without cookies (`.vitepress/theme/analytics.ts`) and sends page views,
 `docs_code_copied` and `github_cta_clicked` through the landing page's proxy,
 `rness.dev/rly`. Without it, nothing loads.
