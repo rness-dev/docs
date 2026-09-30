@@ -28,7 +28,7 @@ const GUIDE: readonly [string, string][] = [
   ['Repositories', 'guide/repositories'],
   ['Claude Code', 'guide/claude-code'],
   ['Agent Pulse', 'guide/agent-pulse'],
-  ['Update rness', 'guide/upgrade'],
+  ['Update Rness', 'guide/upgrade'],
 ]
 
 /** A page name made readable, for a page of an older version the list does not know. */
@@ -65,9 +65,9 @@ function latestOf(path: string): string {
 
 // https://vitepress.dev/reference/site-config
 export default defineConfigWithTheme<ThemeConfig>({
-  title: 'rness',
+  title: 'Rness',
   description:
-    'Documentation for rness, the governance layer for AI agents across a GitHub organization.',
+    'Documentation for Rness, the governance layer for AI agents across a GitHub organization.',
   lang: 'en-US',
   // Served under /docs of the landing domain through a rewrite (see vercel.json)
   base: '/docs/',
@@ -108,15 +108,28 @@ export default defineConfigWithTheme<ThemeConfig>({
   },
 
   head: [
-    ['link', { rel: 'icon', href: '/docs/favicon.svg', type: 'image/svg+xml' }],
+    // The landing page's icon (rness-dev/web, src/app/favicon.ico), copied as is.
+    ['link', { rel: 'icon', href: '/docs/favicon.ico', type: 'image/x-icon' }],
+    // The wordmark's face (theme/custom.css), fetched before the first paint of the top bar.
+    [
+      'link',
+      {
+        rel: 'preload',
+        href: '/docs/fonts/archivo-black-latin.woff2',
+        as: 'font',
+        type: 'font/woff2',
+        crossorigin: '',
+      },
+    ],
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:site_name', content: 'rness' }],
+    ['meta', { property: 'og:site_name', content: 'Rness' }],
   ],
 
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+    // The landing page's lockup: the icon, then "Rness" in Archivo Black (custom.css).
     logo: '/logo.svg',
-    siteTitle: 'rness',
+    siteTitle: 'Rness',
     // The default logo link is `base` — `/docs/`, one redirect per click on
     // the site's own host and through rness.dev. `/docs` is the served form.
     logoLink: '/docs',
@@ -143,7 +156,7 @@ export default defineConfigWithTheme<ThemeConfig>({
 
     footer: {
       message: 'Released under the MIT License.',
-      copyright: '© 2026 rness',
+      copyright: '© 2026 Rness',
     },
 
     editLink: {

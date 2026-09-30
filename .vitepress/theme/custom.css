@@ -14,7 +14,29 @@
  *   --border            #232328
  *   --brand             #4ade80   the green signal colour
  *   --brand-foreground  #09090b
+ *   --surface-raised    #111114   \
+ *   --hairline          #1c1c21    |
+ *   --control           #2a2a30    | no VitePress counterpart:
+ *   --bright            #e4e4e7    | --rness-* below
+ *   --beam-head         #dcfce7   /
+ *
+ * The wordmark is Archivo Black (the landing page's `font-logo`), self-hosted:
+ * the Latin subset from Google Fonts, SIL Open Font License 1.1.
  */
+
+@font-face {
+  font-family: 'Archivo Black';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/archivo-black-latin.woff2') format('woff2');
+}
+
+:root {
+  --rness-font-logo: 'Archivo Black', var(--vp-font-family-base);
+  /* The landing page's lockup: a 22px icon, 10px before the wordmark. */
+  --vp-nav-logo-height: 22px;
+}
 
 .dark {
   /* ─── Brand ─────────────────────────────────────────────────────────── */
@@ -46,6 +68,40 @@
   --vp-c-divider: #232328; /* --border */
   --vp-c-border: #232328;
   --vp-c-gutter: #232328;
+
+  --rness-surface-raised: #111114;
+  --rness-hairline: #1c1c21;
+  --rness-control: #2a2a30;
+  --rness-bright: #e4e4e7;
+  --rness-beam-head: #dcfce7; /* the bright head of an animated beam */
+}
+
+/* ─── Top bar: the landing page's lockup ────────────────────────────── */
+/* Archivo Black ships one weight: its 400 is the black cut, so the title's
+   600 would be synthesised on top of it. */
+.VPNavBarTitle .title .logo {
+  margin-right: 10px;
+}
+.VPNavBarTitle .title > span {
+  font-family: var(--rness-font-logo);
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* ─── Home: the hero diagram (theme/HeroDiagram.vue) ─────────────────── */
+/* Beside the text from 960px, where the hero is two columns. Narrower, the
+   default theme would stack it above the text: it is left out instead. */
+@media (max-width: 959px) {
+  .VPHero .image {
+    display: none;
+  }
+}
+/* The default theme nudges its picture up and left, to balance a round
+   glow the diagram does not have. */
+.VPHero.has-image .image-container {
+  transform: none;
 }
 
 /* The search keeps its place at the left of the top bar, before the

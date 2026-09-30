@@ -261,9 +261,13 @@ Public documentation site of rness, built with VitePress. See
 - The guide's sidebar order is `GUIDE` in `.vitepress/config.ts`; a new
   page is in no sidebar until it is added there.
 - The site is served under `/docs/` (`base` in the config, the rewrite in
-  `vercel.json`). Absolute paths in `head` and in CSS carry that prefix;
-  Markdown links and `themeConfig` paths do not.
+  `vercel.json`). Absolute paths in `head` carry that prefix; Markdown
+  links, `themeConfig` paths and a CSS `url()` to a `public/` file do not
+  (Vite adds it to the last at build).
 - Colour tokens in `.vitepress/theme/custom.css` mirror the landing page
   (`rness-dev/web`, `src/app/globals.css`). Change them together.
+- So do the brand files: `public/favicon.ico` is the landing page's
+  `src/app/favicon.ico`, `public/logo.svg` its `LogoMark`, and
+  `theme/HeroDiagram.vue` its hero diagram laid out top to bottom.
 - Native-build approval for esbuild lives in `pnpm-workspace.yaml`
   (`allowBuilds`), not in `package.json`.
