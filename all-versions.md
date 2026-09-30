@@ -15,8 +15,28 @@ the three releases before it, and the unreleased changes.
   </li>
 </ul>
 
-Your workspace runs the version pinned in `.rness/package.json`. Inside the
-workspace, `rness --version` prints it.
+Your workspace runs the version pinned in `.rness/package.json`. To print
+it, run this from the workspace's `.rness/` (no global install needed):
+
+::: code-group
+
+```sh [npm]
+npx rness --version
+```
+
+```sh [pnpm]
+pnpm rness --version
+```
+
+```sh [yarn]
+yarn rness --version
+```
+
+```sh [bun]
+bunx rness --version
+```
+
+:::
 
 For an older release, read its entry in the
 [changelog](https://github.com/rness-dev/rness/blob/main/packages/cli/README.md)
