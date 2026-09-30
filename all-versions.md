@@ -19,5 +19,5 @@ Your workspace runs the version pinned in `.rness/package.json`. Inside the
 workspace, `rness --version` prints it.
 
 For an older release, read its entry in the
-[changelog](https://github.com/rness-dev/rness/blob/main/packages/cli/README.md#0150--agent-pulse-follows-a-status-change-the-sessions-are-kept)
+[changelog](https://github.com/rness-dev/rness/blob/main/packages/cli/README.md)
 and the pages of the version that followed it.

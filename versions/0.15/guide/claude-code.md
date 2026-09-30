@@ -18,7 +18,7 @@ its files in every repository. A new workspace asks during `create`. Commit
 `.rness/rness.json`, then, in each repository:
 
 ```sh
-git add .claude .mcp.json
+git add .claude/settings.json .claude/skills/rness .mcp.json
 git commit -m "chore: rness for Claude Code"
 ```
 
