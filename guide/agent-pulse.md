@@ -64,6 +64,61 @@ The hooks start a background process that uses your login, and Claude Code
 never waits for it. When it cannot write (no login, a missing scope,
 GitHub unreachable), the next session start says why.
 
+## A collection's own project
+
+Agent Pulse shows every collection of `.rness/` on one project. A
+collection whose work stands apart, such as a roadmap or a launch, can
+have a project of its own:
+
+```sh
+rness pulse create roadmap    # the project, named after the collection, then a sync
+```
+
+`rness.json` then names both, and `rness pulse sync` syncs both:
+
+```json
+"projects": { "pulse": 3, "roadmap": 4 }
+```
+
+The collection's documents leave Agent Pulse for their project; their
+issues stay as they are. The project is written from the collection's
+files, like the rest of the pulse:
+
+- **`roadmap/README.md`** is the project's README. Its front matter can
+  say more:
+
+  ```yaml
+  ---
+  description: What we ship this quarter.   # the project's short description
+  statuses: [Idea, Planned, Building, Shipped, Dropped]   # the columns, in order
+  fields:
+    Target date: { type: date, from: target }   # filled from each document's `target:`
+    Area: { type: select, from: area }
+  labels: directory   # each document labelled with its subdirectory
+  ---
+  ```
+
+  A field's `type` is `text`, `date`, `select` or `number`; `from` is the
+  front-matter key of the documents that fills it, or a list of keys, the
+  first present one winning. `labels` is `directory`, or a front-matter
+  key. A date field adds a `Calendar` roadmap view: pick its date field
+  once in the view's settings, as GitHub's API cannot set it.
+- **`roadmap/updates/`** holds the project's status updates, one file each,
+  named by date:
+
+  ```md
+  ---
+  health: on-track   # on-track, at-risk, off-track, complete or inactive
+  ---
+  The first two items shipped; the third moves to next month.
+  ```
+
+  Each file is posted once and updated when it changes.
+
+Without a `README.md`, the project has the collection's documents and
+nothing more. A workspace that declares no collection's project keeps
+Agent Pulse as it is.
+
 ## Things to know
 
 - **Access follows `.rness`**: GitHub shows these issues only to people

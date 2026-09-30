@@ -131,13 +131,19 @@ document ([Agent Pulse](../guide/agent-pulse.md)).
 
 `rness pulse create`, once per organization, needs an `org` in `rness.json`
 — a blank workspace is refused — and no pulse declared yet. It creates the
-project and at once writes `"pulse": { "project": <number> }`, and the
+project and at once writes `"projects": { "pulse": <number> }`, and the
 `provider`, into `rness.json`; then it adds the fields and the views and runs
 a first sync, its `created` line saying what it added. A step failing after
 the project exits 1 with the pulse declared: `rness pulse sync` completes the
 layout. Commit `rness.json` in `.rness`. A workspace with no `provider` whose
 repositories look like GitLab is refused before anything is created: write
 `"provider": "github"` if the organization is on GitHub.
+
+`rness pulse create <collection>` gives a collection of `.rness/` — a
+directory whose documents carry a status — a project of its own, named after
+it, and adds it to `projects`; its documents leave Agent Pulse. `pulse`, a
+collection declared already or a directory with no document is refused
+([a collection's own project](../guide/agent-pulse.md#a-collection-s-own-project)).
 
 Both need Issues on `<org>/.rness`. Without them they stop before writing
 anything, with:
@@ -146,7 +152,8 @@ anything, with:
 the pulse needs Issues on <org>/.rness: turn them on in its Settings
 ```
 
-`rness pulse sync`, as often as wanted, works in two passes. First each
+`rness pulse sync`, as often as wanted, syncs every declared project, the
+collections' own first and Agent Pulse last. On each it works in two passes. First each
 document gets its issue — created, or reopened — with its label and
 fields; then the bodies that changed are written, since a body links to
 other documents' issues. It archives the
