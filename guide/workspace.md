@@ -223,17 +223,36 @@ rness sync                    # in a terminal, with no agents key, asks once
   `rness: pulse not updated — <reason>`, then deletes it. Two sessions
   marking one plan both write; the last wins.
 - Since 0.11.0, each repository and the workspace root get a Claude Code
-  plugin, `.claude/skills/rness/`, with one command: `/rness:status [tab]`,
-  the tables of [`rness status`](/cli/commands#rness-status). Claude Code
-  loads it once the folder is trusted, in a session started there. Nothing
-  started from inside Claude Code gets the terminal, so the full-screen view
-  cannot open from there: `Ctrl+Z` suspends Claude Code, `npx @rness/cli
-  status` opens it, `q` closes it, `fg` resumes Claude Code. Verified with
-  Claude Code 2.1.284 on 2026-09-29.
+  plugin, `.claude/skills/rness/`, with `/rness:status [tab]`, the tables
+  of [`rness status`](/cli/commands#rness-status). Claude Code loads it once
+  the folder is trusted, in a session started there. Nothing started from
+  inside Claude Code gets the terminal, so the full-screen view cannot open
+  from there. Since 0.14.0 the command ends with two ways to reach it: in
+  the same terminal, `Ctrl+Z` suspends Claude Code, `npx @rness/cli status`
+  opens the view, `q` closes it and `fg` resumes Claude Code (Unix only);
+  or, in another terminal, from the workspace's `.rness/`, the command of
+  its package manager — `pnpm rness status`, `npx rness status`,
+  `yarn rness status` or `bunx rness status` — which runs the pinned copy
+  without the network. Verified with Claude Code 2.1.284 on 2026-09-29, and
+  with each manager on 2026-09-30.
+- Since 0.14.0 the plugin also walks the workspace's lifecycle:
+  `/rness:adr [subject | NNNN]` records a decision as an ADR,
+  `/rness:spec [subject | NNNN]` writes a specification,
+  `/rness:plan <spec>` turns an approved specification into a plan, and
+  `/rness:done [plan]` closes a piece of work: it checks each task against
+  evidence, then marks the plan `Completed` and its specification
+  `Implemented`, and corrects the documents the work made inaccurate. Each
+  one is a procedure loaded into the conversation, not a file generator.
+  After a decision has been discussed, `/rness:adr` writes it from the
+  conversation; otherwise it asks, one question at a time. The agent may
+  start one itself, but writes nothing without your yes. The rules stay in
+  `.rness/CONVENTIONS.md`. A new document starts at its collection's first
+  status and takes the next number in your checkout. No skill commits.
+  Verified with Claude Code 2.1.285 on 2026-09-30.
 - rness owns values, not files: what is missing is added; the team's own
   settings and hooks stay as they are, in their order and indentation. A
   file that is not valid JSON is reported and never rewritten. The plugin is
-  the exception: its two files are rness's whole, and an edit by hand is
+  the exception: its files are rness's whole, and an edit by hand is
   reported, then written back by `rness sync`.
 - `rness sync --check` and `rness validate` report a missing value; `sync
   --pull` does not count these files as local changes. Removing an agent
