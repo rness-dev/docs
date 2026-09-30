@@ -16,6 +16,7 @@
   "devDependencies": {
     "@rness/cli": "0.16.0",
     "@types/node": "^26.1.1",
+    "posthog-js": "^1.435.0",
     "vitepress": "1.6.4"
   }
 }

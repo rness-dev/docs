@@ -271,3 +271,7 @@ Public documentation site of rness, built with VitePress. See
   `theme/HeroDiagram.vue` its hero diagram laid out top to bottom.
 - Native-build approval for esbuild lives in `pnpm-workspace.yaml`
   (`allowBuilds`), not in `package.json`.
+- Analytics: `.vitepress/theme/analytics.ts`, loaded by `enhanceApp` in the
+  browser only, when `VITE_POSTHOG_PROJECT_TOKEN` is set. It mirrors the
+  landing page's `instrumentation-client.ts`; the event names are shared
+  with it.

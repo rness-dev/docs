@@ -155,7 +155,7 @@ export default defineConfigWithTheme<ThemeConfig>({
     },
 
     footer: {
-      message: 'Released under the MIT License.',
+      message: 'Released under the MIT License. Analytics without cookies, by PostHog.',
       copyright: '© 2026 Rness',
     },
 

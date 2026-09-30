@@ -1,3 +1,4 @@
+/// <reference types="vitepress/client" />
 import DefaultTheme from 'vitepress/theme'
 import type { Theme } from 'vitepress'
 import { h } from 'vue'
@@ -9,6 +10,10 @@ import './custom.css'
 
 export default {
   extends: DefaultTheme,
+  // Analytics in the browser only, loaded apart from the pages (spec 0024).
+  enhanceApp() {
+    if (!import.meta.env.SSR) void import('./analytics').then((m) => m.startAnalytics())
+  },
   // The version-aware Guide and CLI links, and the version menu (spec 0021
   // §3), in the top bar and in the menu that replaces it on a narrow screen.
   Layout: () =>
