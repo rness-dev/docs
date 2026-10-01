@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: Rness
-  text: One source of truth for every agent.
-  tagline: The organization's standards, decisions, specifications and plans — Markdown in git, written into the AGENTS.md of every repository by one command.
+  text: One source of truth for every AI coding agent.
+  tagline: Your organization's standards, decisions, specs and plans, written into every repository's AGENTS.md. Claude Code, Codex, Cursor and GitHub Copilot already read it.
   actions:
     - theme: brand
       text: Get started
