@@ -1,8 +1,8 @@
 # rness docs
 
 Source of the public documentation site of
-[rness](https://github.com/rness-dev/rness), the governance layer for AI agents
-across a GitHub organization.
+[Rness](https://github.com/rness-dev/rness): one source of truth for every
+AI coding agent across a GitHub organization.
 
 Live at `https://rness.dev/docs` — the landing domain rewrites `/docs` to
 this deployment (`rness-docs.vercel.app`). The site documents what
