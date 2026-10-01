@@ -14,7 +14,7 @@
     "freeze": "node scripts/freeze.mjs"
   },
   "devDependencies": {
-    "@rness/cli": "0.16.0",
+    "@rness/cli": "0.17.1",
     "@types/node": "^26.1.1",
     "posthog-js": "^1.435.0",
     "vitepress": "1.6.4"
