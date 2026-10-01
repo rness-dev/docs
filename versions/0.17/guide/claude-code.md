@@ -63,15 +63,21 @@ agent : writes adr/0010-local-cache-sqlite.md (Proposed) and shows it
 - After a discussion, `/rness:adr` writes the decision from it. Otherwise
   it asks, one question at a time.
 - The agent may offer one of them on its own, for example an ADR when a
-  choice would be hard to reverse. It writes nothing without your yes.
+  choice would be hard to reverse. It writes nothing without your yes,
+  except `/rness:done` on a plan whose last task has just passed.
 - A new document takes its collection's first status and the next number.
-  Only you move it further, for example to `Accepted` or `Approved`.
+  The agent moves a status as the work goes, and whenever you ask: a plan
+  `In progress` as it starts its tasks, `Completed` once they pass, a
+  specification `Implemented` with its last plan. Accepting an ADR or
+  approving a specification stays yours, unless you asked it to go ahead.
 - Each command records its session and the model it ran as in the
   document's `sessions:`, for example
   `{ id: 1e9cb41b-…, agent: Claude Opus 5.5 }`. `claude --resume <id>`
   reopens that session on the machine it ran on.
 - The rules they follow are your workspace's, in `.rness/CONVENTIONS.md`.
-  No command commits.
+- Each command ends in a commit of the files the agent alone changed,
+  added by name. A file you or someone else changed too stays uncommitted,
+  and the agent names it. Nothing is pushed.
 
 `/rness:status` shows tables. For the full-screen view, run it in the same
 terminal: `Ctrl+Z`, then `npx @rness/cli status`, `q`, then `fg`. Or run it

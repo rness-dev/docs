@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@rness/cli':
-        specifier: 0.17.1
-        version: 0.17.1
+        specifier: 0.17.2
+        version: 0.17.2
       '@types/node':
         specifier: ^26.1.1
         version: 26.1.1
@@ -303,8 +303,8 @@ packages:
   '@posthog/types@1.413.0':
     resolution: {integrity: sha512-tYAVzNojWckuG/wxBB0fwE70sFruQQq4xbhkci7eH2ARU3mMfUTkvpN1HwBMpm0AtbxidLiH0IFvagmdJ8opPw==}
 
-  '@rness/cli@0.17.1':
-    resolution: {integrity: sha512-5D8jPiK4IY1gIx/tIK3ASpECs0R8TjqiugSwP+oRSgtiBNp/zr2DrQDgAZF7XUMl8VDXNBJjtbtAvVlV+2Yilw==}
+  '@rness/cli@0.17.2':
+    resolution: {integrity: sha512-Cf4ka4V19VHoMwcubjekVfh0iUahN1T2BS7F5/Tzmivxb/xm9/uY/bGsDo5oElJW7Qc+OiZxfwJ/CLeoVoVgHQ==}
     engines: {node: '>=24'}
     hasBin: true
 
@@ -1150,7 +1150,7 @@ snapshots:
 
   '@posthog/types@1.413.0': {}
 
-  '@rness/cli@0.17.1':
+  '@rness/cli@0.17.2':
     dependencies:
       '@clack/prompts': 1.8.1
       commander: 15.0.0
