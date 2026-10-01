@@ -67,7 +67,7 @@ function latestOf(path: string): string {
 export default defineConfigWithTheme<ThemeConfig>({
   title: 'Rness',
   description:
-    'Documentation for Rness, the governance layer for AI agents across a GitHub organization.',
+    'Rness documentation: one source of truth for every AI coding agent across your GitHub organization. The guide, the commands and the changelog of each release.',
   lang: 'en-US',
   // Served under /docs of the landing domain through a rewrite (see vercel.json)
   base: '/docs/',
@@ -123,6 +123,13 @@ export default defineConfigWithTheme<ThemeConfig>({
     ],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'Rness' }],
+    // The same card as rness.dev and the GitHub repository (public/og.png);
+    // absolute, as Discord and LinkedIn require.
+    ['meta', { property: 'og:image', content: 'https://rness.dev/docs/og.png' }],
+    ['meta', { property: 'og:image:width', content: '2560' }],
+    ['meta', { property: 'og:image:height', content: '1280' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:image', content: 'https://rness.dev/docs/og.png' }],
   ],
 
   themeConfig: {
