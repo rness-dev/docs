@@ -1,17 +1,16 @@
-import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
-import { createRequire } from 'node:module'
-import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createMarkdownRenderer, defineLoader } from 'vitepress'
+
+import { PINNED_VERSION, cliHelp } from './cli-help'
 
 /**
  * The CLI reference is rendered from the CLI itself: `rness --help`, then
  * `rness <command> --help` for every command the root help names, run at
- * build time from the `@rness/cli` pinned in this site's `package.json`.
- * Each output is rendered through VitePress's Markdown renderer, so the page
- * gets the same code blocks a fenced block would. A release moves the pin by
- * pull request (Dependabot), and the page follows.
+ * build time from the `@rness/cli` pinned in this site's `package.json`
+ * (`cli-help.ts`). Each output is rendered through VitePress's Markdown
+ * renderer, so the page gets the same code blocks a fenced block would. A
+ * release moves the pin by pull request (Dependabot), and the page follows.
  */
 export interface CliHelp {
   /** The pinned `@rness/cli` version. */
@@ -25,36 +24,7 @@ export interface CliHelp {
 declare const data: CliHelp
 export { data }
 
-const require = createRequire(import.meta.url)
-const pkg = require('@rness/cli/package.json') as {
-  version: string
-  bin: { rness: string }
-}
-const bin = join(dirname(require.resolve('@rness/cli/package.json')), pkg.bin.rness)
 const page = fileURLToPath(new URL('../cli/commands.md', import.meta.url))
-
-/**
- * This directory sits inside a rness workspace on a maintainer's machine:
- * without RNESS_NO_DELEGATE the launcher would hand over to the workspace's
- * pinned copy, and the page would describe that one instead of the dependency.
- */
-function help(args: string[]): string {
-  return execFileSync(process.execPath, [bin, ...args, '--help'], {
-    encoding: 'utf8',
-    env: { ...process.env, RNESS_NO_DELEGATE: '1', NO_COLOR: '1' },
-  }).trimEnd()
-}
-
-/** Command names from the root help's `Commands:` section; `help` and aliases dropped. */
-function commandNames(root: string): string[] {
-  const section = root.split(/^Commands:$/m)[1] ?? ''
-  return section
-    .split('\n')
-    .map((line) => /^ {2}(\S+)/.exec(line)?.[1])
-    .filter((name): name is string => name !== undefined)
-    .map((name) => name.split('|')[0])
-    .filter((name) => name !== 'help')
-}
 
 /** The commands the page has a `## \`rness <name>\`` section for. */
 function documented(): string[] {
@@ -75,7 +45,7 @@ function checkSections(known: string[]): void {
     ...known.filter((n) => !sections.includes(n)).map((n) => `no section for \`rness ${n}\``),
     ...sections
       .filter((n) => !known.includes(n))
-      .map((n) => `a section for \`rness ${n}\`, which ${pkg.version} does not have`),
+      .map((n) => `a section for \`rness ${n}\`, which ${PINNED_VERSION} does not have`),
   ]
   if (problems.length > 0) throw new Error(`cli/commands.md: ${problems.join('; ')}`)
 }
@@ -84,10 +54,14 @@ export default defineLoader({
   async load(): Promise<CliHelp> {
     const md = await createMarkdownRenderer(fileURLToPath(new URL('..', import.meta.url)))
     const block = (text: string) => md.render('```\n' + text + '\n```')
-    const root = help([])
-    const known = commandNames(root)
-    checkSections(known)
-    const commands = Object.fromEntries(known.map((name) => [name, block(help([name]))]))
-    return { version: pkg.version, root: block(root), commands }
+    const text = cliHelp()
+    checkSections(Object.keys(text.commands))
+    return {
+      version: text.version,
+      root: block(text.root),
+      commands: Object.fromEntries(
+        Object.entries(text.commands).map(([name, help]) => [name, block(help)])
+      ),
+    }
   },
 })

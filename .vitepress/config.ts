@@ -1,5 +1,6 @@
 import { type DefaultTheme, defineConfigWithTheme } from 'vitepress'
 
+import { collectPage, writeTwins } from './twins'
 import { type DocsVersion, docsVersions, rewriteOf, versionOfPath } from './versions'
 
 /** What the version menu needs of each version (theme/VersionMenu.vue). */
@@ -105,6 +106,21 @@ export default defineConfigWithTheme<ThemeConfig>({
     pageData.frontmatter.head ??= []
     pageData.frontmatter.head.push(['link', { rel: 'canonical', href: canonicalUrl }])
     if (!latest) pageData.frontmatter.head.push(['meta', { name: 'robots', content: 'noindex' }])
+    // Every page has a Markdown twin at its URL plus `.md` (spec 0027 §3),
+    // written at the end of the build from what is collected here.
+    if (pageData.filePath !== '') {
+      pageData.frontmatter.head.push([
+        'link',
+        { rel: 'alternate', type: 'text/markdown', href: `/docs/${pageData.relativePath}` },
+      ])
+      collectPage(pageData)
+    }
+  },
+
+  // The twins, `llms.txt` and `llms-full.txt` (twins.ts); a page without a
+  // twin fails the build.
+  buildEnd(siteConfig) {
+    writeTwins(siteConfig, { versions: VERSIONS, guide: GUIDE, siteUrl: SITE_URL })
   },
 
   head: [

@@ -76,7 +76,9 @@ it; the next freeze of that minor overwrites it.
 | `guide/`, `cli/` | The working copy (see Versions) |
 | `versions/<minor>/` | A frozen release: `guide/`, `cli/`, `cli-help.json` |
 | `.vitepress/versions.ts` | Lists the versions, and where each page is served |
-| `.vitepress/cli.data.ts` | Runs the pinned `@rness/cli`'s `--help` at build time for the working copy |
+| `.vitepress/cli-help.ts` | Runs the pinned `@rness/cli`'s `--help`, for the CLI page and its twin |
+| `.vitepress/cli.data.ts` | Renders that help for the working copy's CLI page |
+| `.vitepress/twins.ts` | At the end of the build: the Markdown twin of every page, `llms.txt`, `llms-full.txt` (see Agent-readable) |
 | `.vitepress/frozen.data.ts` | Renders each frozen `cli-help.json` for its copy |
 | `.vitepress/config.ts` | Rewrites, sidebars per version, metadata, search |
 | `.vitepress/theme/` | Default VitePress theme, the rness colour tokens, the version menu and the version-aware top links |
@@ -88,6 +90,22 @@ it; the next freeze of that minor overwrites it.
 Adding a page to the guide: create it in `guide/`, add it to `GUIDE` in
 `.vitepress/config.ts` (its sidebar order), and link it from a page that
 readers reach.
+
+## Agent-readable
+
+Every page is also served as Markdown, at its URL plus `.md`:
+`/docs/guide/getting-started.md` is the source of `/docs/guide/getting-started`,
+front matter stripped, the VitePress containers flattened, the CLI page's
+help inlined. Each HTML page advertises its twin with
+`<link rel="alternate" type="text/markdown">`, and the build fails when a
+page has none. `/docs/llms.txt` lists the pages of the latest release, one
+line each with its first paragraph, and `/docs/llms-full.txt` holds them in
+one file; neither names the working copy or an older minor. All of it is
+written by `.vitepress/twins.ts` at the end of `pnpm build`.
+
+A request to `rness.dev/docs/...` with `Accept: text/markdown` gets the
+twin: that negotiation is the landing page's (rness-dev/web, its request
+proxy), in front of this deployment.
 
 ## Configuration
 
