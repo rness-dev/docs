@@ -39,15 +39,23 @@ minor, and a version menu in the top bar switches between them.
 | `versions/<latest>/` | `/docs/` | The latest release, frozen |
 | `versions/<older>/` | `/docs/v<minor>/` | The three minors before it, frozen |
 
-After a release, once the Dependabot pull request that moves the
-`@rness/cli` pin is merged:
+After a release of `@rness/cli`, the workflow `Release`
+(`.github/workflows/release.yml`) does the freeze: every hour, or at once
+with its "Run workflow" button, it compares the pin with npm's latest. A
+newer version gets a branch `release/<version>` and a pull request:
 
-1. Update the working copy for what the release changed.
-2. `pnpm freeze`: copies `guide/` and `cli/` into `versions/<minor>/`,
-   writes the pinned CLI's help into `versions/<minor>/cli-help.json`, and
-   drops the copies older than the latest minor and the three before it. A
-   patch release refreezes its minor.
-3. `pnpm build`, then commit `versions/` with the pin.
+1. the pin moved to the new version;
+2. `pnpm freeze`: `guide/` and `cli/` copied into `versions/<minor>/`, the
+   pinned CLI's help written into `versions/<minor>/cli-help.json`, and the
+   copies older than the latest minor and the three before it dropped; a
+   patch release refreezes its minor;
+3. `pnpm build`, which fails on a dead link: then no pull request.
+
+Merging the pull request deploys `/docs`. What the workflow cannot do comes
+before: `guide/` and `cli/` must describe the release, written with the work
+that made it; the pull request asks. By hand, the same three steps are
+`pnpm add -D @rness/cli@<version> --save-exact`, `pnpm freeze`,
+`pnpm build`, then a commit of `versions/` with the pin.
 
 Until the freeze, `/docs/` keeps the previous release, which stays true of
 that release. Never edit a frozen copy by hand, except to fix an error in
@@ -73,7 +81,7 @@ it; the next freeze of that minor overwrites it.
 | `.vitepress/config.ts` | Rewrites, sidebars per version, metadata, search |
 | `.vitepress/theme/` | Default VitePress theme, the rness colour tokens, the version menu and the version-aware top links |
 | `scripts/freeze.mjs` | `pnpm freeze` |
-| `.github/dependabot.yml` | Moves the `@rness/cli` pin by pull request on each release |
+| `.github/workflows/release.yml` | Freezes a new `@rness/cli` release, by pull request (see Versions) |
 | `public/` | Static files, served under `/docs/` |
 | `vercel.json` | Output directory, the `/docs/:path*` rewrite, redirects of moved pages, no trailing slash |
 

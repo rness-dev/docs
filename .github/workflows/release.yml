@@ -1,0 +1,109 @@
+# A release of @rness/cli freezes its docs without anyone typing it: every
+# hour, and on the "Run workflow" button, this compares the pinned CLI with
+# npm's latest. A newer one gets the procedure of README "Versions": the pin
+# moved, `pnpm freeze`, `pnpm build` (a dead link fails it), all on a branch
+# `release/<version>`, and a pull request to merge. Merging it is the deploy.
+# What it cannot do is the step before: updating `guide/` and `cli/` for the
+# release, which the pull request asks about.
+name: Release
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  freeze:
+    name: Freeze a new @rness/cli
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Is there a newer @rness/cli?
+        id: versions
+        run: |
+          pinned=$(node -p "require('./package.json').devDependencies['@rness/cli']")
+          latest=$(npm view @rness/cli version)
+          # The registry's answer becomes a branch name and a commit message:
+          # a plain version or nothing.
+          for v in "$pinned" "$latest"; do
+            if ! printf '%s' "$v" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "not a plain version: $v" >&2
+              exit 1
+            fi
+          done
+          newer=$(node -e '
+            const [a, b] = process.argv.slice(1).map((v) => v.split(".").map(Number))
+            const newer = b[0] > a[0] || (b[0] === a[0] && (b[1] > a[1] || (b[1] === a[1] && b[2] > a[2])))
+            console.log(newer)
+          ' "$pinned" "$latest")
+          branch="release/$latest"
+          # A pull request already opened for this version is left to merge.
+          if [ "$newer" = true ] && git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            newer=false
+            echo "$branch exists: its pull request is waiting"
+          fi
+          echo "pinned $pinned, npm $latest, newer $newer"
+          {
+            echo "pinned=$pinned"
+            echo "latest=$latest"
+            echo "minor=${latest%.*}"
+            echo "newer=$newer"
+            echo "branch=$branch"
+          } >> "$GITHUB_OUTPUT"
+
+      - if: steps.versions.outputs.newer == 'true'
+        uses: pnpm/action-setup@v6
+        with:
+          version: 12.5.1
+
+      - if: steps.versions.outputs.newer == 'true'
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Pin, freeze, build
+        if: steps.versions.outputs.newer == 'true'
+        env:
+          LATEST: ${{ steps.versions.outputs.latest }}
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm add -D "@rness/cli@$LATEST" --save-exact
+          pnpm freeze
+          pnpm build
+
+      - name: Open the pull request
+        if: steps.versions.outputs.newer == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LATEST: ${{ steps.versions.outputs.latest }}
+          PINNED: ${{ steps.versions.outputs.pinned }}
+          MINOR: ${{ steps.versions.outputs.minor }}
+          BRANCH: ${{ steps.versions.outputs.branch }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c "$BRANCH"
+          git add -A
+          git commit -m "docs: freeze $MINOR — the docs render @rness/cli $LATEST"
+          git push origin "$BRANCH"
+          {
+            echo "@rness/cli $LATEST is on npm (the docs pinned $PINNED). This pull request moves the pin, freezes \`versions/$MINOR/\` from the working copy, and builds the site with no dead link. Merging it deploys \`/docs\`."
+            echo
+            echo 'Before merging:'
+            echo
+            echo "- [ ] \`guide/\` and \`cli/\` describe what $LATEST changed (the freeze copies them as they are)"
+            echo '- [ ] the Vercel preview of this pull request reads right'
+          } > "$RUNNER_TEMP/body.md"
+          gh pr create --base main --head "$BRANCH" \
+            --title "docs: freeze $MINOR — @rness/cli $LATEST" \
+            --body-file "$RUNNER_TEMP/body.md"
