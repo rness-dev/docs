@@ -85,7 +85,7 @@ it; the next freeze of that minor overwrites it.
 | `scripts/freeze.mjs` | `pnpm freeze` |
 | `.github/workflows/release.yml` | Freezes a new `@rness/cli` release, by pull request (see Versions) |
 | `public/` | Static files, served under `/docs/` |
-| `vercel.json` | Output directory, the `/docs/:path*` rewrite, redirects of moved pages, no trailing slash |
+| `vercel.json` | Output directory, the `/docs/:path*` rewrite, redirects of moved pages, no trailing slash, the `Link` and `Vary` headers of the twins |
 
 Adding a page to the guide: create it in `guide/`, add it to `GUIDE` in
 `.vitepress/config.ts` (its sidebar order), and link it from a page that
@@ -97,8 +97,8 @@ Every page is also served as Markdown, at its URL plus `.md`:
 `/docs/guide/getting-started.md` is the source of `/docs/guide/getting-started`,
 front matter stripped, the VitePress containers flattened, the CLI page's
 help inlined. Each HTML page advertises its twin with
-`<link rel="alternate" type="text/markdown">`, and the build fails when a
-page has none. `/docs/llms.txt` lists the pages of the latest release, one
+`<link rel="alternate" type="text/markdown">` and, from `vercel.json`, a
+`Link` header and `Vary: Accept`; the build fails when a page has no twin. `/docs/llms.txt` lists the pages of the latest release, one
 line each with its first paragraph, and `/docs/llms-full.txt` holds them in
 one file; neither names the working copy or an older minor. All of it is
 written by `.vitepress/twins.ts` at the end of `pnpm build`.

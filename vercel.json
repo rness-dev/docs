@@ -3,6 +3,30 @@
   "outputDirectory": ".vitepress/dist",
   "cleanUrls": true,
   "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/:path*",
+      "headers": [{ "key": "Vary", "value": "Accept" }]
+    },
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "</docs/sitemap.xml>; rel=\"sitemap\", </docs/index.md>; rel=\"alternate\"; type=\"text/markdown\""
+        }
+      ]
+    },
+    {
+      "source": "/:path((?!docs/)[^.]+)",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "</docs/sitemap.xml>; rel=\"sitemap\", </docs/:path.md>; rel=\"alternate\"; type=\"text/markdown\""
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/docs/:path*",
