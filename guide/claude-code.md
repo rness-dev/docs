@@ -23,7 +23,9 @@ git commit -m "chore: rness for Claude Code"
 ```
 
 Claude Code applies these files once you trust the folder, in an
-interactive session.
+interactive session. A folder inside one you already trust is never asked,
+and the `/rness:*` commands stay hidden: see
+[Troubleshooting](./troubleshooting.md#rness-commands-missing).
 
 ## What it gives you
 

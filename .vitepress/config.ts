@@ -30,6 +30,7 @@ const GUIDE: readonly [string, string][] = [
   ['Claude Code', 'guide/claude-code'],
   ['Agent Pulse', 'guide/agent-pulse'],
   ['Update Rness', 'guide/upgrade'],
+  ['Troubleshooting', 'guide/troubleshooting'],
 ]
 
 /** A page name made readable, for a page of an older version the list does not know. */
