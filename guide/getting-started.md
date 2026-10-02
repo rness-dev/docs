@@ -7,7 +7,7 @@ applies into the `AGENTS.md` of every repository you work on. Claude Code,
 Codex, Cursor and GitHub Copilot already read that file, so nothing else
 changes in your workflow.
 
-You need Node 24 or newer, and git.
+You need Node 22.17 or newer, and git.
 
 ## Create a workspace
 
