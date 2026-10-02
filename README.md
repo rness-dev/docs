@@ -40,9 +40,11 @@ minor, and a version menu in the top bar switches between them.
 | `versions/<older>/` | `/docs/v<minor>/` | The three minors before it, frozen |
 
 After a release of `@rness/cli`, the workflow `Release`
-(`.github/workflows/release.yml`) does the freeze: every hour, or at once
-with its "Run workflow" button, it compares the pin with npm's latest. A
-newer version gets a branch `release/<version>` and a pull request:
+(`.github/workflows/release.yml`) does the freeze. The rness repository's
+`Publish` workflow starts it with the version it has just published, and it
+waits for npm to answer that version; every hour, or at once with its "Run
+workflow" button, it compares the pin with npm's latest instead. A newer
+version gets a branch `release/<version>` and a pull request:
 
 1. the pin moved to the new version;
 2. `pnpm freeze`: `guide/` and `cli/` copied into `versions/<minor>/`, the

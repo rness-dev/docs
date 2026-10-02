@@ -1,6 +1,8 @@
-# A release of @rness/cli freezes its docs without anyone typing it: every
-# hour, and on the "Run workflow" button, this compares the pinned CLI with
-# npm's latest. A newer one gets the procedure of README "Versions": the pin
+# A release of @rness/cli freezes its docs without anyone typing it. The
+# rness repository's Publish workflow starts this one with the version it
+# has just published; the hourly schedule and the "Run workflow" button
+# compare the pinned CLI with npm's latest. A newer one gets the procedure of
+# README "Versions": the pin
 # moved, `pnpm freeze`, `pnpm build` (a dead link fails it), all on a branch
 # `release/<version>`, and a pull request to merge. Merging it is the deploy.
 # What it cannot do is the step before: updating `guide/` and `cli/` for the
@@ -11,6 +13,11 @@ on:
   schedule:
     - cron: '17 * * * *'
   workflow_dispatch:
+    inputs:
+      version:
+        description: The @rness/cli version to freeze (empty, npm's latest)
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -29,9 +36,32 @@ jobs:
 
       - name: Is there a newer @rness/cli?
         id: versions
+        env:
+          REQUESTED: ${{ inputs.version }}
         run: |
           pinned=$(node -p "require('./package.json').devDependencies['@rness/cli']")
-          latest=$(npm view @rness/cli version)
+          if [ -z "$REQUESTED" ]; then
+            latest=$(npm view @rness/cli version)
+          else
+            # The version the rness Publish workflow has just published. The
+            # registry answers it a little later: wait, ten minutes at most.
+            if ! printf '%s' "$REQUESTED" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "not a plain version: $REQUESTED" >&2
+              exit 1
+            fi
+            latest=''
+            for _ in $(seq 40); do
+              if [ "$(npm view "@rness/cli@$REQUESTED" version 2>/dev/null)" = "$REQUESTED" ]; then
+                latest=$REQUESTED
+                break
+              fi
+              sleep 15
+            done
+            if [ -z "$latest" ]; then
+              echo "@rness/cli@$REQUESTED is not on npm after 10 minutes" >&2
+              exit 1
+            fi
+          fi
           # The registry's answer becomes a branch name and a commit message:
           # a plain version or nothing.
           for v in "$pinned" "$latest"; do
