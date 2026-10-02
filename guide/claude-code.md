@@ -43,10 +43,15 @@ permission.
 | Command | Does |
 | --- | --- |
 | `/rness:status [tab]` | Where every decision, specification and plan stands. |
-| `/rness:adr [subject \| NNNN]` | Records a decision as an ADR. |
-| `/rness:spec [subject \| NNNN]` | Writes a specification. |
-| `/rness:plan <spec>` | Turns an approved specification into a plan. |
-| `/rness:done [plan]` | Closes a piece of work: checks each task against evidence, then marks the plan `Completed` and its specification `Implemented`, and fixes the documents the work made inaccurate. |
+| `/rness:adr [create <subject> \| open NNNN]` | Records a decision as an ADR, or reopens one. |
+| `/rness:spec [create <subject> \| open NNNN]` | Writes a specification, or reopens one. |
+| `/rness:plan from <spec>` | Approves a specification and turns it into a plan. |
+| `/rness:plan create [subject]` | Writes a plan from the conversation, for work too small for a specification. |
+| `/rness:plan open NNNN` | Reopens a plan. |
+| `/rness:plan check NNNN` | Runs the proofs of a plan: each task's command, now. All pass: the plan `Completed`, its specification `Implemented`, the documents the work made inaccurate fixed. One fails: nothing moves. |
+
+The first word is the verb; a bare number (`/rness:spec 0028`) reopens;
+anything else is the subject of a `create`.
 
 The last four are procedures the agent follows in your conversation, not
 file generators:
@@ -64,12 +69,13 @@ agent : writes adr/0010-local-cache-sqlite.md (Proposed) and shows it
   it asks, one question at a time.
 - The agent may offer one of them on its own, for example an ADR when a
   choice would be hard to reverse. It writes nothing without your yes,
-  except `/rness:done` on a plan whose last task has just passed.
-- A new document takes its collection's first status and the next number.
-  The agent moves a status as the work goes, and whenever you ask: a plan
-  `In progress` as it starts its tasks, `Completed` once they pass, a
-  specification `Implemented` with its last plan. Accepting an ADR or
-  approving a specification stays yours, unless you asked it to go ahead.
+  except `/rness:plan check` on a plan whose last task has just passed.
+- A new document takes its collection's first status and the next number,
+  allocated by `rness doc new` so that two sessions never pick the same
+  one. The agent moves a status as the work goes, and whenever you ask: a
+  plan `In progress` as it starts its tasks, `Completed` once its proofs
+  pass, a specification `Implemented` with its last plan. Accepting an ADR
+  stays yours; `/rness:plan from NNNN` is how you approve a specification.
 - Each command records its session and the model it ran as in the
   document's `sessions:`, for example
   `{ id: 1e9cb41b-…, agent: Claude Opus 5.5 }`. `claude --resume <id>`
