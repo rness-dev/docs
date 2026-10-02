@@ -41,8 +41,9 @@ The command asks a few questions:
    later), or no organization yet: a blank local workspace (below).
 2. **A GitHub login**, offered once: it lists your organizations and their
    private repositories.
-3. **The organization**, picked from your list, or typed for one you are
-   not a member of. Pass it to skip the question: `pnpm create rness acme`.
+3. **The organization**, picked from your list, or typed when it is not
+   listed: one that has not approved Rness yet, or one you are not a
+   member of. Pass it to skip the question: `pnpm create rness acme`.
    An organization that has not yet approved Rness for its private
    repositories gets the approval page opened in your browser; Rness waits
    for an owner's click, then goes on.
