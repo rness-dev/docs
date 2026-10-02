@@ -85,6 +85,23 @@ prints Markdown, a table per tab; `rness status specs` prints that one. It
 reads `.rness/` and writes nothing. In Claude Code, `/rness:status` shows
 the tables ([agent targets](../guide/claude-code.md)).
 
+## `rness doc`
+
+<div v-html="data.commands.doc"></div>
+
+`doc new <collection>` writes the next numbered document of `adr`, `specs`
+or `plans` and prints its path. The number is the highest of the collection
+plus one, on four digits, counted from the files present, so two sessions
+never pick the same one. The file is `NNNN-<slug>.md`, the slug taken from
+`--title` (`untitled` without it), with its collection's front matter —
+`date` today, the first status (`Proposed` for an ADR, `Draft` otherwise),
+an empty `repo`, and `updated` except on an ADR — and its opening sections,
+those of `adr/0000-template.md` for an ADR. It never overwrites a file
+(exit 1); any other collection is bad usage (exit 2). It runs from anywhere
+in the workspace. No prompt, no network. The lifecycle skills of Claude
+Code number what they create with it ([agent
+targets](../guide/claude-code.md)).
+
 ## `rness validate`
 
 <div v-html="data.commands.validate"></div>
