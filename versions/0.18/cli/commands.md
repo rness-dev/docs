@@ -108,7 +108,9 @@ targets](../guide/claude-code.md)).
 <div v-html="data.commands.validate"></div>
 
 `validate` checks `.rness/` against its contract — `rness.json`, and the
-front matter and allowed statuses of every ADR, specification and plan — and,
+front matter and allowed statuses of every ADR, specification and plan, each
+named `NNNN-<slug>.md` with a number no other document of its collection
+has — and,
 when `org/` clones are present, every generated block: stale (its hash no
 longer matches a fresh render, or someone edited inside the markers) is a
 problem, missing is a warning. So is a value an [agent
