@@ -1,11 +1,12 @@
 # Claude Code
 
 Every agent that reads `AGENTS.md` gets the context. For Claude Code, Rness
-does more: the context loads when a session starts, mistakes in `.rness/`
-are caught as they are made, and the `/rness:*` commands help write and
-close decisions, specifications and plans.
+does more: the context loads when a session starts, an edit of a generated
+file or a mistake in `.rness/` is refused before it is written, the
+workspace stays in view above the prompt, and the `/rness:*` commands help
+write and close decisions, specifications and plans.
 
-Tested with Claude Code 2.1.285 (2026-09-30).
+Tested with Claude Code 2.1.289 (2026-10-04).
 
 ## Turn it on
 
@@ -31,7 +32,10 @@ and the `/rness:*` commands stay hidden: see
 
 | In a session | What happens |
 | --- | --- |
-| At start | A line such as `rness 0.15.0 · acme · scope web — 10 standards, 9 decisions`, and the scope's documents for the model. When the context may be wrong, both say why. |
+| At start | A line such as `rness 0.19.0 · acme · scope web — 10 standards, 9 decisions`, and the scope's documents for the model. When the context may be wrong, both say why. |
+| Above the prompt | The same line, until your first prompt, and again whenever something needs action (a pin not installed, problems `rness validate` would report), with what. |
+| In the status line | `rness · web · 1 in progress`, with `⚠ 1` when something needs action. |
+| Before an edit | Refused when it would change what `rness sync` generates: the block of an `AGENTS.md` or `CLAUDE.md` (the agent is told which standard to edit instead) or a file of `.claude/skills/rness/`. Refused too when it would add a problem to a document of `.rness/`. |
 | After an edit in `.rness/` | The problems of that document's front matter go back to the model, which fixes them in the same turn. |
 | On demand | The `rness` MCP server lets the model find what applies and where a subject was decided. |
 | `/rness:*` | The commands below. |
@@ -87,9 +91,13 @@ agent : writes adr/0010-local-cache-sqlite.md (Proposed) and shows it
   added by name. A file you or someone else changed too stays uncommitted,
   and the agent names it. Nothing is pushed.
 
-`/rness:status` shows tables. For the full-screen view, run it in the same
-terminal: `Ctrl+Z`, then `npx @rness/cli status`, `q`, then `fg`. Or run it
-in another terminal, from the workspace's `.rness/`:
+`/rness:status` opens a pane beside the conversation: a tab per
+collection, a line per document, no model turn. The band above the prompt,
+the status line and the pane are drawn by a Claude Code mod that comes with
+the commands. A Claude Code without mods ignores it (2.1.280 and later
+draw it; 2.1.240 ignores it), and in `claude -p` the command prints tables. There, for the full-screen view,
+run it in the same terminal: `Ctrl+Z`, then `npx @rness/cli status`, `q`,
+then `fg`. Or run it in another terminal, from the workspace's `.rness/`:
 
 ::: code-group
 
@@ -128,12 +136,15 @@ configuration for them.
 
 ::: details What Rness writes, exactly
 - `.claude/settings.json` in each repository: `../../.rness` in
-  `permissions.additionalDirectories`, and three hooks (session start,
-  after an edit, session end). Each hook runs the Rness version pinned in
-  `.rness/`. The hooks read `.rness/`, write nothing and install nothing.
-  They reach the network only for [Agent Pulse](./agent-pulse.md).
+  `permissions.additionalDirectories`, and four hooks (session start,
+  before an edit, after an edit, session end). Each hook runs the Rness
+  version pinned in `.rness/`. The hooks read `.rness/`, write nothing and
+  install nothing. They reach the network only for
+  [Agent Pulse](./agent-pulse.md).
 - `.mcp.json` in each repository: the `rness` server.
-- `.claude/skills/rness/` in each repository: the `/rness:*` commands.
+- `.claude/skills/rness/` in each repository: the `/rness:*` commands, and
+  the mod (`hooks/`, `types/`) that draws the band, the status line and the
+  pane. It runs the Rness version pinned in `.rness/`, like the hooks.
 - The same settings and commands at the workspace root, for sessions
   started there, on your machine only.
 

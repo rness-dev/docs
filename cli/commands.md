@@ -82,8 +82,12 @@ its status. In a terminal it is a full-screen view: `←`/`→` or `Tab` change
 tab, `↑`/`↓`, `PgUp`/`PgDn` and `Home`/`End` scroll, `q` or `Esc` closes and
 gives the screen back. Off a terminal — a pipe, CI, an agent's tool — it
 prints Markdown, a table per tab; `rness status specs` prints that one. It
-reads `.rness/` and writes nothing. In Claude Code, `/rness:status` shows
-the tables ([agent targets](../guide/claude-code.md)).
+reads `.rness/` and writes nothing. `--json` prints one JSON object
+instead, in a terminal too: the tabs and their rows, with what a Claude
+Code session shows of the workspace (the session-start line, the status
+line, the plans in progress, what needs action). In Claude Code,
+`/rness:status` opens it in a pane, or shows the tables
+([Claude Code](../guide/claude-code.md)).
 
 ## `rness doc`
 
