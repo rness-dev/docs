@@ -42,6 +42,26 @@ Claude Code apply the `.claude/` files it holds: do it for a workspace you
 know. Observed with Claude Code 2.1.287 (2026-10-02).
 :::
 
+### A formatter or a linter fails on `.claude/skills/rness/` {#generated-files-linted}
+
+`prettier --check .`, `eslint .` or a type check reports files under
+`.claude/skills/rness/`; since 0.19 they include `hooks/register.tsx`, the
+plugin's mod, which imports Claude Code's types from `claude-code`, a module
+your project does not have.
+
+Rness writes these files whole and compares them byte for byte: a
+reformatted file is reported by `rness sync --check`, then written back by
+`rness sync`. They are not yours to format or lint. Leave them out, as the
+Rness repository does:
+
+```text
+# .prettierignore
+.claude/skills/rness/
+```
+
+and in `eslint.config.js`, `globalIgnores(['.claude/skills/rness/**'])`.
+A `tsconfig.json` whose `include` reaches `.claude/` needs it in `exclude`.
+
 ## Node.js and updates
 
 ### `rness needs Node … or newer` {#node-version}
