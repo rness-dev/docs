@@ -83,9 +83,10 @@ tab, `↑`/`↓`, `PgUp`/`PgDn` and `Home`/`End` scroll, `q` or `Esc` closes and
 gives the screen back. Off a terminal — a pipe, CI, an agent's tool — it
 prints Markdown, a table per tab; `rness status specs` prints that one. It
 reads `.rness/` and writes nothing. `--json` prints one JSON object
-instead, in a terminal too: the tabs and their rows, with what a Claude
-Code session shows of the workspace (the session-start line, the status
-line, the plans in progress, what needs action). In Claude Code,
+instead, in a terminal too: the tabs and their rows, each with the colour
+of its status on Agent Pulse and its item there, the board, and what a
+Claude Code session shows of the workspace (the session-start line, the
+status line, the plans in progress, what needs action). In Claude Code,
 `/rness:status` opens it in a pane, or shows the tables
 ([Claude Code](../guide/claude-code.md)).
 
