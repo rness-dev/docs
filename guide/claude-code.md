@@ -33,8 +33,8 @@ and the `/rness:*` commands stay hidden: see
 | In a session | What happens |
 | --- | --- |
 | At start | A line such as `rness 0.19.0 · acme · scope web — 10 standards, 9 decisions`, and the scope's documents for the model. When the context may be wrong, both say why. A Claude Code older than 2.1.280, which shows no band, status line or pane, is told once per version to run `claude update` when it names its version, as 2.1.240 does. |
-| Above the prompt | The same line, until your first prompt, and again whenever something needs action (a pin not installed, problems `rness validate` would report), with what. |
-| In the status line | `rness · web · 1 in progress`, with `⚠ 1` when something needs action. |
+| Above the prompt | Whenever something needs action (a pin not installed, problems `rness validate` would report): what, until it is fixed. |
+| In the status line | `⚠ rness: web · 1 in progress`, with `⚠ 1` at the end when something needs action. |
 | Before an edit | Refused when it would change what `rness sync` generates: the block of an `AGENTS.md` or `CLAUDE.md` (the agent is told which standard to edit instead) or a file of `.claude/skills/rness/`. Refused too when it would add a problem to a document of `.rness/`. |
 | After an edit in `.rness/` | The problems of that document's front matter go back to the model, which fixes them in the same turn. |
 | On demand | The `rness` MCP server lets the model find what applies and where a subject was decided. |
@@ -92,7 +92,8 @@ agent : writes adr/0010-local-cache-sqlite.md (Proposed) and shows it
   and the agent names it. Nothing is pushed.
 
 `/rness:status` opens a pane beside the conversation: a tab per
-collection, a line per document, no model turn. The band above the prompt,
+collection, a line per document, no model turn. It takes the keyboard as
+it opens: ←/→ and Tab change the tab, Esc and `q` close it. The band above the prompt,
 the status line and the pane are drawn by a Claude Code mod that comes with
 the commands. A Claude Code without mods ignores it (2.1.280 and later
 draw it; 2.1.240 ignores it), and in `claude -p` the command prints tables. There, for the full-screen view,
