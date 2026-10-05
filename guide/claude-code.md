@@ -32,7 +32,7 @@ and the `/rness:*` commands stay hidden: see
 
 | In a session | What happens |
 | --- | --- |
-| At start | A line such as `rness 0.19.0 · acme · scope web — 10 standards, 9 decisions`, and the scope's documents for the model. When the context may be wrong, both say why. |
+| At start | A line such as `rness 0.19.0 · acme · scope web — 10 standards, 9 decisions`, and the scope's documents for the model. When the context may be wrong, both say why. A Claude Code older than 2.1.280, which shows no band, status line or pane, is told once per version to run `claude update`. |
 | Above the prompt | The same line, until your first prompt, and again whenever something needs action (a pin not installed, problems `rness validate` would report), with what. |
 | In the status line | `rness · web · 1 in progress`, with `⚠ 1` when something needs action. |
 | Before an edit | Refused when it would change what `rness sync` generates: the block of an `AGENTS.md` or `CLAUDE.md` (the agent is told which standard to edit instead) or a file of `.claude/skills/rness/`. Refused too when it would add a problem to a document of `.rness/`. |
