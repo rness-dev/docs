@@ -1,13 +1,13 @@
 # Getting started
 
-rness gives every AI coding agent in a GitHub organization the same context:
+Rness gives every AI coding agent in a GitHub organization the same context:
 the organization's standards, decisions, specifications and plans. They live
 as Markdown in one repository, `.rness`, and the `rness` command writes what
 applies into the `AGENTS.md` of every repository you work on. Claude Code,
 Codex, Cursor and GitHub Copilot already read that file, so nothing else
 changes in your workflow.
 
-You need Node 24 or newer, and git.
+You need Node 22.17 or newer, and git.
 
 ## Create a workspace
 
@@ -37,18 +37,24 @@ bun create rness
 
 The command asks a few questions:
 
-1. **How to start**: from a GitHub organization, or a blank local workspace
-   (below).
-2. **The organization**: its name. Pass it to skip the question:
-   `pnpm create rness acme`.
-3. **The repositories** you want to work on, picked from the organization's
+1. **Where your organization lives**: GitHub (GitLab and Atlassian come
+   later), or no organization yet: a blank local workspace (below).
+2. **A GitHub login**, offered once: it lists your organizations and their
+   private repositories.
+3. **The organization**, picked from your list, or typed when it is not
+   listed: one that has not approved Rness yet, or one you are not a
+   member of. Pass it to skip the question: `pnpm create rness acme`.
+   An organization that has not yet approved Rness for its private
+   repositories gets the approval page opened in your browser; Rness waits
+   for an owner's click, then goes on.
+4. **The repositories** you want to work on, picked from the organization's
    list. Private ones appear once you are [logged in](./repositories.md#private-repositories).
-4. **The agents your team uses**, for a new workspace. rness then also
+5. **The agents your team uses**, for a new workspace. Rness then also
    writes the files those agents need, such as
    [Claude Code's](./claude-code.md).
 
 If the organization already has a `.rness` repository, you **join** it: you
-get the same context, pinned to the same rness version as your teammates.
+get the same context, pinned to the same Rness version as your teammates.
 Otherwise `create` makes a new `.rness` from a starter set. Once you are
 logged in, it offers to create the private `acme/.rness` on GitHub and push
 it, so your teammates can join.
@@ -62,7 +68,7 @@ install.
 
 ### Without a GitHub organization
 
-To try rness with no organization, or no GitHub account:
+To try Rness with no organization, or no GitHub account:
 
 ::: code-group
 
@@ -101,8 +107,46 @@ acme/
 ```
 
 `.rness/` holds `rness.json` (the list of repositories), the documents
-(`standards/`, `adr/`, `specs/`, `plans/`, …) and the version of rness the
+(`standards/`, `adr/`, `specs/`, `plans/`, …) and the version of Rness the
 organization uses. [The workspace](./workspace.md) explains each part.
+
+## The `rness` command
+
+The workspace installs Rness in `.rness/node_modules`, which is not on your
+`PATH`: a bare `rness` works only once you install it globally.
+
+::: code-group
+
+```sh [npm]
+npm install -g @rness/cli
+```
+
+```sh [pnpm]
+pnpm add -g @rness/cli
+```
+
+```sh [yarn]
+yarn global add @rness/cli   # Yarn 1; with Yarn 2+, use npm
+```
+
+```sh [bun]
+bun add -g @rness/cli
+```
+
+:::
+
+A global install never puts you on a different version from your team.
+Inside a workspace, `rness` hands every command over to the version pinned
+in `.rness/package.json`, except `create`, `upgrade`, `login` and `logout`.
+
+Without a global install, put your package manager in front of the
+command:
+
+- from anywhere in the workspace: `npx @rness/cli sync`;
+- from `.rness/`, offline: `npx rness sync`, `pnpm rness sync`,
+  `yarn rness sync` or `bunx rness sync`.
+
+This guide writes `rness …` for short.
 
 ## Write the context into every repository
 
@@ -118,12 +162,6 @@ files.
 Run it again whenever `.rness/` changes. `rness sync --check` writes
 nothing, and fails when a repository's block is out of date. It is the
 check to run in a repository's CI.
-
-::: tip No global install needed
-Every command works through your package manager, for example
-`npx @rness/cli sync` or `pnpm dlx @rness/cli sync`. Inside a workspace,
-whichever `rness` you launch runs the version the organization pinned.
-:::
 
 ## Look around
 
@@ -145,6 +183,6 @@ between tabs, and `q` closes it.
   `/rness:*` commands.
 - [Agent Pulse](./agent-pulse.md): the documents, and the agents at work,
   on a GitHub Project.
-- [Update rness](./upgrade.md): one command, and a pull request for each
+- [Update Rness](./upgrade.md): one command, and a pull request for each
   release.
 - [CLI reference](../cli/commands.md): every command and option.
