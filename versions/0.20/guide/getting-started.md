@@ -7,7 +7,7 @@ applies into the `AGENTS.md` of every repository you work on. Claude Code,
 Codex, Cursor and GitHub Copilot already read that file, so nothing else
 changes in your workflow.
 
-You need Node 24 or newer, and git.
+You need Node 22.17 or newer, and git.
 
 ## Create a workspace
 
@@ -37,13 +37,19 @@ bun create rness
 
 The command asks a few questions:
 
-1. **How to start**: from a GitHub organization, or a blank local workspace
-   (below).
-2. **The organization**: its name. Pass it to skip the question:
-   `pnpm create rness acme`.
-3. **The repositories** you want to work on, picked from the organization's
+1. **Where your organization lives**: GitHub (GitLab and Atlassian come
+   later), or no organization yet: a blank local workspace (below).
+2. **A GitHub login**, offered once: it lists your organizations and their
+   private repositories.
+3. **The organization**, picked from your list, or typed when it is not
+   listed: one that has not approved Rness yet, or one you are not a
+   member of. Pass it to skip the question: `pnpm create rness acme`.
+   An organization that has not yet approved Rness for its private
+   repositories gets the approval page opened in your browser; Rness waits
+   for an owner's click, then goes on.
+4. **The repositories** you want to work on, picked from the organization's
    list. Private ones appear once you are [logged in](./repositories.md#private-repositories).
-4. **The agents your team uses**, for a new workspace. Rness then also
+5. **The agents your team uses**, for a new workspace. Rness then also
    writes the files those agents need, such as
    [Claude Code's](./claude-code.md).
 

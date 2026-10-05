@@ -40,6 +40,9 @@ Then:
 
 To go to a given version, up or down: `pnpm rness upgrade 0.14.0`.
 
+If `rness` stops on the Node.js version before it starts, see
+[Troubleshooting](./troubleshooting.md#node-version).
+
 ## Your teammates
 
 They pull `.rness`:
