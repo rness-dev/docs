@@ -93,10 +93,10 @@ agent : writes adr/0010-local-cache-sqlite.md (Proposed) and shows it
 
 `/rness:status` opens a pane beside the conversation: a tab per
 collection, a line per document with its status in the colour Agent
-Pulse gives it, no model turn. It takes the keyboard as it opens: a tab's
-digit, or Tab then Enter, shows that tab; Tab walks the lines, ↑/↓
-scroll; Enter, or a click, on a line shows the document in the pane, and
-`q` brings the list back; Esc and `q` close it. When the workspace has a
+Pulse gives it, no model turn. It takes the keyboard as it opens: ↑/↓
+select a line, Tab and Shift+Tab change the tab (a tab's digit too),
+Enter or a click on a line shows the document in the pane, `q` brings
+the list back; Esc and `q` close it. When the workspace has a
 pulse, `Agent Pulse` is a link: the board from the list, the document's
 item from the document. The band above the prompt,
 the status line and the pane are drawn by a Claude Code mod that comes with
