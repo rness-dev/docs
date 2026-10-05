@@ -3,7 +3,7 @@
 Every agent that reads `AGENTS.md` gets the context. For Claude Code, Rness
 does more: the context loads when a session starts, an edit of a generated
 file or a mistake in `.rness/` is refused before it is written, the
-workspace stays in view above the prompt, and the `/rness:*` commands help
+workspace stays in view in the status line, and the `/rness:*` commands help
 write and close decisions, specifications and plans.
 
 Tested with Claude Code 2.1.289 (2026-10-04).
@@ -93,7 +93,8 @@ agent : writes adr/0010-local-cache-sqlite.md (Proposed) and shows it
 
 `/rness:status` opens a pane beside the conversation: a tab per
 collection, a line per document, no model turn. It takes the keyboard as
-it opens: ←/→ and Tab change the tab, Esc and `q` close it. The band above the prompt,
+it opens: a tab's digit, or Tab then Enter, shows that tab; ↑/↓ scroll;
+Esc and `q` close it. The band above the prompt,
 the status line and the pane are drawn by a Claude Code mod that comes with
 the commands. A Claude Code without mods ignores it (2.1.280 and later
 draw it; 2.1.240 ignores it), and in `claude -p` the command prints tables. There, for the full-screen view,
