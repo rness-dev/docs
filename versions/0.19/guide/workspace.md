@@ -22,7 +22,7 @@ both see the same context. The workspace root is not a git repository.
   "provider": "github",
   "org": "acme",
   "agents": ["claude"],
-  "pulse": { "project": 3 },
+  "projects": { "pulse": 3 },
   "repos": {
     "app": { "url": "git@github.com:acme/app.git" },
     "platform": { "url": "https://github.com/acme/platform.git" }
@@ -38,11 +38,11 @@ both see the same context. The workspace root is not a git repository.
 | Key | Holds |
 | --- | --- |
 | `org` | The GitHub organization. Absent in a blank workspace. |
-| `repos` | Every repository rness knows about. `rness add` declares one. |
+| `repos` | Every repository Rness knows about. `rness add` declares one. |
 | `scopes` | Where context applies: a repository, or a directory inside one (the parts of a monorepo). `extends` inherits another scope's context. |
-| `agents` | The agents your team uses; rness writes their files ([Claude Code](./claude-code.md)). |
-| `pulse` | The organization's [Agent Pulse](./agent-pulse.md) project, written by `rness pulse create`. |
-| `provider` | Where the organization lives. `github` is the one rness talks to today. |
+| `agents` | The agents your team uses; Rness writes their files ([Claude Code](./claude-code.md)). |
+| `projects` | The organization's GitHub Projects: `pulse` is [Agent Pulse](./agent-pulse.md), any other name a [collection's own project](./agent-pulse.md#a-collection-s-own-project). Written by `rness pulse create`. |
+| `provider` | Where the organization lives. `github` is the one Rness talks to today. |
 
 Commit `rness.json` in `.rness` whenever a command changes it: it is the
 team's.
@@ -77,8 +77,8 @@ updated: 2026-09-24
 ```
 
 `rness validate` checks the front matter and the statuses. `sessions:` lists
-the Claude Code sessions that wrote or changed the document
-([Claude Code](./claude-code.md#the-rness-commands)).
+the Claude Code sessions that wrote or changed the document, each with the
+model it ran as ([Claude Code](./claude-code.md#the-rness-commands)).
 
 ## What applies where
 
