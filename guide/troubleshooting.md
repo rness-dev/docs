@@ -62,6 +62,29 @@ Rness repository does:
 and in `eslint.config.js`, `globalIgnores(['.claude/skills/rness/**'])`.
 A `tsconfig.json` whose `include` reaches `.claude/` needs it in `exclude`.
 
+## Agent Pulse
+
+### A board is skipped, or `validate` names a key of `projects` {#board-refused}
+
+`rness pulse sync` says `skipped <name>: …` and `rness validate` names the
+key at fault, such as `"projects.roadmap.views[1].date" must name a date
+field`. Rness checks each board declared in `rness.json` on its own: the
+others still sync. Fix the key the line names, then sync again.
+
+A board is skipped too while its collection's `README.md` still declares
+`description`, `statuses`, `fields` or `labels`, as before 0.21. Run
+`rness sync`: it moves them into `rness.json`. When the README and
+`rness.json` say different things, it names both and moves nothing: keep
+the one you want in `rness.json` and delete the other from the README.
+
+### A board's `readme` or `updates` is refused {#board-path}
+
+`readme` and `updates` are paths within `.rness/`, such as
+`roadmap/README.md`. A path out of `.rness/`, or a file that is a link
+leading out of it, is refused before anything is read: `rness.json` is
+shared by the whole organization, and the file would be published on
+GitHub.
+
 ## Node.js and updates
 
 ### `rness needs Node … or newer` {#node-version}

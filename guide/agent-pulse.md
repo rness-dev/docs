@@ -11,8 +11,9 @@ it.
 rness pulse create    # once per organization: the project, then a first sync
 ```
 
-Then commit `.rness/rness.json`, which now names the project. The project
-is private, GitHub's default for an organization project.
+Then commit `.rness/rness.json`, which now holds the board, written whole
+(see [Shaped in `rness.json`](#shaped-in-rness-json)). The project is
+private, GitHub's default for an organization project.
 
 It needs:
 
@@ -41,6 +42,62 @@ side panel. The fields:
 | `Working session` | The session working on it now: `claude · 1a2b3c4d`. Emptied when the session ends. |
 | `Session history` | Every session that wrote or changed it, with its agent: `Claude Opus 5.5 · 1e9cb41b-…`. Never emptied. |
 | `Path` | The document's path in `.rness/` |
+
+## Shaped in `rness.json`
+
+Each board is described in `.rness/rness.json`, under `projects`: its
+collections, the statuses and their colours, its fields, labels and views.
+What `rness.json` says is the board. Edit it, commit it, and the next
+`rness pulse sync` brings the board in line.
+
+```json
+"projects": {
+  "pulse": {
+    "number": 3,
+    "preset": "agent-pulse/1",
+    "title": "Agent Pulse",
+    "collections": "all",
+    "colors": { "Blocked": "red", "In progress": "yellow" },
+    "fields": {
+      "Collection": { "type": "select", "from": "$collection" },
+      "Owner": { "type": "select", "from": "owner" }
+    },
+    "views": [
+      { "name": "All", "layout": "table", "fields": ["Title", "Collection", "Status"] },
+      { "name": "Plans", "layout": "board", "collection": "plans", "columns": "Plans status" }
+    ]
+  }
+}
+```
+
+- **`collections`**: `"all"` (ADR, specs, plans, then every other
+  directory whose documents carry a status), or the directories to show,
+  each with its `statuses`.
+- **`fields`**: each a `type` (`text`, `date`, `select`, `number`) and
+  where its value comes from: a front-matter key of the documents, or
+  what Rness knows (`$collection`, `$status`, `$agent`, `$session`,
+  `$sessions`, `$id`).
+- **`views`**: `board`, `table` or `roadmap` views, each for every card or
+  one collection's, with an optional GitHub filter.
+- **`colors`**: a colour per option, among `gray`, `blue`, `green`,
+  `yellow`, `orange`, `red`, `pink` and `purple`. A colour change keeps
+  every card's value.
+
+A view you change is updated in place. A view you add on GitHub yourself
+is left alone, and the sync mentions it once. A board declared wrongly is
+skipped, and `rness validate` names the key at fault.
+
+`pulse create` writes Agent Pulse from the preset `agent-pulse`, recorded
+in `"preset"`. When a later Rness improves the preset, `rness sync` brings
+the improvement into your board: what you never changed takes the new
+value, and what you changed stays yours. Remove `"preset"` to keep a board
+exactly as you wrote it.
+
+::: tip From 0.20
+A board declared by its number (`"pulse": 3`) still works. The first
+`rness sync` after an upgrade writes it whole, and nothing changes on
+GitHub.
+:::
 
 ## What keeps it up to date
 
@@ -74,35 +131,39 @@ have a project of its own:
 rness pulse create roadmap    # the project, named after the collection, then a sync
 ```
 
-`rness.json` then names both, and `rness pulse sync` syncs both:
+`rness.json` then holds both boards, and `rness pulse sync` syncs both.
+The collection's documents leave Agent Pulse for their project; their
+issues stay as they are. The project's board is declared like Agent
+Pulse's, with a few keys of its own:
 
 ```json
-"projects": { "pulse": 3, "roadmap": 4 }
+"roadmap": {
+  "number": 4,
+  "preset": "collection/1",
+  "description": "What we ship this quarter.",
+  "readme": "roadmap/README.md",
+  "updates": "roadmap/updates",
+  "collections": {
+    "roadmap": { "statuses": ["Idea", "Planned", "Building", "Shipped", "Dropped"] }
+  },
+  "fields": {
+    "Target date": { "type": "date", "from": "target" },
+    "Area": { "type": "select", "from": "area" }
+  },
+  "labels": "directory",
+  "views": [
+    { "name": "Roadmap", "layout": "board", "collection": "roadmap" },
+    { "name": "Calendar", "layout": "roadmap", "collection": "roadmap", "date": "Target date" }
+  ]
+}
 ```
 
-The collection's documents leave Agent Pulse for their project; their
-issues stay as they are. The project is written from the collection's
-files, like the rest of the pulse:
-
-- **`roadmap/README.md`** is the project's README. Its front matter can
-  say more:
-
-  ```yaml
-  ---
-  description: What we ship this quarter.   # the project's short description
-  statuses: [Idea, Planned, Building, Shipped, Dropped]   # the columns, in order
-  fields:
-    Target date: { type: date, from: target }   # filled from each document's `target:`
-    Area: { type: select, from: area }
-  labels: directory   # each document labelled with its subdirectory
-  ---
-  ```
-
-  A field's `type` is `text`, `date`, `select` or `number`; `from` is the
-  front-matter key of the documents that fills it, or a list of keys, the
-  first present one winning. `labels` is `directory`, or a front-matter
-  key. A date field adds a `Calendar` roadmap view: pick its date field
-  once in the view's settings, as GitHub's API cannot set it.
+- **`readme`** is a file of `.rness/` whose text is the project's README.
+- **`statuses`** are the columns, in order.
+- **`labels`** is `directory` (each document labelled with its
+  subdirectory) or a front-matter key.
+- A roadmap view's date field is picked once in the view's settings on
+  GitHub: GitHub's API cannot set it.
 - **`roadmap/updates/`** holds the project's status updates, one file each,
   named by date:
 
@@ -115,9 +176,8 @@ files, like the rest of the pulse:
 
   Each file is posted once and updated when it changes.
 
-Without a `README.md`, the project has the collection's documents and
-nothing more. A workspace that declares no collection's project keeps
-Agent Pulse as it is.
+Before 0.21, a collection's `README.md` declared these in its front
+matter. `rness sync` moves them into `rness.json` and out of the README.
 
 ## Things to know
 
