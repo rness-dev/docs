@@ -136,7 +136,7 @@ dialog. It is local, and read-only but for `rness_note`:
 | `rness_list` | Every document of a collection, optionally of one status |
 | `rness_read` | One file of `.rness/` |
 | `rness_search` | The documents that match a query, with the matching lines |
-| `rness_note` | Posts a note of the [agent's journal](./agent-pulse.md#the-agent-s-journal) with your login; listed only when a board keeps one |
+| `rness_note` | Posts a note of the [agent's journal](./agent-pulse.md#the-agent-s-journal) with your login; listed only when a board keeps one as the session starts |
 
 Other agents can run the same server with `rness mcp`; Rness writes no
 configuration for them.
