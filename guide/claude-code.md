@@ -3,7 +3,7 @@
 Every agent that reads `AGENTS.md` gets the context. For Claude Code, Rness
 does more: the context loads when a session starts, an edit of a generated
 file or a mistake in `.rness/` is refused before it is written, the
-workspace stays in view in the status line, and the `/rness:*` commands help
+workspace stays in view in the prompt footer, and the `/rness:*` commands help
 write and close decisions, specifications and plans.
 
 Tested with Claude Code 2.1.289 (2026-10-04).
@@ -34,7 +34,7 @@ and the `/rness:*` commands stay hidden: see
 | --- | --- |
 | At start | A line such as `rness 0.19.0 · acme · scope web — 10 standards, 9 decisions`, and the scope's documents for the model. When the context may be wrong, both say why. A Claude Code older than 2.1.280, which shows no band, status line or pane, is told once per version to run `claude update` when it names its version, as 2.1.240 does. |
 | Above the prompt | Whenever something needs action (a pin not installed, problems `rness validate` would report): what, until it is fixed. |
-| In the status line | `⚠ rness: web · 1 in progress`, with `⚠ 1` at the end when something needs action. |
+| In the prompt footer | `rness · web · 1 in progress`, dim, among the session modes (`focus`), with `⚠ 1` at the end when something needs action. |
 | Before an edit | Refused when it would change what `rness sync` generates: the block of an `AGENTS.md` or `CLAUDE.md` (the agent is told which standard to edit instead) or a file of `.claude/skills/rness/`. Refused too when it would add a problem to a document of `.rness/`. |
 | After an edit in `.rness/` | The problems of that document's front matter go back to the model, which fixes them in the same turn. |
 | On demand | The `rness` MCP server lets the model find what applies and where a subject was decided. |
@@ -99,7 +99,7 @@ Enter or a click on a line shows the document in the pane, `q` brings
 the list back; Esc and `q` close it. When the workspace has a
 pulse, `Agent Pulse` is a link: the board from the list, the document's
 item from the document. The band above the prompt,
-the status line and the pane are drawn by a Claude Code mod that comes with
+the footer's label and the pane are drawn by a Claude Code mod that comes with
 the commands. A Claude Code without mods ignores it (2.1.280 and later
 draw it; 2.1.240 ignores it), and in `claude -p` the command prints tables. There, for the full-screen view,
 run it in the same terminal: `Ctrl+Z`, then `npx @rness/cli status`, `q`,
@@ -149,8 +149,8 @@ configuration for them.
   [Agent Pulse](./agent-pulse.md).
 - `.mcp.json` in each repository: the `rness` server.
 - `.claude/skills/rness/` in each repository: the `/rness:*` commands, and
-  the mod (`hooks/`, `types/`) that draws the band, the status line and the
-  pane. It runs the Rness version pinned in `.rness/`, like the hooks.
+  the mod (`hooks/`, `types/`) that draws the band, the footer's label and
+  the pane. It runs the Rness version pinned in `.rness/`, like the hooks.
 - The same settings and commands at the workspace root, for sessions
   started there, on your machine only.
 
