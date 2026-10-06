@@ -144,61 +144,84 @@ MCP revision `2026-07-28` and the earlier ones that open with `initialize`
 it in each repository ([agent targets](../guide/claude-code.md)).
 Another agent can run the same command from a clone.
 
-## `rness pulse`
+## `rness board`
 
-<div v-html="data.commands.pulse"></div>
+<div v-html="data.commands.board"></div>
 
-`pulse` shows the documents of `.rness/`, and the agent at work on them, in
-the organization's GitHub Projects: a project named **Agent Pulse**, a board
-per directory, each document an issue of `<org>/.rness` whose body is the
-document ([Boards](../guide/boards.md)).
+`rness board push` shows the documents of `.rness/`, and the agent at work
+on them, on the boards `rness.json` declares under `boards`: on GitHub,
+projects of the organization. **Agent Pulse** (`pulse`) holds every
+collection, a board per directory, each document an issue of
+`<org>/.rness` whose body is the document ([Boards](../guide/boards.md)).
 
-`rness pulse create`, once per organization, needs an `org` in `rness.json`
-— a blank workspace is refused — and no pulse declared yet. It creates the
-project and at once writes `"projects": { "pulse": <number> }`, and the
-`provider`, into `rness.json`; then it adds the fields and the views and runs
-a first sync, its `created` line saying what it added. A step failing after
-the project exits 1 with the pulse declared: `rness pulse sync` completes the
-layout. Commit `rness.json` in `.rness`. A workspace with no `provider` whose
-repositories look like GitLab is refused before anything is created: write
-`"provider": "github"` if the organization is on GitHub.
+A board declared without its `number`, or by its preset's name
+(`"pulse": "agent-pulse"`, `"roadmap": "collection"`), is not on GitHub
+yet: push creates it first. Its name is `pulse` or a collection of
+`.rness/` — a directory whose documents carry a status — else it is
+refused before GitHub is asked anything. In a terminal push asks once
+before it creates a project; `-y` does not ask. Off a terminal without
+`-y`, or declined, it creates none, pushes the other boards and exits 1:
 
-`rness pulse create <collection>` gives a collection of `.rness/` — a
-directory whose documents carry a status — a project of its own, named after
-it, and adds it to `projects`; its documents leave Agent Pulse. `pulse`, a
-collection declared already or a directory with no document is refused
-([a collection's own board](../guide/boards.md#a-collection-s-own-board)).
+```text
+not created: pulse — rness board push in a terminal, or with --yes, creates it
+```
 
-Both need Issues on `<org>/.rness`. Without them they stop before writing
+Creating needs an `org` in `rness.json` — a blank workspace is refused. Push
+creates the project and at once writes its number into `rness.json`, the
+board written whole from its preset, with the `provider`; then it adds the
+fields and the views and fills it, its `created` lines saying what it
+added. A step failing after the project exits 1 with the number written:
+the next `rness board push` completes the layout. Commit `rness.json` in
+`.rness`. A workspace with no `provider` whose repositories look like
+GitLab is refused before anything is created: write `"provider": "github"`
+if the organization is on GitHub.
+
+Push needs Issues on `<org>/.rness`. Without them it stops before writing
 anything, with:
 
 ```text
-the pulse needs Issues on <org>/.rness: turn them on in its Settings
+boards need Issues on <org>/.rness: turn them on in its Settings
 ```
 
-`rness pulse sync`, as often as wanted, syncs every declared project, the
-collections' own first and Agent Pulse last. On each it works in two passes. First each
-document gets its issue — created, or reopened — with its label and
-fields; then the bodies that changed are written, since a body links to
-other documents' issues. It archives the
-items whose document is gone and adds the option or the board a new status
-or directory needs. It says what it did to the issues, then to the items:
-`created 1 issue`, `reopened 1 issue`, `synced 52 items: 1 created, 2
-updated, 49 unchanged`.
+`rness board push`, as often as wanted, brings every board up to date, the
+collections' own first and Agent Pulse last. On each it works in two
+passes. First each document gets its issue — created, or reopened — with
+its label and fields; then the bodies that changed are written, since a
+body links to other documents' issues. It archives the items whose document
+is gone and adds the option or the board a new status or directory needs.
+It says what it did to the issues, then to the items: `created 1 issue`,
+`reopened 1 issue`, `synced 52 items: 1 created, 2 updated, 49 unchanged`.
 
 The `synced` line also counts the items it archived. On one of GitHub's
 rate limits it waits as GitHub says, and says so as it begins
 (`waiting  60 s — GitHub's rate limit`), 10 minutes at most in all; past
-that it stops with how many changes it did not make, and the next sync
+that it stops with how many changes it did not make, and the next push
 makes them.
 
-Both also need a login with the `project` scope ([`rness login`](#rness-login)).
-Without one, `create` offers to log in, in a terminal; with `-y` or off a
-terminal, the pulse stops with `the pulse needs a GitHub login: run rness
-login` or `the pulse needs the project scope: run rness login`. A classic
+Push also needs a login with the `project` scope ([`rness login`](#rness-login)).
+Without one, when it creates a board, it offers to log in, in a terminal;
+with `-y` or off a terminal it stops with `boards need a GitHub login: run
+rness login` or `boards need the project scope: run rness login`. A classic
 `GITHUB_TOKEN` works when it carries the scope; a fine-grained or GitHub App
-token reports no scope, and the pulse refuses it. When GitHub cannot be
+token reports no scope, and boards refuse it. When GitHub cannot be
 reached, it says so (`cannot reach GitHub: …`) instead of asking for a login.
+
+::: details `rness pulse`
+The former name of `rness board` still runs, hidden from the help: each
+command as its new one, said once on stderr (`rness pulse sync is now rness
+board push`). `rness pulse create [<collection>]` adds the board to `boards`
+by its preset's name, then pushes without asking.
+:::
+
+## `rness note`
+
+<div v-html="data.commands.note"></div>
+
+A note of the [agent's journal](../guide/boards.md#the-agent-s-journal) on
+the plan in progress: the text, or stdin. `--kind` titles it (`approach`,
+`deviation`, `blocker`, `done`); `--plan` names the plan when several are
+in progress. It posts with your login, where the board's `journal` hook
+says, and prints the issue it went to.
 
 ## `rness upgrade`
 
@@ -229,9 +252,9 @@ credential helper for github.com, for your own `git pull` and `git push`; it
 needs a global install.
 
 It asks for the `repo` and `read:org` scopes, and for `project` too where
-the workspace declares a pulse, or when `rness pulse create` runs it: a
-developer who never uses the [pulse](#rness-pulse) grants nothing more. A
-login made before the pulse was declared lacks the scope: run `rness login`
+the workspace declares a board, or when `rness board push` creates one: a
+developer who never uses [boards](#rness-board) grants nothing more. A
+login made before a board was declared lacks the scope: run `rness login`
 again. A `provider` written in `rness.json` that this version cannot talk to
 is refused.
 
