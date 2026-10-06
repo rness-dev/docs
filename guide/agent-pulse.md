@@ -121,6 +121,23 @@ The hooks start a background process that uses your login, and Claude Code
 never waits for it. When it cannot write (no login, a missing scope,
 GitHub unreachable), the next session start says why.
 
+What a session does is the board's `hooks` in `rness.json`, which Agent
+Pulse's preset declares as above:
+
+```json
+"hooks": {
+  "session-start": ["mark-in-progress"],
+  "edit": ["mark"],
+  "session-end": ["clear-marks"]
+}
+```
+
+`mark-in-progress` can name other collections and statuses, such as
+`{ "action": "mark-in-progress", "collections": ["plans", "specs"],
+"statuses": ["In progress", "Approved"] }`. Remove `hooks` to turn marking
+off on a board, or add them to a collection's own project. The actions are
+Rness's own: a hook never runs a command written in `rness.json`.
+
 ## A collection's own project
 
 Agent Pulse shows every collection of `.rness/` on one project. A
