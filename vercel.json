@@ -35,6 +35,16 @@
   ],
   "redirects": [
     {
+      "source": "/guide/agent-pulse",
+      "destination": "/docs/guide/boards",
+      "permanent": true
+    },
+    {
+      "source": "/docs/guide/agent-pulse",
+      "destination": "/docs/guide/boards",
+      "permanent": true
+    },
+    {
       "source": "/next/guide/agent-pulse",
       "destination": "/docs/next/guide/boards",
       "permanent": true
