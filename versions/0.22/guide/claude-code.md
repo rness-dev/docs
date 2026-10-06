@@ -1,11 +1,12 @@
 # Claude Code
 
 Every agent that reads `AGENTS.md` gets the context. For Claude Code, Rness
-does more: the context loads when a session starts, mistakes in `.rness/`
-are caught as they are made, and the `/rness:*` commands help write and
-close decisions, specifications and plans.
+does more: the context loads when a session starts, an edit of a generated
+file or a mistake in `.rness/` is refused before it is written, the
+workspace stays in view in the prompt footer, and the `/rness:*` commands help
+write and close decisions, specifications and plans.
 
-Tested with Claude Code 2.1.285 (2026-09-30).
+Tested with Claude Code 2.1.289 (2026-10-04).
 
 ## Turn it on
 
@@ -31,11 +32,14 @@ and the `/rness:*` commands stay hidden: see
 
 | In a session | What happens |
 | --- | --- |
-| At start | A line such as `rness 0.15.0 · acme · scope web — 10 standards, 9 decisions`, and the scope's documents for the model. When the context may be wrong, both say why. |
+| At start | A line such as `rness 0.19.0 · acme · scope web — 10 standards, 9 decisions`, and the scope's documents for the model. When the context may be wrong, both say why. A Claude Code older than 2.1.280, which shows no band, footer label or pane, is told once per version to run `claude update` when it names its version, as 2.1.240 does. |
+| Above the prompt | Whenever something needs action (a pin not installed, problems `rness validate` would report): what, until it is fixed. |
+| In the prompt footer | `rness · web · 1 in progress`, dim, among the session modes (`focus`), with `⚠ 1` at the end when something needs action. |
+| Before an edit | Refused when it would change what `rness sync` generates: the block of an `AGENTS.md` or `CLAUDE.md` (the agent is told which standard to edit instead) or a file of `.claude/skills/rness/`. Refused too when it would add a problem to a document of `.rness/`. |
 | After an edit in `.rness/` | The problems of that document's front matter go back to the model, which fixes them in the same turn. |
 | On demand | The `rness` MCP server lets the model find what applies and where a subject was decided. |
 | `/rness:*` | The commands below. |
-| With [Agent Pulse](./agent-pulse.md) | The board shows what the agent works on, and follows its status changes. |
+| With a [board](./boards.md) | The board shows what the agent works on, and follows its status changes. With its [journal](./boards.md#the-agent-s-journal), the agent is told at start how to note its decisions on the plan's issue. |
 
 The session reads `.rness/` next to the repository without asking for
 permission.
@@ -87,9 +91,19 @@ agent : writes adr/0010-local-cache-sqlite.md (Proposed) and shows it
   added by name. A file you or someone else changed too stays uncommitted,
   and the agent names it. Nothing is pushed.
 
-`/rness:status` shows tables. For the full-screen view, run it in the same
-terminal: `Ctrl+Z`, then `npx @rness/cli status`, `q`, then `fg`. Or run it
-in another terminal, from the workspace's `.rness/`:
+`/rness:status` opens a pane beside the conversation: a tab per
+collection, a line per document with its status in the colour Agent
+Pulse gives it, no model turn. It takes the keyboard as it opens: ↑/↓
+select a line, Tab and Shift+Tab change the tab (a tab's digit too),
+Enter or a click on a line shows the document in the pane, `q` brings
+the list back; Esc and `q` close it. When the workspace has a
+board, `Agent Pulse` is a link: the board from the list, the document's
+item from the document. The band above the prompt,
+the footer's label and the pane are drawn by a Claude Code mod that comes with
+the commands. A Claude Code without mods ignores it (2.1.280 and later
+draw it; 2.1.240 ignores it), and in `claude -p` the command prints tables. There, for the full-screen view,
+run it in the same terminal: `Ctrl+Z`, then `npx @rness/cli status`, `q`,
+then `fg`. Or run it in another terminal, from the workspace's `.rness/`:
 
 ::: code-group
 
@@ -114,7 +128,7 @@ bunx rness status
 ## The MCP server
 
 Each developer approves the `rness` server once, in Claude Code's own
-dialog. It is read-only and local:
+dialog. It is local, and read-only but for `rness_note`:
 
 | Tool | Returns |
 | --- | --- |
@@ -122,18 +136,23 @@ dialog. It is read-only and local:
 | `rness_list` | Every document of a collection, optionally of one status |
 | `rness_read` | One file of `.rness/` |
 | `rness_search` | The documents that match a query, with the matching lines |
+| `rness_note` | Posts a note of the [agent's journal](./boards.md#the-agent-s-journal) with your login; listed only when a board keeps one as the session starts |
 
 Other agents can run the same server with `rness mcp`; Rness writes no
 configuration for them.
 
 ::: details What Rness writes, exactly
 - `.claude/settings.json` in each repository: `../../.rness` in
-  `permissions.additionalDirectories`, and three hooks (session start,
-  after an edit, session end). Each hook runs the Rness version pinned in
-  `.rness/`. The hooks read `.rness/`, write nothing and install nothing.
-  They reach the network only for [Agent Pulse](./agent-pulse.md).
+  `permissions.additionalDirectories`, and four hooks (session start,
+  before an edit, after an edit, session end). Each hook runs the Rness
+  version pinned in `.rness/`. The hooks read `.rness/`, write no file of
+  the workspace and install nothing; with a journal, the session start
+  records your clone's `HEAD` in its git directory. They reach the network
+  only for [boards](./boards.md).
 - `.mcp.json` in each repository: the `rness` server.
-- `.claude/skills/rness/` in each repository: the `/rness:*` commands.
+- `.claude/skills/rness/` in each repository: the `/rness:*` commands, and
+  the mod (`hooks/`, `types/`) that draws the band, the footer's label and
+  the pane. It runs the Rness version pinned in `.rness/`, like the hooks.
 - The same settings and commands at the workspace root, for sessions
   started there, on your machine only.
 

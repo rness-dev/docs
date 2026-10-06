@@ -46,7 +46,7 @@ only, and renews itself. `rness logout` forgets it.
 
 - Rness asks for the `repo` and `read:org` scopes. GitHub has no read-only
   scope for private repositories, but Rness only lists and clones them.
-  Where the workspace uses [Agent Pulse](./agent-pulse.md), it also asks for
+  Where the workspace has a [board](./boards.md), it also asks for
   `project`, to write the board.
 - An organization that restricts OAuth apps hides its private repositories
   until an owner approves "Rness". `rness create` opens the approval page

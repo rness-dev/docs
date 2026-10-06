@@ -181,7 +181,7 @@ between tabs, and `q` closes it.
 - [Repositories](./repositories.md): add one, reach private ones.
 - [Claude Code](./claude-code.md): the context at session start, and the
   `/rness:*` commands.
-- [Agent Pulse](./agent-pulse.md): the documents, and the agents at work,
+- [Boards](./boards.md): the documents, and the agents at work,
   on a GitHub Project.
 - [Update Rness](./upgrade.md): one command, and a pull request for each
   release.
