@@ -33,6 +33,12 @@ const GUIDE: readonly [string, string][] = [
   ['Troubleshooting', 'guide/troubleshooting'],
 ]
 
+/** The CLI reference's pages, in order; a version shows those it has. */
+const CLI: readonly [string, string][] = [
+  ['Commands', 'cli/commands'],
+  ['Boards in rness.json', 'cli/boards'],
+]
+
 /** A page name made readable, for a page of an older version the list does not know. */
 const titleOf = (page: string): string => {
   const name = page.split('/').pop() ?? page
@@ -53,7 +59,13 @@ function sidebarOf(v: DocsVersion): DefaultTheme.SidebarMulti {
       },
     ],
     [`/${v.prefix}cli/`]: [
-      { text: 'CLI reference', items: [{ text: 'Commands', link: link('cli/commands') }] },
+      {
+        text: 'CLI reference',
+        items: CLI.filter(([, page]) => v.pages.includes(page)).map(([text, page]) => ({
+          text,
+          link: link(page),
+        })),
+      },
     ],
   }
 }

@@ -85,7 +85,8 @@ What `rness.json` says is the board. Edit it, commit it, and the next
 
 A view you change is updated in place. A view you add on GitHub yourself
 is left alone, and the sync mentions it once. A board declared wrongly is
-skipped, and `rness validate` names the key at fault.
+skipped, and `rness validate` names the key at fault. Every key, its
+values and its default: [Boards in `rness.json`](../cli/boards.md).
 
 `pulse create` writes Agent Pulse from the preset `agent-pulse`, recorded
 in `"preset"`. When a later Rness improves the preset, `rness sync` brings
@@ -136,7 +137,8 @@ Pulse's preset declares as above:
 `{ "action": "mark-in-progress", "collections": ["plans", "specs"],
 "statuses": ["In progress", "Approved"] }`. Remove `hooks` to turn marking
 off on a board, or add them to a collection's own project. The actions are
-Rness's own: a hook never runs a command written in `rness.json`.
+Rness's own: a hook never runs a command written in `rness.json`. Every
+action and its parameters: [hooks](../cli/boards.md#hooks).
 
 ## The agent's journal
 

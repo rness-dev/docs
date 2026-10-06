@@ -41,7 +41,7 @@ both see the same context. The workspace root is not a git repository.
 | `repos` | Every repository Rness knows about. `rness add` declares one. |
 | `scopes` | Where context applies: a repository, or a directory inside one (the parts of a monorepo). `extends` inherits another scope's context. |
 | `agents` | The agents your team uses; Rness writes their files ([Claude Code](./claude-code.md)). |
-| `projects` | The organization's GitHub Projects, each board written whole: its collections, statuses, colours, fields and views ([Shaped in `rness.json`](./agent-pulse.md#shaped-in-rness-json)). `pulse` is [Agent Pulse](./agent-pulse.md), any other name a [collection's own project](./agent-pulse.md#a-collection-s-own-project). Written by `rness pulse create`, edited by the team. |
+| `projects` | The organization's GitHub Projects, each board written whole: its collections, statuses, colours, fields and views ([Shaped in `rness.json`](./agent-pulse.md#shaped-in-rness-json)). `pulse` is [Agent Pulse](./agent-pulse.md), any other name a [collection's own project](./agent-pulse.md#a-collection-s-own-project). Written by `rness pulse create`, edited by the team. Every key: [Boards in `rness.json`](../cli/boards.md). |
 | `provider` | Where the organization lives. `github` is the one Rness talks to today. |
 
 Commit `rness.json` in `.rness` whenever a command changes it: it is the

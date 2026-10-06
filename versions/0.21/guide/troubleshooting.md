@@ -77,6 +77,21 @@ A board is skipped too while its collection's `README.md` still declares
 `rness.json` say different things, it names both and moves nothing: keep
 the one you want in `rness.json` and delete the other from the README.
 
+### `"projects" must map names to distinct project numbers` after an upgrade {#upgrade-projects}
+
+`rness upgrade` ends with this line, after its `Committed …` line, when
+the copy that ran it is older than the boards it has just written in
+`rness.json`: the new version wrote each board whole, and the
+old copy, finishing, cannot read them. The upgrade is complete. Check it
+from `.rness/`, where the new version now runs:
+
+```sh
+pnpm rness validate
+```
+
+Then push `.rness` as usual. To have the new version run the whole
+upgrade, start it with `npx @rness/cli@latest upgrade`.
+
 ### A board's `readme` or `updates` is refused {#board-path}
 
 `readme` and `updates` are paths within `.rness/`, such as
