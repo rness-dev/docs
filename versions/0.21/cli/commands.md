@@ -1,6 +1,6 @@
 <script setup>
 import { data as frozen } from '../../../.vitepress/frozen.data'
-const data = frozen['0.17']
+const data = frozen['0.21']
 </script>
 
 # CLI reference
@@ -83,15 +83,39 @@ its status. In a terminal it is a full-screen view: `←`/`→` or `Tab` change
 tab, `↑`/`↓`, `PgUp`/`PgDn` and `Home`/`End` scroll, `q` or `Esc` closes and
 gives the screen back. Off a terminal — a pipe, CI, an agent's tool — it
 prints Markdown, a table per tab; `rness status specs` prints that one. It
-reads `.rness/` and writes nothing. In Claude Code, `/rness:status` shows
-the tables ([agent targets](../guide/claude-code.md)).
+reads `.rness/` and writes nothing. `--json` prints one JSON object
+instead, in a terminal too: the tabs and their rows, each with the colour
+of its status on Agent Pulse and its item there, the board, and what a
+Claude Code session shows of the workspace (the session-start line, the
+status line, the plans in progress, what needs action). In Claude Code,
+`/rness:status` opens it in a pane, or shows the tables
+([Claude Code](../guide/claude-code.md)).
+
+## `rness doc`
+
+<div v-html="data.commands.doc"></div>
+
+`doc new <collection>` writes the next numbered document of `adr`, `specs`
+or `plans` and prints its path. The number is the highest of the collection
+plus one, on four digits, counted from the files present, so two sessions
+never pick the same one. The file is `NNNN-<slug>.md`, the slug taken from
+`--title` (`untitled` without it), with its collection's front matter —
+`date` today, the first status (`Proposed` for an ADR, `Draft` otherwise),
+an empty `repo`, and `updated` except on an ADR — and its opening sections,
+those of `adr/0000-template.md` for an ADR. It never overwrites a file
+(exit 1); any other collection is bad usage (exit 2). It runs from anywhere
+in the workspace. No prompt, no network. The lifecycle skills of Claude
+Code number what they create with it ([agent
+targets](../guide/claude-code.md)).
 
 ## `rness validate`
 
 <div v-html="data.commands.validate"></div>
 
 `validate` checks `.rness/` against its contract — `rness.json`, and the
-front matter and allowed statuses of every ADR, specification and plan — and,
+front matter and allowed statuses of every ADR, specification and plan, each
+named `NNNN-<slug>.md` with a number no other document of its collection
+has — and,
 when `org/` clones are present, every generated block: stale (its hash no
 longer matches a fresh render, or someone edited inside the markers) is a
 problem, missing is a warning. So is a value an [agent
