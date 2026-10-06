@@ -105,10 +105,13 @@ function twinOf(page: Page, source: string, base: string, srcDir: string, opts: 
   let text = source.replace(/^---\n[\s\S]*?\n---\n+/, '')
   text = text.replace(/<script setup>[\s\S]*?<\/script>\n*/g, '')
   if (/(^|\/)cli\/commands\.md$/.test(page.path)) {
-    const help = helpOf(srcDir, versionOfPath(opts.versions, page.path))
+    const version = versionOfPath(opts.versions, page.path)
+    const help = helpOf(srcDir, version)
     text = text.replace(/<div v-html="data\.root"><\/div>/g, fence(help.root))
     text = text.replace(/<div v-html="data\.commands\.([a-z-]+)"><\/div>/g, (_, name: string) => {
       const h = help.commands[name]
+      // The working copy may document a command npm does not have yet.
+      if (h === undefined && version.source === '') return ''
       if (h === undefined) throw new Error(`${page.file}: no help for \`rness ${name}\``)
       return fence(h)
     })

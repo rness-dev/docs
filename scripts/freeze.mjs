@@ -37,13 +37,28 @@ function commandNames(text) {
     .filter((name) => name !== 'help')
 }
 
+const rootHelp = help([])
+const names = commandNames(rootHelp)
+
+// The working copy may run ahead of npm; a frozen release may not. Every
+// command the release names has a section of the page, and every section a
+// command: else nothing is frozen.
+const working = readFileSync(join(root, 'cli', 'commands.md'), 'utf8')
+const sections = [...working.matchAll(/^## `rness (\S+)`$/gm)].map((m) => m[1])
+const problems = [
+  ...names.filter((n) => !sections.includes(n)).map((n) => `no section for \`rness ${n}\``),
+  ...sections
+    .filter((n) => !names.includes(n))
+    .map((n) => `a section for \`rness ${n}\`, which ${pkg.version} does not have`),
+]
+if (problems.length > 0) throw new Error(`cli/commands.md: ${problems.join('; ')}`)
+
 const target = join(root, 'versions', minor)
 rmSync(target, { recursive: true, force: true })
 for (const section of ['guide', 'cli'])
   cpSync(join(root, section), join(target, section), { recursive: true })
 
-const rootHelp = help([])
-const commands = Object.fromEntries(commandNames(rootHelp).map((name) => [name, help([name])]))
+const commands = Object.fromEntries(names.map((name) => [name, help([name])]))
 writeFileSync(
   join(target, 'cli-help.json'),
   `${JSON.stringify({ version: pkg.version, root: rootHelp, commands }, null, 2)}\n`

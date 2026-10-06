@@ -24,9 +24,12 @@ pnpm freeze     # freezes the working copy as the pinned CLI's minor (below)
 ```
 
 There is no test suite and no linter; `pnpm build` is the check to run before
-opening a pull request. It also fails when the pinned `@rness/cli` has a
-command the CLI page has no `## \`rness <name>\`` section for, or the page a
-section for a command the CLI no longer has.
+opening a pull request. The working copy may document the next version's
+commands before npm has them: the build only says so
+(`cli/commands.md is ahead of @rness/cli 0.21.0: +board +note -pulse`), and
+such a section renders without its help. `pnpm freeze` refuses a CLI page
+whose `## \`rness <name>\`` sections differ from the commands of the release
+it freezes.
 
 ## Versions
 

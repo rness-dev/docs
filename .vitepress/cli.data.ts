@@ -34,20 +34,22 @@ function documented(): string[] {
 }
 
 /**
- * Every command the CLI names has a section on the page, and every section a
- * command — checked here, where a throw fails the build, so a release cannot
- * leave the page behind. Add the missing section (its help is already in
- * `data.commands`), or remove the stale one.
+ * The working copy is "Unreleased": it may describe the next version's
+ * commands before npm has them, so a section the pinned CLI lacks renders
+ * without its help, and a command it dropped has no section. Said, not
+ * refused: `scripts/freeze.mjs` refuses it when it freezes a release, the
+ * pinned CLI then being that release.
  */
-function checkSections(known: string[]): void {
+function sayAhead(known: string[]): void {
   const sections = documented()
-  const problems = [
-    ...known.filter((n) => !sections.includes(n)).map((n) => `no section for \`rness ${n}\``),
-    ...sections
-      .filter((n) => !known.includes(n))
-      .map((n) => `a section for \`rness ${n}\`, which ${PINNED_VERSION} does not have`),
+  const ahead = [
+    ...sections.filter((n) => !known.includes(n)).map((n) => `+${n}`),
+    ...known.filter((n) => !sections.includes(n)).map((n) => `-${n}`),
   ]
-  if (problems.length > 0) throw new Error(`cli/commands.md: ${problems.join('; ')}`)
+  if (ahead.length > 0)
+    console.warn(
+      `cli/commands.md is ahead of @rness/cli ${PINNED_VERSION}: ${ahead.join(' ')}`
+    )
 }
 
 export default defineLoader({
@@ -55,7 +57,7 @@ export default defineLoader({
     const md = await createMarkdownRenderer(fileURLToPath(new URL('..', import.meta.url)))
     const block = (text: string) => md.render('```\n' + text + '\n```')
     const text = cliHelp()
-    checkSections(Object.keys(text.commands))
+    sayAhead(Object.keys(text.commands))
     return {
       version: text.version,
       root: block(text.root),
