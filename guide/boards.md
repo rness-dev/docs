@@ -1,26 +1,38 @@
-# Agent Pulse
+# Boards
 
-Agent Pulse is a GitHub Project of your organization. On it the team sees
-every decision, specification and plan of `.rness/`, where each one stands,
-and what an agent is working on right now. Rness writes it; the team reads
-it.
+A board shows the rules your agents apply: every decision, specification
+and plan of `.rness/`, where each one stands, and what an agent is working
+on right now. Rness writes it; the team reads it. Your provider supplies
+the board: on GitHub, a GitHub Project of your organization.
 
-## Create it
+**Agent Pulse** is the board Rness ships: every collection of `.rness/` on
+one project. A collection can also have a board of its own (see
+[A collection's own board](#a-collection-s-own-board)).
 
-```sh
-rness pulse create    # once per organization: the project, then a first sync
+## Create one
+
+Declare it in `.rness/rness.json`, then push:
+
+```json
+"boards": { "pulse": "agent-pulse" }
 ```
 
-Then commit `.rness/rness.json`, which now holds the board, written whole
-(see [Shaped in `rness.json`](#shaped-in-rness-json)). The project is
-private, GitHub's default for an organization project.
+```sh
+rness board push    # creates Agent Pulse, then fills it
+```
+
+`rness board push` asks before it creates a project on GitHub; pass `--yes`
+in a script. It then writes the board whole into `rness.json`, with the
+project's number (see [Shaped in `rness.json`](#shaped-in-rness-json)):
+commit `.rness/rness.json`. The project is private, GitHub's default for an
+organization project.
 
 It needs:
 
 - **Issues turned on for `.rness`**, in its GitHub settings: each document
   becomes an issue of `.rness`.
 - **The `project` scope** on each developer's `rness login`. Rness asks for
-  it where a pulse is declared.
+  it where a board is declared.
 
 ## What you see
 
@@ -45,13 +57,13 @@ side panel. The fields:
 
 ## Shaped in `rness.json`
 
-Each board is described in `.rness/rness.json`, under `projects`: its
+Each board is described in `.rness/rness.json`, under `boards`: its
 collections, the statuses and their colours, its fields, labels and views.
 What `rness.json` says is the board. Edit it, commit it, and the next
-`rness pulse sync` brings the board in line.
+`rness board push` brings the board in line.
 
 ```json
-"projects": {
+"boards": {
   "pulse": {
     "number": 3,
     "preset": "agent-pulse/1",
@@ -88,15 +100,19 @@ is left alone, and the sync mentions it once. A board declared wrongly is
 skipped, and `rness validate` names the key at fault. Every key, its
 values and its default: [Boards in `rness.json`](../cli/boards.md).
 
-`pulse create` writes Agent Pulse from the preset `agent-pulse`, recorded
-in `"preset"`. When a later Rness improves the preset, `rness sync` brings
+`rness board push` writes Agent Pulse from the preset `agent-pulse`,
+recorded in `"preset"`. When a later Rness improves the preset, `rness sync` brings
 the improvement into your board: what you never changed takes the new
 value, and what you changed stays yours. Remove `"preset"` to keep a board
 exactly as you wrote it.
 
-::: tip From 0.20
-A board declared by its number (`"pulse": 3`) still works. The first
-`rness sync` after an upgrade writes it whole, and nothing changes on
+A board declared without its `"number"` is not on GitHub yet:
+`rness board push` creates it, then adds the number and nothing else.
+
+::: tip From an earlier Rness
+`"projects"`, the former name of `"boards"`, still works, and so does a
+board declared by its number (`"pulse": 3`). The first `rness sync` after
+an upgrade renames the key and writes the board whole; nothing changes on
 GitHub.
 :::
 
@@ -115,7 +131,7 @@ With [Claude Code](./claude-code.md), you run nothing:
 By hand, or from another agent:
 
 ```sh
-rness pulse sync
+rness board push
 ```
 
 The hooks start a background process that uses your login, and Claude Code
@@ -136,7 +152,7 @@ Pulse's preset declares as above:
 `mark-in-progress` can name other collections and statuses, such as
 `{ "action": "mark-in-progress", "collections": ["plans", "specs"],
 "statuses": ["In progress", "Approved"] }`. Remove `hooks` to turn marking
-off on a board, or add them to a collection's own project. The actions are
+off on a board, or add them to a collection's own board. The actions are
 Rness's own: a hook never runs a command written in `rness.json`. Every
 action and its parameters: [hooks](../cli/boards.md#hooks).
 
@@ -161,10 +177,10 @@ When a plan is `In progress` in the repository you work in, the session
 start tells the agent to post a note when it chooses an approach, deviates
 from the plan, is blocked, and when it is done: decisions and their
 reasons, not steps, `limit` at most per session. It posts with
-`rness pulse note` or the `rness_note` tool, and you can too:
+`rness note` or the `rness_note` tool, and you can too:
 
 ```sh
-rness pulse note --kind deviation "Kept the old header: two clients read it."
+rness note --kind deviation "Kept the old header: two clients read it."
 ```
 
 - **`"to": "plan"`**: the notes are comments on the plan's issue in
@@ -191,20 +207,23 @@ rness pulse note --kind deviation "Kept the old header: two clients read it."
   repositories, and `Closes` on a merged pull request.
 :::
 
-## A collection's own project
+## A collection's own board
 
 Agent Pulse shows every collection of `.rness/` on one project. A
 collection whose work stands apart, such as a roadmap or a launch, can
-have a project of its own:
+have a board of its own, named after its directory:
 
-```sh
-rness pulse create roadmap    # the project, named after the collection, then a sync
+```json
+"boards": { "pulse": 3, "roadmap": "collection" }
 ```
 
-`rness.json` then holds both boards, and `rness pulse sync` syncs both.
-The collection's documents leave Agent Pulse for their project; their
-issues stay as they are. The project's board is declared like Agent
-Pulse's, with a few keys of its own:
+```sh
+rness board push    # creates the roadmap's project, then pushes both boards
+```
+
+The collection's documents leave Agent Pulse for their own board; their
+issues stay as they are. The board is declared like Agent Pulse, with a few
+keys of its own:
 
 ```json
 "roadmap": {

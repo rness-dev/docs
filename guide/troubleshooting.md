@@ -62,14 +62,14 @@ Rness repository does:
 and in `eslint.config.js`, `globalIgnores(['.claude/skills/rness/**'])`.
 A `tsconfig.json` whose `include` reaches `.claude/` needs it in `exclude`.
 
-## Agent Pulse
+## Boards
 
-### A board is skipped, or `validate` names a key of `projects` {#board-refused}
+### A board is skipped, or `validate` names a key of `boards` {#board-refused}
 
-`rness pulse sync` says `skipped <name>: …` and `rness validate` names the
-key at fault, such as `"projects.roadmap.views[1].date" must name a date
+`rness board push` says `skipped <name>: …` and `rness validate` names the
+key at fault, such as `"boards.roadmap.views[1].date" must name a date
 field`. Rness checks each board declared in `rness.json` on its own: the
-others still sync. Fix the key the line names, then sync again.
+others are still pushed. Fix the key the line names, then push again.
 
 A board is skipped too while its collection's `README.md` still declares
 `description`, `statuses`, `fields` or `labels`, as before 0.21. Run
@@ -77,12 +77,13 @@ A board is skipped too while its collection's `README.md` still declares
 `rness.json` say different things, it names both and moves nothing: keep
 the one you want in `rness.json` and delete the other from the README.
 
-### `"projects" must map names to distinct project numbers` after an upgrade {#upgrade-projects}
+### `unknown key "boards"` after an upgrade {#upgrade-projects}
 
-`rness upgrade` ends with this line, after its `Committed …` line, when
-the copy that ran it is older than the boards it has just written in
-`rness.json`: the new version wrote each board whole, and the
-old copy, finishing, cannot read them. The upgrade is complete. Check it
+`rness upgrade` ends with this line, or with `"projects" must map names to
+distinct project numbers`, after its `Committed …` line, when the copy that
+ran it is older than the boards it has just written in `rness.json`: the
+new version wrote them under `boards`, each whole, and the old copy,
+finishing, cannot read them. The upgrade is complete. Check it
 from `.rness/`, where the new version now runs:
 
 ```sh

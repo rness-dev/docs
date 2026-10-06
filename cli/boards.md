@@ -1,13 +1,14 @@
 # Boards in `rness.json`
 
-Every GitHub Project Rness keeps is declared in `.rness/rness.json`, under
-`projects`, one entry per board. `pulse` is [Agent Pulse](../guide/agent-pulse.md);
-any other name is a [collection's own project](../guide/agent-pulse.md#a-collection-s-own-project).
+Every board Rness keeps is declared in `.rness/rness.json`, under
+`boards`, one entry per board; on GitHub, a board is a GitHub Project of the
+organization. `pulse` is [Agent Pulse](../guide/boards.md); any other name
+is a [collection's own board](../guide/boards.md#a-collection-s-own-board).
 This page lists every key. What `rness.json` says is the board: edit it,
-commit it, and the next `rness pulse sync` brings the board in line.
+commit it, and the next `rness board push` brings the board in line.
 
 ```json
-"projects": {
+"boards": {
   "pulse": {
     "number": 3,
     "preset": "agent-pulse/1",
@@ -19,20 +20,24 @@ commit it, and the next `rness pulse sync` brings the board in line.
 ```
 
 A board is read whole or refused. An unknown key or a wrong value is named
-by its full key, such as `"projects.pulse.views[1].date" must name a date
-field`, in `rness validate` and at session start; `rness pulse sync` skips
+by its full key, such as `"boards.pulse.views[1].date" must name a date
+field`, in `rness validate` and at session start; `rness board push` skips
 that board and syncs the others. Rness keeps a few things for itself on
 every board: one issue per document, the `Path` and `Status` fields, and
 the `rness` label.
 
-A board written as a number alone (`"pulse": 3`) reads as its preset.
-The next `rness sync` writes it whole, and nothing changes on GitHub.
+A board not created yet is written as its preset's name, `"pulse":
+"agent-pulse"` or `"roadmap": "collection"`, or declared whole without its
+`number`: `rness board push` creates it, then writes the number in. A board
+written as a number alone (`"pulse": 3`) reads as its preset; the next
+`rness sync` writes it whole, and nothing changes on GitHub. `"projects"`,
+the former name of `"boards"`, still reads; `rness sync` renames it.
 
 ## A board
 
 | Key | What it is | When absent |
 | --- | --- | --- |
-| `number` | The GitHub Project's number, in the organization. Required. | |
+| `number` | The GitHub Project's number, in the organization, written by `rness board push` when it creates the project. | Not created yet: the next `rness board push` creates it. |
 | `preset` | The [preset](#presets) and revision the board was made from, such as `agent-pulse/1`. | No preset: the board stays as written. |
 | `title` | The project's title. | Left as it is on GitHub. |
 | `description` | The project's short description. | Left as it is. |
@@ -166,7 +171,7 @@ by event. Each action is its name, or an object with its parameters:
 | `mark-in-progress` | `session-start` | Marks the documents of the session's scope `working`. | `collections` (default `["plans"]`), `statuses` (default `["In progress"]`) | A select from `$agent` with `working`. |
 | `mark` | `edit` | Marks the document the agent edits, when the board holds it. | | The same. |
 | `clear-marks` | `session-end` | Clears the session's marks, then syncs the board. | | The same. |
-| `journal` | `session-start` | Tells the agent to note its decisions on the plan it implements: the [agent's journal](../guide/agent-pulse.md#the-agent-s-journal). | `to`: `"plan"` or `"repo"`, required; `limit`, notes per session and plan (default 5) | The board holds `plans`. |
+| `journal` | `session-start` | Tells the agent to note its decisions on the plan it implements: the [agent's journal](../guide/boards.md#the-agent-s-journal). | `to`: `"plan"` or `"repo"`, required; `limit`, notes per session and plan (default 5) | The board holds `plans`. |
 | `journal-summary` | `session-end` | Posts the session's summary where its notes went. | | `journal` on the same board. |
 
 An action appears at most once per event, and only at its own event. The
@@ -201,14 +206,14 @@ published on GitHub.
 
 ## Presets {#presets}
 
-`rness pulse create` writes a board whole from a preset, and records it
-in `preset`:
+`rness board push` writes a board whole from a preset when it creates
+it, and records it in `preset`:
 
 - **`agent-pulse`**, for `pulse`: every collection (`"all"`); the fields
   `Collection`, `Agent`, `Working session` and `Session history`; the
   views `All`, `ADR`, `Specs`, `Plans` and `Working`; the hooks
   `mark-in-progress`, `mark` and `clear-marks`.
-- **`collection`**, for a collection's own project: that collection, its
+- **`collection`**, for a collection's own board: that collection, its
   statuses as found; the same four fields; the views `All`, the
   collection's board and `Working`.
 

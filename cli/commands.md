@@ -151,7 +151,7 @@ Another agent can run the same command from a clone.
 `pulse` shows the documents of `.rness/`, and the agent at work on them, in
 the organization's GitHub Projects: a project named **Agent Pulse**, a board
 per directory, each document an issue of `<org>/.rness` whose body is the
-document ([Agent Pulse](../guide/agent-pulse.md)).
+document ([Boards](../guide/boards.md)).
 
 `rness pulse create`, once per organization, needs an `org` in `rness.json`
 — a blank workspace is refused — and no pulse declared yet. It creates the
@@ -167,7 +167,7 @@ repositories look like GitLab is refused before anything is created: write
 directory whose documents carry a status — a project of its own, named after
 it, and adds it to `projects`; its documents leave Agent Pulse. `pulse`, a
 collection declared already or a directory with no document is refused
-([a collection's own project](../guide/agent-pulse.md#a-collection-s-own-project)).
+([a collection's own board](../guide/boards.md#a-collection-s-own-board)).
 
 Both need Issues on `<org>/.rness`. Without them they stop before writing
 anything, with:

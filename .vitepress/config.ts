@@ -28,7 +28,7 @@ const GUIDE: readonly [string, string][] = [
   ['The workspace', 'guide/workspace'],
   ['Repositories', 'guide/repositories'],
   ['Claude Code', 'guide/claude-code'],
-  ['Agent Pulse', 'guide/agent-pulse'],
+  ['Boards', 'guide/boards'],
   ['Update Rness', 'guide/upgrade'],
   ['Troubleshooting', 'guide/troubleshooting'],
 ]
