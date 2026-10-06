@@ -138,6 +138,57 @@ Pulse's preset declares as above:
 off on a board, or add them to a collection's own project. The actions are
 Rness's own: a hook never runs a command written in `rness.json`.
 
+## The agent's journal
+
+How a plan was implemented, in the agent's words: the approach it chose,
+where it left the plan and why, what blocked it, and what it did. Turn it
+on with two more hooks on Agent Pulse:
+
+```json
+"hooks": {
+  "session-start": [
+    "mark-in-progress",
+    { "action": "journal", "to": "repo", "limit": 5 }
+  ],
+  "edit": ["mark"],
+  "session-end": ["clear-marks", "journal-summary"]
+}
+```
+
+When a plan is `In progress` in the repository you work in, the session
+start tells the agent to post a note when it chooses an approach, deviates
+from the plan, is blocked, and when it is done: decisions and their
+reasons, not steps, `limit` at most per session. It posts with
+`rness pulse note` or the `rness_note` tool, and you can too:
+
+```sh
+rness pulse note --kind deviation "Kept the old header: two clients read it."
+```
+
+- **`"to": "plan"`**: the notes are comments on the plan's issue in
+  `.rness`.
+- **`"to": "repo"`**: the first note opens an implementation issue in the
+  repository the session works in, labelled `rness:plan`, a sub-issue of
+  the plan's. The note prints its reference, `acme/api#87`: the pull
+  request that completes the plan carries `Closes acme/api#87`, and
+  GitHub closes the issue when it is merged into the default branch.
+  Rness closes nothing. A repository with its issues off, or that your
+  login cannot write to, gets nothing: the note goes to the plan's issue,
+  and the next session start says so once.
+- **At session end**, `journal-summary` posts the session's duration, its
+  commits on the branch and the branch's pull request, where its notes
+  went, or on the plan when it made commits and no note.
+
+::: details Limits
+- A note holds 1 to 4,000 characters.
+- A note that looks like it holds a credential (a GitHub token, an AWS key,
+  a private key, a Slack or API token) is refused, never redacted.
+- The counts and the session's start stay in your clones' git directories,
+  never pushed.
+- Not verified against GitHub yet (2026-10-06): a sub-issue across
+  repositories, and `Closes` on a merged pull request.
+:::
+
 ## A collection's own project
 
 Agent Pulse shows every collection of `.rness/` on one project. A

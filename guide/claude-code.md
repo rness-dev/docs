@@ -39,7 +39,7 @@ and the `/rness:*` commands stay hidden: see
 | After an edit in `.rness/` | The problems of that document's front matter go back to the model, which fixes them in the same turn. |
 | On demand | The `rness` MCP server lets the model find what applies and where a subject was decided. |
 | `/rness:*` | The commands below. |
-| With [Agent Pulse](./agent-pulse.md) | The board shows what the agent works on, and follows its status changes. |
+| With [Agent Pulse](./agent-pulse.md) | The board shows what the agent works on, and follows its status changes. With its [journal](./agent-pulse.md#the-agent-s-journal), the agent is told at start how to note its decisions on the plan's issue. |
 
 The session reads `.rness/` next to the repository without asking for
 permission.
@@ -128,7 +128,7 @@ bunx rness status
 ## The MCP server
 
 Each developer approves the `rness` server once, in Claude Code's own
-dialog. It is read-only and local:
+dialog. It is local, and read-only but for `rness_note`:
 
 | Tool | Returns |
 | --- | --- |
@@ -136,6 +136,7 @@ dialog. It is read-only and local:
 | `rness_list` | Every document of a collection, optionally of one status |
 | `rness_read` | One file of `.rness/` |
 | `rness_search` | The documents that match a query, with the matching lines |
+| `rness_note` | Posts a note of the [agent's journal](./agent-pulse.md#the-agent-s-journal) with your login; listed only when a board keeps one |
 
 Other agents can run the same server with `rness mcp`; Rness writes no
 configuration for them.
@@ -144,9 +145,10 @@ configuration for them.
 - `.claude/settings.json` in each repository: `../../.rness` in
   `permissions.additionalDirectories`, and four hooks (session start,
   before an edit, after an edit, session end). Each hook runs the Rness
-  version pinned in `.rness/`. The hooks read `.rness/`, write nothing and
-  install nothing. They reach the network only for
-  [Agent Pulse](./agent-pulse.md).
+  version pinned in `.rness/`. The hooks read `.rness/`, write no file of
+  the workspace and install nothing; with a journal, the session start
+  records your clone's `HEAD` in its git directory. They reach the network
+  only for [Agent Pulse](./agent-pulse.md).
 - `.mcp.json` in each repository: the `rness` server.
 - `.claude/skills/rness/` in each repository: the `/rness:*` commands, and
   the mod (`hooks/`, `types/`) that draws the band, the footer's label and
