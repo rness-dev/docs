@@ -49,7 +49,9 @@ only, and renews itself. `rness logout` forgets it.
   Where the workspace uses [Agent Pulse](./agent-pulse.md), it also asks for
   `project`, to write the board.
 - An organization that restricts OAuth apps hides its private repositories
-  until an owner approves "Rness". `rness create` says so, with the link.
+  until an owner approves "Rness". `rness create` opens the approval page
+  in your browser and waits for the click; off a terminal it prints the
+  link.
 - In CI, set `GITHUB_TOKEN` or `GH_TOKEN`. Either one takes precedence over
   the login.
 
