@@ -50,7 +50,7 @@ L'intérêt se voit quand un changement déborde d'un dépôt. J'ai voulu renomm
 
 Je l'ai demandé une fois, sous forme de spécification dans `.rness`, et l'agent en a tiré un plan. Il travaille depuis l'espace de travail, où l'outil, la documentation et le site sont côte à côte sous les mêmes règles : il voyait tout ce que le renommage touchait. En moins d'une demi-heure, il a commité la nouvelle commande et ses tests dans l'outil, puis les pages renommées de la documentation. Il a aussi mis à jour le `llms.txt` du site, le fichier que les autres agents IA lisent pour apprendre à se servir de l'outil. La nouvelle version était sur npm deux heures environ après la spécification.
 
-![Une spec et un plan dans .rness mènent à des commits dans trois dépôts d'un même espace de travail (rness, docs et le llms.txt de web) en moins de 30 minutes, puis à une version sur npm environ deux heures après la spec.](./img/une-demande-trois-depots.png)
+![Une spec et un plan dans .rness mènent à des commits dans trois dépôts d'un même espace de travail en moins de 30 minutes, chacun vers ce qu'il change : l'outil sur npm (@rness/cli), la documentation sur rness.dev/docs, le site et son llms.txt sur rness.dev. Environ deux heures de la spec à npm.](./img/une-demande-trois-depots.png)
 
 ## Une décision, vérifiée partout
 
