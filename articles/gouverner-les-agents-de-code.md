@@ -40,6 +40,25 @@ Un exemple récent : j'ai décidé qu'aucun texte que je publie ne porterait de
 
 ## Tout reste dans git
 
+Un espace de travail, c'est un dossier par personne : le dépôt de gouvernance et un clone de chaque dépôt, côte à côte.
+
+```text
+<votre-org>/
+├── AGENTS.md          le bloc racine, pour une session lancée ici (CLAUDE.md à côté)
+├── .rness/            le dépôt de gouvernance
+│   ├── standards/     les règles
+│   ├── adr/           les décisions d'architecture, et leurs raisons
+│   ├── specs/         ce qu'il faut construire
+│   ├── plans/         comment, tâche par tâche, chacune avec sa preuve
+│   └── rness.json     les dépôts, et quelles règles s'appliquent où
+└── org/               un clone par dépôt
+    ├── web/
+    │   ├── AGENTS.md  le bloc généré, entre ses marqueurs
+    │   └── CLAUDE.md  pointe vers AGENTS.md
+    ├── api/
+    └── contracts/
+```
+
 Le dépôt `.rness` est un dépôt git comme les autres. Les standards, les décisions d'architecture (ADR), les spécifications et les plans y sont des fichiers Markdown, avec un `rness.json` qui dit quelles règles s'appliquent à quel dépôt. Une règle change par un commit, relu comme du code.
 
 Rness ne s'installe pas entre vous et vos agents. Il écrit dans les fichiers qu'ils lisent déjà, et dans `AGENTS.md` il ne touche qu'à son bloc, entre ses deux marqueurs : le reste du fichier vous appartient. Il n'envoie ni votre code ni votre contexte nulle part. La version de l'outil est épinglée dans `.rness`, la même pour toute l'équipe ; `rness upgrade` la déplace et fusionne avec git ce qu'elle change. Pour les clients MCP, `rness mcp` sert le même contexte, en lecture seule.
