@@ -10,6 +10,8 @@ Je code avec des agents tous les jours : Claude Code la plupart du temps, Codex
 
 J'ai écrit Rness pour gouverner ces agents depuis un seul endroit. C'est un outil libre, sous licence MIT, qui ne fait tourner aucun modèle : il lit du Markdown et écrit du Markdown, dans vos dépôts. Voici comment il marche, ce qu'il fait déjà chez moi, et où il va.
 
+![Quatre couches : les modèles d'IA ; les agents de code (Claude Code, Codex, Cursor, GitHub Copilot) ; Rness, avec ses standards, ADR, specs et plans ; vos dépôts sur GitHub. Rness atteint les agents par AGENTS.md et les dépôts par rness sync.](./img/couche-de-gouvernance.png)
+
 ## Un agent ne connaît que le fichier qu'il a sous les yeux
 
 Claude Code lit `CLAUDE.md`. Codex, Cursor et GitHub Copilot lisent `AGENTS.md`. Ce qui est dans ce fichier, l'agent le sait à chaque session. Ce qui n'y est pas n'existe pas pour lui.
@@ -19,6 +21,8 @@ Dans une équipe qui code avec des agents, un dépôt a un `CLAUDE.md`, un `AGEN
 ## Une règle, un fichier
 
 Poser une règle pour tous les agents d'une organisation, c'est d'abord un compte de fichiers. Tenue à la main, une règle va dans au moins deux fichiers par dépôt, `CLAUDE.md` et `AGENTS.md`, et davantage dès que `.cursor/rules` ou les instructions de Copilot s'en mêlent. Trois dépôts, c'est six fichiers au minimum ; quarante dépôts, quatre-vingts. Quand la règle change, on recommence, et rien ne signale la copie oubliée.
+
+![Sans Rness, trois dépôts portent sept fichiers d'agents tenus à la main : CLAUDE.md, AGENTS.md, .cursor/rules, copilot-instructions.md. Avec Rness, un fichier dans .rness/standards, et rness sync écrit le bloc AGENTS.md de chaque dépôt.](./img/une-regle-un-fichier.png)
 
 Avec Rness, la règle s'écrit une fois, dans un standard du dépôt `.rness`. La commande `rness sync` réécrit à partir de lui un bloc généré dans le `AGENTS.md` de chaque dépôt, et chaque `CLAUDE.md` pointe déjà vers ce bloc. Voici le haut du bloc dans le dépôt de mon site :
 
@@ -45,6 +49,8 @@ Rness ne s'installe pas entre vous et vos agents. Il écrit dans les fichiers qu
 L'intérêt se voit quand un changement déborde d'un dépôt. J'ai voulu renommer une commande de l'outil, `rness pulse`, en `rness board` : l'ancien nom désignait trois choses à la fois, et `rness pulse sync` côtoyait `rness sync` sans rien pour les distinguer.
 
 Je l'ai demandé une fois, sous forme de spécification dans `.rness`, et l'agent en a tiré un plan. Il travaille depuis l'espace de travail, où l'outil, la documentation et le site sont côte à côte sous les mêmes règles : il voyait tout ce que le renommage touchait. En moins d'une demi-heure, il a commité la nouvelle commande et ses tests dans l'outil, puis les pages renommées de la documentation. Il a aussi mis à jour le `llms.txt` du site, le fichier que les autres agents IA lisent pour apprendre à se servir de l'outil. La nouvelle version était sur npm deux heures environ après la spécification.
+
+![Une spec et un plan dans .rness mènent à des commits dans trois dépôts d'un même espace de travail (rness, docs et le llms.txt de web) en moins de 30 minutes, puis à une version sur npm environ deux heures après la spec.](./img/une-demande-trois-depots.png)
 
 ## Une décision, vérifiée partout
 
