@@ -1,7 +1,7 @@
 # rness docs
 
 <!-- BEGIN rness -->
-<!-- rness · scope: docs · contract: 1 · hash: c9e4c1a51bfc · generated: run `rness sync`, never edit inside this block -->
+<!-- rness · scope: docs · contract: 1 · hash: ce1efe041091 · generated: run `rness sync`, never edit inside this block -->
 This directory is scope `docs` of rness workspace `rness-dev`. Full context lives in
 `../../.rness/` — start at its `AGENTS.md`, then task-relevant `adr/`, `specs/`, `plans/`;
 live: `rness context --scope docs`. If `.rness/` is not reachable, this is a
@@ -24,7 +24,7 @@ shipped truth (ADR 0009).
   scaffold's `README.md` / `WORKSPACE.md` / `CONVENTIONS.md`, Implemented
   specs. Never the landing page.
 - Name an agent only when it is verified to read `AGENTS.md`: Claude Code,
-  Codex, Cursor, GitHub Copilot — its coding agent, code review, Chat in
+  Codex, Cursor, GitHub Copilot: its coding agent, code review, Chat in
   VS Code and CLI (vendor documentation, 2026-09-22).
 - Each release has its own copy of the docs, and the version menu names the
   version a page describes (spec 0021). A page never states its version and
@@ -98,7 +98,7 @@ language in use and document it before applying it broadly.
 - Model expected empty, loading, error, and success states explicitly.
 - Avoid broad suppression of lint, type, or test failures. Use a narrow,
   documented exception only when justified.
-- Keep comments for non-obvious reasoning, constraints, or trade-offs—not for
+- Keep comments for non-obvious reasoning, constraints, or trade-offs, not for
   restating code.
 
 <!-- rness: standards/deployment.md -->
@@ -143,6 +143,9 @@ clearly label a proposal, limitation, or pending item.
 - Do not claim reviews, audits, certifications, availability, or guarantees
   that have not occurred.
 - Keep setup instructions executable and free of secret values.
+- Never write an em dash (U+2014), in any text of any repository: copy,
+  documentation, READMEs, code comments, commit messages, titles. It reads
+  as AI-generated. Use " - ", a comma, a colon or a period.
 
 <!-- rness: standards/engineering.md -->
 # Engineering standards
