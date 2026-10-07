@@ -10,7 +10,7 @@ Je code avec des agents tous les jours : Claude Code la plupart du temps, Codex
 
 J'ai écrit Rness pour gouverner ces agents depuis un seul endroit. C'est un outil libre, sous licence MIT, qui ne fait tourner aucun modèle : il lit du Markdown et écrit du Markdown, dans vos dépôts. Voici comment il marche, ce qu'il fait déjà chez moi, et où il va.
 
-![Rness en haut : .rness porte les standards, ADR, specs et plans, décidés une fois. rness sync les écrit dans le AGENTS.md de chaque dépôt, et chaque agent (Claude Code, Codex, Cursor) lit ce fichier à chaque session.](./img/couche-de-gouvernance.png)
+![Trois couches : Rness en haut, avec les standards, ADR, specs et plans décidés une fois ; les agents de code (Claude Code, Codex, Cursor), qui les lisent par AGENTS.md à chaque session ; et les dépôts, dont les agents modifient le code.](./img/couche-de-gouvernance.png)
 
 ## Un agent ne connaît que le fichier qu'il a sous les yeux
 
