@@ -39,6 +39,14 @@ const CLI: readonly [string, string][] = [
   ['Boards in rness.json', 'cli/boards'],
 ]
 
+/**
+ * The articles, newest first: signed pieces outside the versions (`freeze`
+ * never copies `articles/`), each in the language of its audience.
+ */
+const ARTICLES: readonly [string, string][] = [
+  ['Gouverner ses agents de code sur plusieurs dépôts', 'articles/gouverner-les-agents-de-code'],
+]
+
 /** A page name made readable, for a page of an older version the list does not know. */
 const titleOf = (page: string): string => {
   const name = page.split('/').pop() ?? page
@@ -174,7 +182,14 @@ export default defineConfigWithTheme<ThemeConfig>({
     // being read, which a static `nav` cannot. The guide's order is GUIDE
     // above; each version gets its own sidebars.
     nav: [],
-    sidebar: Object.assign({}, ...VERSIONS.map(sidebarOf)),
+    sidebar: Object.assign(
+      {
+        '/articles/': [
+          { text: 'Articles', items: ARTICLES.map(([text, page]) => ({ text, link: `/${page}` })) },
+        ],
+      },
+      ...VERSIONS.map(sidebarOf)
+    ),
 
     socialLinks: [{ icon: 'github', link: 'https://github.com/rness-dev/rness' }],
 
