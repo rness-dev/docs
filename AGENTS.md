@@ -1,7 +1,7 @@
 # rness docs
 
 <!-- BEGIN rness -->
-<!-- rness · scope: docs · contract: 1 · hash: ce1efe041091 · generated: run `rness sync`, never edit inside this block -->
+<!-- rness · scope: docs · contract: 1 · hash: 0356f2fb846d · generated: run `rness sync`, never edit inside this block -->
 This directory is scope `docs` of rness workspace `rness-dev`. Full context lives in
 `../../.rness/` — start at its `AGENTS.md`, then task-relevant `adr/`, `specs/`, `plans/`;
 live: `rness context --scope docs`. If `.rness/` is not reachable, this is a
@@ -35,6 +35,22 @@ shipped truth (ADR 0009).
 - Edge cases go in `::: details` blocks. A command that differs by package
   manager is shown in a `::: code-group` with the tabs npm, pnpm, yarn and
   bun.
+
+## Articles
+
+`articles/` holds signed pieces by the maintainer, outside the versions:
+`freeze` never copies them, and each one is indexed. An article follows
+`marketing/articles.md` of `.rness`: its voice, its self-check, no calendar
+date. Three rules above bend for it:
+
+- It may name what is not built yet, marked "not shipped yet", as the
+  landing page does (ADR 0009).
+- It may tell how a decision, a specification or a plan of the rness-dev
+  workspace went, as the author's own story.
+- It is written in the language of its audience: an article for the
+  Journal du Hacker is in French.
+
+What an article says the CLI does today is still the shipped truth.
 
 <!-- rness: standards/architecture.md -->
 # Architecture and repository strategy
