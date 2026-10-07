@@ -22,7 +22,7 @@ Dans une équipe qui code avec des agents, un dépôt a un `CLAUDE.md`, un `AGEN
 
 Poser une règle pour tous les agents d'une organisation, c'est d'abord un compte de fichiers. Tenue à la main, une règle va dans au moins deux fichiers par dépôt, `CLAUDE.md` et `AGENTS.md`, et davantage dès que `.cursor/rules` ou les instructions de Copilot s'en mêlent. Trois dépôts, c'est six fichiers au minimum ; quarante dépôts, quatre-vingts. Quand la règle change, on recommence, et rien ne signale la copie oubliée.
 
-![Sans Rness, trois dépôts portent sept fichiers d'agents tenus à la main : CLAUDE.md, AGENTS.md, .cursor/rules, copilot-instructions.md. Avec Rness, un fichier dans .rness/standards, et rness sync écrit le bloc AGENTS.md de chaque dépôt.](./img/une-regle-un-fichier.png)
+![Sans Rness, trois dépôts portent sept fichiers d'agents tenus à la main. Avec Rness, la règle vit dans un fichier de .rness, et rness sync tient à jour le CLAUDE.md et le AGENTS.md de chaque dépôt ; les agents lisent toujours leurs propres fichiers.](./img/une-regle-un-fichier.png)
 
 Avec Rness, la règle s'écrit une fois, dans un standard du dépôt `.rness`. La commande `rness sync` réécrit à partir de lui un bloc généré dans le `AGENTS.md` de chaque dépôt, et chaque `CLAUDE.md` pointe déjà vers ce bloc. Voici le haut du bloc dans le dépôt de mon site :
 
