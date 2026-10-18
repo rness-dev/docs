@@ -43,7 +43,10 @@ ran: `create` installs `.rness/` and hands the first sync to it.
 `add` clones the repository under `org/` — or adopts a clone already there —
 and declares it in `rness.json` for the whole team: an entry in `repos`, a
 scope of the same name, and one scope per `--scopes` directory, each extending
-the repository. Names are lowercased. In a workspace that clones over SSH, a
+the repository. Names are lowercased: `rness add dApp` declares `dapp` and
+clones into `org/dapp`, from the URL as you typed it. A clone already there
+under another case, `org/dApp`, is renamed `org/dapp` once its origin is
+checked: the confirmation says so. In a workspace that clones over SSH, a
 failing SSH test offers `--https` for that repository only.
 
 ## `rness sync`
@@ -57,9 +60,11 @@ holding `@AGENTS.md` is created next to it when there is none. In a terminal,
 catalogue repositories missing from `org/` are offered for cloning first;
 with `--yes` or `--check` they are named on one `not cloned:` line instead. A
 clone `rness.json` does not know gets no block and a `not in rness.json:`
-line. `--check` writes nothing and exits 1 when a block is out of date — the
-command for a repository's CI. With agents declared in `rness.json`, it also
-writes the files those agents need ([agent targets](../guide/claude-code.md)).
+line; a directory whose name `rness.json` cannot hold, such as `org/dApp`,
+gets a `not read:` line saying what to do. `--check` writes nothing and exits
+1 when a block is out of date: the command for a repository's CI. With agents
+declared in `rness.json`, it also writes the files those agents need
+([agent targets](../guide/claude-code.md)).
 
 ## `rness context`
 
