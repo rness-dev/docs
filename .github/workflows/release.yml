@@ -124,7 +124,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git switch -c "$BRANCH"
           git add -A
-          git commit -m "docs: freeze $MINOR — the docs render @rness/cli $LATEST"
+          git commit -m "docs: freeze $MINOR - the docs render @rness/cli $LATEST"
           git push origin "$BRANCH"
           {
             echo "@rness/cli $LATEST is on npm (the docs pinned $PINNED). This pull request moves the pin, freezes \`versions/$MINOR/\` from the working copy, and builds the site with no dead link. Merging it deploys \`/docs\`."
@@ -135,5 +135,5 @@ jobs:
             echo '- [ ] the Vercel preview of this pull request reads right'
           } > "$RUNNER_TEMP/body.md"
           gh pr create --base main --head "$BRANCH" \
-            --title "docs: freeze $MINOR — @rness/cli $LATEST" \
+            --title "docs: freeze $MINOR - @rness/cli $LATEST" \
             --body-file "$RUNNER_TEMP/body.md"
