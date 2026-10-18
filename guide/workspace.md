@@ -49,8 +49,10 @@ team's.
 
 ::: details Names and URLs
 A repository or scope name is lowercase: letters, digits, `.`, `_` and
-`-`. `org` keeps its case. A URL is cloned as written: `git@github.com:`
-when your SSH key works, `https://github.com/` otherwise
+`-`. Typed in another case, it is lowercased: `dApp` is `dapp`, in
+`rness.json` and under `org/`. `org` keeps its case. A URL is cloned as
+written: `git@github.com:` when your SSH key works, `https://github.com/`
+otherwise
 ([SSH or HTTPS](./repositories.md#ssh-or-https)).
 :::
 
