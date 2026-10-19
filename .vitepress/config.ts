@@ -27,6 +27,7 @@ const GUIDE: readonly [string, string][] = [
   ['Getting started', 'guide/getting-started'],
   ['The workspace', 'guide/workspace'],
   ['Repositories', 'guide/repositories'],
+  ['GitLab', 'guide/gitlab'],
   ['Claude Code', 'guide/claude-code'],
   ['Boards', 'guide/boards'],
   ['Update Rness', 'guide/upgrade'],

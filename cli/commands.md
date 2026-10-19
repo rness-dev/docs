@@ -25,9 +25,9 @@ whole catalogue. Logged in, it offers to create the private `<org>/.rness` on
 GitHub and push. A cancelled prompt writes nothing and exits 0.
 
 In a terminal, before the organization, it asks `Where does your
-organization live?`: GitHub, the one this version talks to; GitLab and
-Atlassian (Bitbucket + Jira) are listed, disabled. `--provider github`
-answers it off a terminal. The answer is written to `rness.json` as
+organization live?`: GitHub or [GitLab](../guide/gitlab.md); Atlassian
+(Bitbucket + Jira) is listed, disabled. `--provider github` or
+`--provider gitlab` answers it off a terminal. The answer is written to `rness.json` as
 `provider` ([the catalogue](../guide/workspace.md#rness-json-the-list-of-repositories)). A
 join asks too, then takes the provider the organization's `rness.json`
 names; `--blank` asks nothing.
@@ -155,7 +155,8 @@ Another agent can run the same command from a clone.
 
 `rness board push` shows the documents of `.rness/`, and the agent at work
 on them, on the boards `rness.json` declares under `boards`: on GitHub,
-projects of the organization. **Agent Pulse** (`pulse`) holds every
+projects of the organization; on GitLab, issue boards of the project
+`<group>/rness`, one per board view ([GitLab](../guide/gitlab.md#boards)). **Agent Pulse** (`pulse`) holds every
 collection, a board per directory, each document an issue of
 `<org>/.rness` whose body is the document ([Boards](../guide/boards.md)).
 
@@ -178,8 +179,8 @@ fields and the views and fills it, its `created` lines saying what it
 added. A step failing after the project exits 1 with the number written:
 the next `rness board push` completes the layout. Commit `rness.json` in
 `.rness`. A workspace with no `provider` whose repositories look like
-GitLab is refused before anything is created: write `"provider": "github"`
-if the organization is on GitHub.
+GitLab is refused before anything is created: write `"provider": "gitlab"`,
+or `"github"` if the organization is on GitHub.
 
 Push needs Issues on `<org>/.rness`. Without them it stops before writing
 anything, with:
@@ -263,13 +264,18 @@ login made before a board was declared lacks the scope: run `rness login`
 again. A `provider` written in `rness.json` that this version cannot talk to
 is refused.
 
+`--provider gitlab` logs in to gitlab.com instead, with its device flow
+and the scopes `api` and `write_repository`; inside a GitLab workspace the
+flag is not needed ([GitLab](../guide/gitlab.md#log-in)). `GITLAB_TOKEN`
+wins over that login.
+
 ## `rness logout`
 
 <div v-html="data.commands.logout"></div>
 
 `logout` forgets the login of this machine and undoes the git credential
 helper. The authorization itself is revoked in GitHub's settings; the command
-prints the link.
+prints the link. `--provider gitlab` forgets the GitLab login only.
 
 ## Environment
 
@@ -279,6 +285,7 @@ prints the link.
 | `RNESS_NO_DELEGATE=1` | Run the copy you invoked, never the pinned one. |
 | `RNESS_DEBUG=1` | Stack traces on errors, and a line naming the copy delegated to. |
 | `GITHUB_TOKEN`, `GH_TOKEN` | Used before the stored login, in that order: CI needs no `rness login`. |
+| `GITLAB_TOKEN` | The same on GitLab: used before the stored GitLab login. |
 | `NO_COLOR=1`, `FORCE_COLOR=1` | Plain output, or coloured output through a pipe. Output through a pipe or in CI is plain by default. |
 
 ## Exit codes

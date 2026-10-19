@@ -38,6 +38,7 @@ the former name of `"boards"`, still reads; `rness sync` renames it.
 | Key | What it is | When absent |
 | --- | --- | --- |
 | `number` | The GitHub Project's number, in the organization, written by `rness board push` when it creates the project. | Not created yet: the next `rness board push` creates it. |
+| `ids` | On GitLab, in place of `number`: one issue board id per board view, by the view's name (`{ "ADR": 12, "Specs": 13 }`), written by `rness board push`. `number` is refused on GitLab, `ids` on GitHub. | Not created yet. |
 | `preset` | The [preset](#presets) and revision the board was made from, such as `agent-pulse/1`. | No preset: the board stays as written. |
 | `title` | The project's title. | Left as it is on GitHub. |
 | `description` | The project's short description. | Left as it is. |
