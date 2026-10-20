@@ -36,16 +36,18 @@ bun create rness acme --provider gitlab
   the padlock, as a private one does. Two projects with the same path in two
   subgroups: the first is offered, the second is named and left out.
   Archived projects, and those scheduled for deletion, are not offered.
-- **The context repository is the project `<group>/rness`**: a GitLab
-  project's path must start with a letter or a digit, so `.rness` cannot be
-  one. On your machine it is still cloned as `.rness/`. Logged in, `create`
-  offers to create it, private, and push it. Otherwise it prints the steps:
+- **The context repository is the project `<group>/rness`, named
+  `_rness`**: a GitLab project's path must start with a letter or a digit,
+  so `.rness` cannot be one; the name `_rness` sets it apart from the
+  group's other projects. On your machine it is still cloned as `.rness/`.
+  Logged in, `create` offers to create it, private, and push it. Otherwise
+  it prints the steps:
 
   ```sh
-  # create the empty private project acme/rness on gitlab.com, then:
+  # create the empty private project acme/rness, named _rness, on gitlab.com, then:
   git remote add origin git@gitlab.com:acme/rness.git && git push -u origin main
   # or, with the GitLab CLI (glab) installed:
-  glab repo create acme/rness --private --skipGitInit && git push -u origin main
+  glab repo create acme/rness --name _rness --private --skipGitInit && git push -u origin main
   ```
 
 - `rness add api` adds `<group>/api`; a project of a subgroup goes by its
