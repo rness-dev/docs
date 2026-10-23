@@ -3,7 +3,10 @@
 A board shows the rules your agents apply: every decision, specification
 and plan of `.rness/`, where each one stands, and what an agent is working
 on right now. Rness writes it; the team reads it. Your provider supplies
-the board: on GitHub, a GitHub Project of your organization.
+the board: on GitHub, a GitHub Project of your organization; on GitLab,
+issue boards of the context project ([GitLab](./gitlab.md#boards)); on
+Atlassian, the board of the workspace's Jira space
+([Atlassian](./atlassian.md#boards)).
 
 **Agent Pulse** is the board Rness ships: every collection of `.rness/` on
 one project. A collection can also have a board of its own (see

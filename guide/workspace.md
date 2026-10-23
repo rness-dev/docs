@@ -37,12 +37,13 @@ both see the same context. The workspace root is not a git repository.
 
 | Key | Holds |
 | --- | --- |
-| `org` | The GitHub organization. Absent in a blank workspace. |
+| `org` | The organization: a GitHub organization, a GitLab group or a Bitbucket workspace. Absent in a blank workspace. |
 | `repos` | Every repository Rness knows about. `rness add` declares one. |
 | `scopes` | Where context applies: a repository, or a directory inside one (the parts of a monorepo). `extends` inherits another scope's context. |
 | `agents` | The agents your team uses; Rness writes their files ([Claude Code](./claude-code.md)). |
 | `boards` | The [boards](./boards.md): on GitHub, the organization's Projects, each board written whole: its collections, statuses, colours, fields and views ([Shaped in `rness.json`](./boards.md#shaped-in-rness-json)). `pulse` is [Agent Pulse](./boards.md), any other name a [collection's own board](./boards.md#a-collection-s-own-board). Declared by the team, its number written by `rness board push` when it creates it. Every key: [Boards in `rness.json`](../cli/boards.md). |
-| `provider` | Where the organization lives. `github` is the one Rness talks to today. |
+| `provider` | Where the organization lives: `github`, `gitlab` or `atlassian`. |
+| `jira` | On Atlassian only, the Jira site and space of the cards and the journal: `{ "site": "acme.atlassian.net", "space": "RNESS" }` ([Atlassian](./atlassian.md#the-jira-space)). |
 
 Commit `rness.json` in `.rness` whenever a command changes it: it is the
 team's.

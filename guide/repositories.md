@@ -55,11 +55,14 @@ only, and renews itself. `rness logout` forgets it.
 - In CI, set `GITHUB_TOKEN` or `GH_TOKEN`. Either one takes precedence over
   the login.
 - On GitLab, `rness login --provider gitlab`: see [GitLab](./gitlab.md#log-in).
+- On Atlassian, `rness login --provider atlassian`, with two API tokens:
+  see [Atlassian](./atlassian.md#log-in).
 
 ## SSH or HTTPS
 
 `create` and `add` test your SSH access to github.com once (gitlab.com in a
-[GitLab](./gitlab.md#ssh) workspace). They write
+[GitLab](./gitlab.md#ssh) workspace, ssh.bitbucket.org in an
+[Atlassian](./atlassian.md#ssh) one). They write
 `git@github.com:` URLs when GitHub accepts your key, and
 `https://github.com/` URLs otherwise. `--ssh` and `--https` choose without
 the test.

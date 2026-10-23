@@ -25,9 +25,9 @@ whole catalogue. Logged in, it offers to create the private `<org>/.rness` on
 GitHub and push. A cancelled prompt writes nothing and exits 0.
 
 In a terminal, before the organization, it asks `Where does your
-organization live?`: GitHub or [GitLab](../guide/gitlab.md); Atlassian
-(Bitbucket + Jira) is listed, disabled. `--provider github` or
-`--provider gitlab` answers it off a terminal. The answer is written to `rness.json` as
+organization live?`: GitHub, [GitLab](../guide/gitlab.md) or
+[Atlassian](../guide/atlassian.md) (Bitbucket + Jira). `--provider github`,
+`--provider gitlab` or `--provider atlassian` answers it off a terminal. The answer is written to `rness.json` as
 `provider` ([the catalogue](../guide/workspace.md#rness-json-the-list-of-repositories)). A
 join asks too, then takes the provider the organization's `rness.json`
 names; `--blank` asks nothing.
@@ -156,7 +156,9 @@ Another agent can run the same command from a clone.
 `rness board push` shows the documents of `.rness/`, and the agent at work
 on them, on the boards `rness.json` declares under `boards`: on GitHub,
 projects of the organization; on GitLab, issue boards of the project
-`<group>/rness`, one per board view ([GitLab](../guide/gitlab.md#boards)). **Agent Pulse** (`pulse`) holds every
+`<group>/rness`, one per board view ([GitLab](../guide/gitlab.md#boards));
+on Atlassian, the one board of the workspace's Jira space
+([Atlassian](../guide/atlassian.md#boards)). **Agent Pulse** (`pulse`) holds every
 collection, a board per directory, each document an issue of
 `<org>/.rness` whose body is the document ([Boards](../guide/boards.md)).
 
@@ -180,7 +182,10 @@ added. A step failing after the project exits 1 with the number written:
 the next `rness board push` completes the layout. Commit `rness.json` in
 `.rness`. A workspace with no `provider` whose repositories look like
 GitLab is refused before anything is created: write `"provider": "gitlab"`,
-or `"github"` if the organization is on GitHub.
+or `"github"` if the organization is on GitHub. On Atlassian push creates
+no board and writes nothing back: the board is the Jira space's own, and
+the first push asks instead to set up the space's statuses
+([Atlassian](../guide/atlassian.md#boards)).
 
 Push needs Issues on `<org>/.rness`. Without them it stops before writing
 anything, with:
@@ -269,13 +274,22 @@ and the scopes `api` and `write_repository`; inside a GitLab workspace the
 flag is not needed ([GitLab](../guide/gitlab.md#log-in)). `GITLAB_TOKEN`
 wins over that login.
 
+`--provider atlassian` asks for two API tokens instead, each typed into a
+masked prompt: a Bitbucket token with scopes, then the Jira site, your
+account's email, and a Jira token ([Atlassian](../guide/atlassian.md#log-in)). Nothing is stored
+until both answer. `BITBUCKET_TOKEN`, and `JIRA_EMAIL` with
+`JIRA_API_TOKEN`, win over that login; off a terminal, the command exits 1
+and names them.
+
 ## `rness logout`
 
 <div v-html="data.commands.logout"></div>
 
 `logout` forgets the login of this machine and undoes the git credential
 helper. The authorization itself is revoked in GitHub's settings; the command
-prints the link. `--provider gitlab` forgets the GitLab login only.
+prints the link. `--provider gitlab` forgets the GitLab login only;
+`--provider atlassian` forgets the Bitbucket and Jira logins, and prints
+the page where the tokens are revoked.
 
 ## Environment
 
@@ -286,6 +300,8 @@ prints the link. `--provider gitlab` forgets the GitLab login only.
 | `RNESS_DEBUG=1` | Stack traces on errors, and a line naming the copy delegated to. |
 | `GITHUB_TOKEN`, `GH_TOKEN` | Used before the stored login, in that order: CI needs no `rness login`. |
 | `GITLAB_TOKEN` | The same on GitLab: used before the stored GitLab login. |
+| `BITBUCKET_TOKEN` | The same on Atlassian: used before the stored Bitbucket token. |
+| `JIRA_EMAIL`, `JIRA_API_TOKEN` | Together, used before the stored Jira login, for the workspace's Jira site. |
 | `NO_COLOR=1`, `FORCE_COLOR=1` | Plain output, or coloured output through a pipe. Output through a pipe or in CI is plain by default. |
 
 ## Exit codes

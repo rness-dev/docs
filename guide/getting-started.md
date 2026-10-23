@@ -1,7 +1,7 @@
 # Getting started
 
-Rness gives every AI coding agent in a GitHub organization or a GitLab group
-the same context:
+Rness gives every AI coding agent in a GitHub organization, a GitLab group
+or a Bitbucket workspace the same context:
 the organization's standards, decisions, specifications and plans. They live
 as Markdown in one repository, `.rness`, and the `rness` command writes what
 applies into the `AGENTS.md` of every repository you work on. Claude Code,
@@ -12,8 +12,9 @@ You need Node 22.17 or newer, and git.
 
 ## Create a workspace
 
-A workspace mirrors one organization: a GitHub organization, or a
-[GitLab group](./gitlab.md). Create it with the package
+A workspace mirrors one organization: a GitHub organization, a
+[GitLab group](./gitlab.md), or a [Bitbucket workspace](./atlassian.md)
+with its Jira space. Create it with the package
 manager you use; the workspace installs its own dependencies with the same
 one.
 
@@ -39,9 +40,9 @@ bun create rness
 
 The command asks a few questions:
 
-1. **Where your organization lives**: GitHub or [GitLab](./gitlab.md)
-   (Atlassian comes later), or no organization yet: a blank local workspace
-   (below).
+1. **Where your organization lives**: GitHub, [GitLab](./gitlab.md) or
+   [Atlassian](./atlassian.md) (Bitbucket + Jira), or no organization yet:
+   a blank local workspace (below).
 2. **A login** on that host, offered once: it lists your organizations and
    their private repositories.
 3. **The organization**, picked from your list, or typed when it is not

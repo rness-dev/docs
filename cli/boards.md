@@ -2,7 +2,10 @@
 
 Every board Rness keeps is declared in `.rness/rness.json`, under
 `boards`, one entry per board; on GitHub, a board is a GitHub Project of the
-organization. `pulse` is [Agent Pulse](../guide/boards.md); any other name
+organization; on GitLab, an issue board per `board` view
+([GitLab](../guide/gitlab.md#boards)); on Atlassian, the board of the
+workspace's Jira space ([on Atlassian](#on-atlassian)).
+`pulse` is [Agent Pulse](../guide/boards.md); any other name
 is a [collection's own board](../guide/boards.md#a-collection-s-own-board).
 This page lists every key. What `rness.json` says is the board: edit it,
 commit it, and the next `rness board push` brings the board in line.
@@ -38,7 +41,7 @@ the former name of `"boards"`, still reads; `rness sync` renames it.
 | Key | What it is | When absent |
 | --- | --- | --- |
 | `number` | The GitHub Project's number, in the organization, written by `rness board push` when it creates the project. | Not created yet: the next `rness board push` creates it. |
-| `ids` | On GitLab, in place of `number`: one issue board id per board view, by the view's name (`{ "ADR": 12, "Specs": 13 }`), written by `rness board push`. `number` is refused on GitLab, `ids` on GitHub. | Not created yet. |
+| `ids` | On GitLab, in place of `number`: one issue board id per board view, by the view's name (`{ "ADR": 12, "Specs": 13 }`), written by `rness board push`. `number` is refused on GitLab, `ids` on GitHub, and both on Atlassian, where nothing names the board. | Not created yet. |
 | `preset` | The [preset](#presets) and revision the board was made from, such as `agent-pulse/1`. | No preset: the board stays as written. |
 | `title` | The project's title. | Left as it is on GitHub. |
 | `description` | The project's short description. | Left as it is. |
@@ -223,3 +226,33 @@ When a later Rness brings a new revision of a preset, `rness sync` (which
 never changed takes the new value; what you changed stays yours, and the
 sync names it when the new revision changed it too. Remove `preset` to
 keep a board exactly as you wrote it.
+
+## On Atlassian {#on-atlassian}
+
+On GitLab, each `board` view is an issue board and a select a scoped label
+([GitLab](../guide/gitlab.md#boards)). On Atlassian, the cards live in the
+workspace's Jira space, `jira` in `rness.json`, and a declared board
+becomes:
+
+| In `rness.json` | On Jira |
+| --- | --- |
+| The board | The space's one board, shared by every `board` view. Never created; `number` and `ids` are refused. |
+| A card | An issue of the space, type Task, labelled `rness`. Its description is the document, its first line the file on Bitbucket. |
+| `Status`, a collection's status field | The issue's Jira status, the same for both. |
+| A `select` field | A label `<field>-<option>`, lowercased, spaces as `-`: `collection-specs`, `agent-working`. |
+| A `text`, `date` or `number` field | A line at the end of the description, below a rule. |
+| `labels` | Labels, lowercased, spaces as `-`. |
+| `colors` | Nothing: a Jira label has no colour, and a status takes its category's. |
+| A `board` view | The space's board; the view's collection is a label to filter on, said once. |
+| A `table` view | Jira's issue search, its URL said once: the space, `rness`, and the labels its `filter` names. |
+| A `roadmap` view | Nothing, said once. |
+| `filter` | On a table, labels in the search; on a board, dropped. |
+| `title`, `description`, `readme`, `updates` | Not written. |
+| A gone document | Its card moves to the status `Gone`, and back when the document returns. |
+
+The space's statuses are those of the board's collections, once each
+whatever the case, and `Gone`. The first `rness board push` asks to set
+them up, each with a global transition. Their categories in Jira: To do
+for Draft, Proposed and Ready; In progress for In progress, Blocked and
+Approved; Done for the others. `Gone` is hidden once by hand, in the
+board's column settings: [Atlassian](../guide/atlassian.md#boards).
