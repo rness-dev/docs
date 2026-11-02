@@ -173,15 +173,16 @@ nothing back to `rness.json`: `number` and `ids` are refused on Atlassian.
 The first push asks before it changes the space:
 
 ```text
-◆  Set up RNESS for Agent Pulse: 13 statuses, any-to-any transitions?
+◆  Set up RNESS for Agent Pulse: 12 statuses, any-to-any transitions?
 ```
 
 `--yes` answers it. Off a terminal without `--yes`, nothing is set up, and
 the push exits 1 with how to do it. In a space as Jira's Kanban template
-made it, with its four statuses To Do, In Progress, In Review and Done:
+makes it, with To Do, In Review and Done of its own and the site's global
+In Progress (seen 2026-11-02):
 
 ```text
-renamed  the template's To Do, In Progress, Done: Draft, In progress, Completed
+renamed  the template's To Do, Done: Draft, Completed
 created  10 statuses in RNESS: Proposed, Ready, Approved, Blocked, Accepted, Implemented, Rejected, Superseded, Abandoned, Gone
 note     views ADR, Specs, Plans share the board of RNESS: filter on collection-adr, collection-specs, collection-plans
 note     view All: https://acme.atlassian.net/issues/?jql=project%20%3D%20RNESS%20AND%20labels%20%3D%20rness
@@ -192,8 +193,9 @@ visible  Gone has a column, so gone documents show on the board: hide it once, a
 - **The statuses are real Jira statuses**, each with a global transition,
   so any status reaches any other in one move. In another space, a status
   whose name matches a declared one, whatever the case, is used as it is,
-  and the missing ones are created. In Review is left for your team to
-  keep or remove.
+  and the missing ones are created. The site's global In Progress is used
+  as it is too: renamed, it would change in every space of the site. In
+  Review is left for your team to keep or remove.
 - **Jira gives each new status its own column** on a fresh board, `Gone`
   included. Hide `Gone` once, by hand: in the board's column settings,
   among the hidden statuses. Jira's API cannot do it. The next push
