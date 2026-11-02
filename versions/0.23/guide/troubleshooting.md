@@ -62,6 +62,45 @@ Rness repository does:
 and in `eslint.config.js`, `globalIgnores(['.claude/skills/rness/**'])`.
 A `tsconfig.json` whose `include` reaches `.claude/` needs it in `exclude`.
 
+## Boards
+
+### A board is skipped, or `validate` names a key of `boards` {#board-refused}
+
+`rness board push` says `skipped <name>: …` and `rness validate` names the
+key at fault, such as `"boards.roadmap.views[1].date" must name a date
+field`. Rness checks each board declared in `rness.json` on its own: the
+others are still pushed. Fix the key the line names, then push again.
+
+A board is skipped too while its collection's `README.md` still declares
+`description`, `statuses`, `fields` or `labels`, as before 0.21. Run
+`rness sync`: it moves them into `rness.json`. When the README and
+`rness.json` say different things, it names both and moves nothing: keep
+the one you want in `rness.json` and delete the other from the README.
+
+### `unknown key "boards"` after an upgrade {#upgrade-projects}
+
+`rness upgrade` ends with this line, or with `"projects" must map names to
+distinct project numbers`, after its `Committed …` line, when the copy that
+ran it is older than the boards it has just written in `rness.json`: the
+new version wrote them under `boards`, each whole, and the old copy,
+finishing, cannot read them. The upgrade is complete. Check it
+from `.rness/`, where the new version now runs:
+
+```sh
+pnpm rness validate
+```
+
+Then push `.rness` as usual. To have the new version run the whole
+upgrade, start it with `npx @rness/cli@latest upgrade`.
+
+### A board's `readme` or `updates` is refused {#board-path}
+
+`readme` and `updates` are paths within `.rness/`, such as
+`roadmap/README.md`. A path out of `.rness/`, or a file that is a link
+leading out of it, is refused before anything is read: `rness.json` is
+shared by the whole organization, and the file would be published on
+GitHub.
+
 ## Node.js and updates
 
 ### `rness needs Node … or newer` {#node-version}
