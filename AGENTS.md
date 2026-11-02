@@ -287,7 +287,8 @@ Public documentation site of rness, built with VitePress. See
   (`rness-dev/web`, `src/app/globals.css`). Change them together.
 - So do the brand files: `public/favicon.ico` is the landing page's
   `src/app/favicon.ico`, `public/logo.svg` its `LogoMark`, and
-  `theme/HeroDiagram.vue` its hero diagram laid out top to bottom.
+  `theme/HeroWindow.vue` the product window of its hero (`ProductWindow`
+  in `src/components/landing/hero.tsx`).
 - Native-build approval for esbuild lives in `pnpm-workspace.yaml`
   (`allowBuilds`), not in `package.json`.
 - Analytics: `.vitepress/theme/analytics.ts`, loaded by `enhanceApp` in the

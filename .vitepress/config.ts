@@ -12,8 +12,10 @@ export interface ThemeConfig extends DefaultTheme.Config {
 
 // The public host: rness.dev rewrites /docs to this deployment (org/web,
 // next.config.ts). Canonical links and the sitemap name that host, so the
-// *.vercel.app one never competes in search.
-const SITE_URL = 'https://rness.dev/docs'
+// *.vercel.app one never competes in search. The top bar's Product and
+// Resources menus link back to the landing page on the same origin.
+const SITE_ORIGIN = 'https://rness.dev'
+const SITE_URL = `${SITE_ORIGIN}/docs`
 
 // Every version the site serves (spec 0021 §2), read from `versions/` once
 // per build: the latest release at the root, the working copy under `next/`,
@@ -91,7 +93,7 @@ function latestOf(path: string): string {
 export default defineConfigWithTheme<ThemeConfig>({
   title: 'Rness',
   description:
-    'Rness documentation: one source of truth for every AI coding agent across your GitHub organization. The guide, the commands and the changelog of each release.',
+    'Rness documentation: one source of truth for every AI coding agent across your organization. The guide, the commands and the changelog of each release.',
   lang: 'en-US',
   // Served under /docs of the landing domain through a rewrite (see vercel.json)
   base: '/docs/',
@@ -99,8 +101,8 @@ export default defineConfigWithTheme<ThemeConfig>({
   lastUpdated: true,
   // Repository files, not pages of the site
   srcExclude: ['README.md', 'AGENTS.md', 'CLAUDE.md'],
-  // The landing page is dark-only; the docs follow it
-  appearance: 'force-dark',
+  // The landing page is light only; the docs follow it (no appearance switch)
+  appearance: false,
   rewrites: REWRITE,
 
   sitemap: {
@@ -176,14 +178,55 @@ export default defineConfigWithTheme<ThemeConfig>({
     // The landing page's lockup: the icon, then "Rness" in Archivo Black (custom.css).
     logo: '/logo.svg',
     siteTitle: 'Rness',
-    // The default logo link is `base` — `/docs/`, one redirect per click on
+    // The default logo link is `base`, `/docs/`: one redirect per click on
     // the site's own host and through rness.dev. `/docs` is the served form.
     logoLink: '/docs',
 
     // Guide and CLI are in theme/VersionNav.vue: they follow the version
     // being read, which a static `nav` cannot. The guide's order is GUIDE
-    // above; each version gets its own sidebars.
-    nav: [],
+    // above; each version gets its own sidebars. The rest mirrors the
+    // landing page's header (rness-dev/web, src/components/site-header.tsx):
+    // Blog, then Product and Resources. Links to rness.dev stay in the same
+    // tab and carry no external-link arrow: it is the same site.
+    nav: [
+      {
+        text: 'Blog',
+        link: '/articles/gouverner-les-agents-de-code',
+        activeMatch: '^/articles/',
+      },
+      {
+        text: 'Product',
+        items: [
+          { text: 'Capabilities', link: `${SITE_ORIGIN}/#product`, target: '_self', noIcon: true },
+          { text: 'How it works', link: `${SITE_ORIGIN}/#demo`, target: '_self', noIcon: true },
+          { text: 'The CLI and drift checks', link: `${SITE_ORIGIN}/#workflow`, target: '_self', noIcon: true },
+          { text: 'The .rness folder', link: `${SITE_ORIGIN}/#layer`, target: '_self', noIcon: true },
+        ],
+      },
+      {
+        text: 'Resources',
+        items: [
+          {
+            text: 'Open source',
+            items: [
+              { text: 'GitHub repository', link: 'https://github.com/rness-dev/rness' },
+              { text: 'Discussions', link: 'https://github.com/rness-dev/rness/discussions' },
+              { text: 'Issues', link: 'https://github.com/rness-dev/rness/issues' },
+              { text: 'npm package', link: 'https://www.npmjs.com/package/@rness/cli' },
+            ],
+          },
+          {
+            text: 'Company',
+            items: [
+              { text: 'About', link: `${SITE_ORIGIN}/about`, target: '_self', noIcon: true },
+              { text: 'Security', link: 'https://github.com/rness-dev/.github/blob/main/SECURITY.md' },
+              { text: 'Privacy', link: `${SITE_ORIGIN}/privacy`, target: '_self', noIcon: true },
+              { text: 'Contact', link: `${SITE_ORIGIN}/contact`, target: '_self', noIcon: true },
+            ],
+          },
+        ],
+      },
+    ],
     sidebar: Object.assign(
       {
         '/articles/': [

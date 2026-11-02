@@ -18,7 +18,7 @@ hero:
 
 features:
   - title: One context, every repository
-    details: A workspace mirrors a GitHub organization. Its context lives in one repository, .rness, and rness sync writes the part that applies into each repository's AGENTS.md — a marked block, the rest of the file untouched.
+    details: A workspace mirrors a GitHub organization. Its context lives in one repository, .rness, and rness sync writes the part that applies into each repository's AGENTS.md - a marked block, the rest of the file untouched.
   - title: Every agent, unchanged
     details: Claude Code, Codex, Cursor and GitHub Copilot read AGENTS.md already. No new agent, no new workflow, no new configuration format.
   - title: One version for the whole team

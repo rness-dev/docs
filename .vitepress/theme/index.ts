@@ -3,7 +3,7 @@ import DefaultTheme from 'vitepress/theme'
 import type { Theme } from 'vitepress'
 import { h } from 'vue'
 
-import HeroDiagram from './HeroDiagram.vue'
+import HeroWindow from './HeroWindow.vue'
 import VersionMenu from './VersionMenu.vue'
 import VersionNav from './VersionNav.vue'
 import './custom.css'
@@ -22,8 +22,8 @@ export default {
       'nav-bar-content-after': () => h(VersionMenu),
       'nav-screen-content-before': () => h(VersionNav, { screen: true }),
       'nav-screen-content-after': () => h(VersionMenu, { screen: true }),
-      // The landing page's hero diagram, top to bottom, at the right of the
-      // home page's text (custom.css hides it where there is no right).
-      'home-hero-image': () => h(HeroDiagram),
+      // The landing page's product window, at the right of the home page's
+      // text (custom.css hides it where there is no right).
+      'home-hero-image': () => h(HeroWindow),
     }),
 } satisfies Theme
