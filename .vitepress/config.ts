@@ -45,10 +45,10 @@ const CLI: readonly [string, string][] = [
 
 /**
  * The articles, newest first: signed pieces outside the versions (`freeze`
- * never copies `articles/`), each in the language of its audience.
+ * never copies `articles/`), in English like the rest of the site.
  */
 const ARTICLES: readonly [string, string][] = [
-  ['Gouverner ses agents de code sur plusieurs dépôts', 'articles/gouverner-les-agents-de-code'],
+  ['Governing coding agents across repositories', 'articles/governing-coding-agents'],
 ]
 
 /** A page name made readable, for a page of an older version the list does not know. */
@@ -191,7 +191,7 @@ export default defineConfigWithTheme<ThemeConfig>({
     nav: [
       {
         text: 'Blog',
-        link: '/articles/gouverner-les-agents-de-code',
+        link: '/articles/governing-coding-agents',
         activeMatch: '^/articles/',
       },
       {

@@ -63,6 +63,26 @@
       "source": "/docs/guide/versions",
       "destination": "/docs/guide/upgrade",
       "permanent": true
+    },
+    {
+      "source": "/articles/gouverner-les-agents-de-code",
+      "destination": "/docs/articles/governing-coding-agents",
+      "permanent": true
+    },
+    {
+      "source": "/articles/gouverner-les-agents-de-code.md",
+      "destination": "/docs/articles/governing-coding-agents.md",
+      "permanent": true
+    },
+    {
+      "source": "/docs/articles/gouverner-les-agents-de-code",
+      "destination": "/docs/articles/governing-coding-agents",
+      "permanent": true
+    },
+    {
+      "source": "/docs/articles/gouverner-les-agents-de-code.md",
+      "destination": "/docs/articles/governing-coding-agents.md",
+      "permanent": true
     }
   ]
 }
