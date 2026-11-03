@@ -66,6 +66,7 @@ otherwise
 | `specs/` | What is proposed, and why | `Draft`, `Proposed`, `Approved`, `Implemented`, `Superseded`, `Rejected` |
 | `plans/` | Ordered steps to implement a specification | `Draft`, `Ready`, `In progress`, `Blocked`, `Completed`, `Abandoned` |
 | `skills/` | Reusable agent skills | none |
+| `policy/` | Rules refused at commit, push and edit ([Policies](./policies.md)); not numbered | `Enabled`, `Disabled` |
 
 A decision, specification or plan starts with front matter:
 

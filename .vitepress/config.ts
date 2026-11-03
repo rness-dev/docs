@@ -33,6 +33,7 @@ const GUIDE: readonly [string, string][] = [
   ['Atlassian', 'guide/atlassian'],
   ['Claude Code', 'guide/claude-code'],
   ['Boards', 'guide/boards'],
+  ['Policies', 'guide/policies'],
   ['Update Rness', 'guide/upgrade'],
   ['Troubleshooting', 'guide/troubleshooting'],
 ]
