@@ -11,8 +11,8 @@ A policy acts at three points, from one file:
    in the `AGENTS.md` block of the scope it applies to, so the agent is told.
 2. **Before execution.** The Claude Code guard refuses an edit that adds a
    refused line, and a command that would skip the git hooks.
-3. **Before git records.** Git hooks in every clone refuse the commit or the
-   push, for any agent and for people.
+3. **Before git records.** Git hooks in every clone `rness.json` declares
+   refuse the commit or the push, for any agent and for people.
 
 ## A policy
 
@@ -80,6 +80,11 @@ expression language.
 
 - **Added lines only.** A file that already holds the pattern does not block a
   commit that does not touch that line.
+- **Merges.** A merge git concludes itself runs no `pre-commit`. One you
+  conclude with `git commit` after a conflict does, and only the lines added
+  against every parent are checked: your conflict resolutions and any new
+  line. A line either branch brought passes, since it was checked when that
+  branch committed it.
 - **Rness's own outputs are not checked** by `added-lines`: the files under
   `.claude/skills/rness/` and the lines inside a rness block. Nobody can fix
   them where they land; their source is elsewhere.
@@ -96,31 +101,94 @@ expression language.
 
 `rness create`, `rness add` and `rness sync` write three hooks, `pre-commit`,
 `commit-msg` and `pre-push`, in the hooks directory of every clone under
-`org/`. They are local to your machine and never committed to the project.
+`org/` that `rness.json` declares, as a repository or as the home of a
+scope. They are local to your machine and never committed to the project.
 They are written whatever the policies, and each passes at once while no
 enabled policy uses its check: a policy enabled in `.rness/` applies as soon
 as the clone has pulled it, with no `sync`. `.rness/` itself gets the same
 three through its own `.githooks/`.
 
+A clone `rness.json` does not declare gets no hook, and no policy applies in
+a clone that holds no scope: nothing is checked there, by the hooks or by the
+guard. A clone's name is compared whatever its case, so `org/Web` is the
+declared `web` and its policies apply.
+
 Each hook carries a marker line and runs the CLI pinned in
-`.rness/package.json`, by its absolute path. `rness sync` rewrites a rness
-hook that is missing or out of date. It reports two cases, once per clone
-until the cause changes, and writes nothing there:
+`.rness/package.json`, by the workspace's absolute path. `rness sync`
+rewrites a rness hook that is missing or out of date. It reports two cases,
+once per clone until the cause changes, and writes nothing there:
 
 - a hook file without the marker is someone else's and is left as it is;
 - a clone with `core.hooksPath` set (husky, lefthook) is left alone.
 
-Each report ends with the command to add to your own hook manager, for each of
-the three hooks:
+Each report ends with the lines to add to that hook, or to each of the three
+hooks of your own hook manager, `<hook>` replaced by the hook's name. They
+find the workspace from the clone, two levels up, so your team can commit
+them; outside a work tree they do nothing, and they end the hook only to
+refuse, so your own lines after them still run:
 
 ```sh
-node '/path/to/workspace/.rness/node_modules/@rness/cli/dist/bin/rness.js' policy check <hook> "$@"
+rness_dir=
+if rness_top=$(git rev-parse --show-toplevel 2>/dev/null); then
+  rness_dir=$(cd "$rness_top/../../.rness" 2>/dev/null && pwd -P) || rness_dir="$rness_top/../../.rness"
+fi
+rness_bin="$rness_dir/node_modules/@rness/cli/dist/bin/rness.js"
+rness_why=
+if [ -z "$rness_dir" ]; then
+  :
+elif ! command -v node >/dev/null 2>&1; then
+  rness_why='node not found'
+elif [ ! -f "$rness_bin" ]; then
+  rness_why="$rness_bin not found"
+elif [ ! -f "$rness_dir/rness.json" ] || [ ! -O "$rness_dir" ] || [ -n "$(find "$rness_dir" -prune -perm -0002)" ]; then
+  echo "rness: policies not checked: $rness_dir is no workspace .rness of yours alone" >&2
+else
+  rness_status=0
+  rness_out=$(node "$rness_bin" policy check <hook> "$@" 2>&1) || rness_status=$?
+  if [ "$rness_status" -ne 0 ] && [ "$rness_status" -ne 20 ]; then
+    rness_out="rness: policies not checked: the rness CLI exited $rness_status"
+  fi
+  if [ -n "$rness_out" ]; then
+    printf '%s\n' "$rness_out" >&2
+  fi
+  if [ "$rness_status" -eq 20 ]; then
+    exit 1
+  fi
+fi
+if [ -n "$rness_why" ] && { [ ! -d "$rness_dir" ] || grep -rqsE "^status:[[:space:]]*[\"']?Enabled" "$rness_dir/policy"; }; then
+  echo "rness: policies not checked: $rness_why" >&2
+fi
 ```
 
 The hooks fail open. A missing `node`, a pinned CLI not installed, a `.rness/`
 not reachable (a standalone clone) or an error of Rness's own never blocks a
 commit: the hook prints one line, `rness: policies not checked: <why>`, and
-lets git go on. Only a refusal blocks.
+lets git go on. A missing `node` or CLI says nothing while no policy is
+enabled, since nothing would be checked. Only a refusal blocks: its message
+is shown, and the hook exits 1. Any other exit of the CLI is one line,
+`rness: policies not checked: the rness CLI exited <n>`, in place of what
+it printed.
+
+A hook runs the CLI only from a `.rness/` that holds its `rness.json`, is
+owned by you and is not writable by everyone. A `.rness/` someone else could
+have placed above a clone (`/tmp/.rness` for a clone under `/tmp`) is never
+run: the hook says so in one line.
+
+::: details Removing the hooks
+A rness hook is the one whose second line is the marker,
+`# rness: policy hook`. After moving the pin back to a version without
+policies, each commit says `the rness CLI exited 2` until you remove them.
+In each clone:
+
+```sh
+for hook in pre-commit commit-msg pre-push; do
+  file="$(git rev-parse --git-path hooks)/$hook"
+  if grep -qs '^# rness: policy hook' "$file"; then rm "$file"; fi
+done
+```
+
+A hook without the marker is left as it is.
+:::
 
 ## The refusal
 
@@ -143,8 +211,8 @@ prints the same text and refuses the tool call. There is no retry limit.
 ## Where refusals show
 
 Each refusal is recorded as one line in `rness/refusals.jsonl`, in the git
-directory of the clone: never committed, never pushed, and pruned to 30 days
-by `rness sync`.
+directory of the clone or of `.rness/`: never committed, never pushed, and
+pruned to 30 days by `rness sync`.
 
 - **The session summary.** With a board that keeps a [journal](./boards.md),
   the summary of a session gains a line such as
@@ -153,7 +221,8 @@ by `rness sync`.
   the same clone at the same time both count the same window.
 - **`rness status`.** A Policies tab lists every policy with its scope and
   status, then the refusals of the last 7 days across the clones, grouped by
-  policy with the count and the last time. `/rness:status` shows the same.
+  policy with the count and the last time, in UTC. `/rness:status` shows the
+  same.
 
 ## Turn on the example
 
@@ -180,7 +249,7 @@ Dated 2026-11-03. Informed means the block of `AGENTS.md` tells the agent.
 | Codex CLI, Cursor, local | Yes, through `AGENTS.md` | The git hooks: commit, push. | `--no-verify`; a write until it is committed. |
 | Cloud agents (Codex cloud, Cursor background agents, Claude Code on the web) | If they read `AGENTS.md` | Nothing: no Rness hook in their clone. | Everything else. |
 | A person | No | The git hooks. | `--no-verify`. |
-| A clone using husky or lefthook | As its harness | Nothing until the team adds the line `rness sync` prints. | Everything else. |
+| A clone using husky or lefthook | As its harness | Nothing until the team adds the lines `rness sync` prints. | Everything else. |
 
 For Codex CLI and Cursor, the git hooks apply by inference: their documentation
 says nothing of git hooks (verified 2026-11-03), and a shell they start runs
@@ -229,7 +298,8 @@ route around the hooks themselves.
   hooks do; `rness validate` reports it.
 - **Commits that run none of these hooks by design.** `git commit-tree` with
   `git update-ref`, `git am`, `git rebase`, `git cherry-pick`, `git revert`,
-  `git stash`; a merge never runs `pre-commit`.
+  `git stash`; a merge git concludes itself runs no `pre-commit` (one you
+  conclude with `git commit` after a conflict does).
 - **The hooks themselves.** `rm`, `chmod -x` or an edit of `.git/hooks/*`, an
   edit of `.git/config` (the edit tools or `echo >>`), `git config --unset`
   of a team hook manager's path.

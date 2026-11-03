@@ -67,26 +67,29 @@ declared in `rness.json`, it also writes the files those agents need
 
 `sync` also writes the git hooks that apply the workspace's
 [policies](../guide/policies.md): `pre-commit`, `commit-msg` and `pre-push`
-in the hooks directory of every clone under `org/`, never in `.rness/` and
-never with `--check`. It lists them as `updated <repository> git hooks
-(pre-commit, commit-msg, pre-push)` when it writes or rewrites any. A hook
-file Rness did not write is left as it is, and a clone with `core.hooksPath`
-set is left alone; each is reported once per clone, until the cause changes,
-as a `skipped` line with the command to add to your own hook manager. `sync`
-also prunes the refusals recorded more than 30 days ago.
+in the hooks directory of every clone under `org/` that `rness.json`
+declares, never in `.rness/` and never with `--check`. It lists them as
+`updated <repository> git hooks (pre-commit, commit-msg, pre-push)` when it
+writes or rewrites any. A hook file Rness did not write is left as it is,
+and a clone with `core.hooksPath` set is left alone; each is reported once
+per clone, until the cause changes, as a `skipped` line followed by the lines
+to add to your own hook manager. `sync` also prunes the refusals recorded
+more than 30 days ago, in the clones and in `.rness/`.
 
 `rness policy check <hook>` is the command the hooks run. It is internal and
 hidden from `--help`: a person never runs it. It exits 20 for a refusal,
-which each hook turns into exit 1; any other status is a warning
-(`rness: policies not checked: ...`) and the commit or push goes on.
+which each hook turns into exit 1; any other status is one line
+(`rness: policies not checked: ...`) and the commit or push goes on. In a
+clone that holds no scope it passes in silence.
 
 ## `rness context`
 
 <div v-html="data.commands.context"></div>
 
-`context` prints the resolved context — standards, ADRs, specifications, plans
-and skills — of one scope: the global files of each collection, the scope's
-own, and everything along its `extends` chain. Without `--scope`, the scope
+`context` prints the resolved context of one scope (standards, ADRs,
+specifications, plans, skills and policies): the global files of each
+collection, the scope's own, and everything along its `extends` chain. Each policy is printed
+with its status under its title, `Enabled` or `Disabled`. Without `--scope`, the scope
 owning the current directory; at the workspace root, the global files only.
 `--json` prints the same as one object. No prompt, no network.
 
