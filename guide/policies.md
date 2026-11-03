@@ -74,7 +74,7 @@ expression language.
 
 | `check` | What it reads | `deny` | Run by |
 | --- | --- | --- | --- |
-| `commit-message` | Each line of the commit message, up to git's scissors line. Comment lines are read too: under `-m` and `-F` git keeps them in the commit. | A pattern | The `commit-msg` hook |
+| `commit-message` | Every line of the commit message, cut at git's scissors line only for a message edited in an editor (never under `-m`, `-F` or for a merge message). Comment lines are read too: under `-m` and `-F` git keeps them in the commit. | A pattern | The `commit-msg` hook |
 | `added-lines` | Each line a commit or an edit adds, never a line already there. | A pattern | The `pre-commit` hook, and the guard on `Edit` and `Write` |
 | `push` | Each ref update of a push. | `non-fast-forward`, the only value | The `pre-push` hook |
 
@@ -196,16 +196,16 @@ hooks while an enabled policy applies: `git commit --no-verify` or `-n`,
 `GIT_CONFIG_SYSTEM`, `GIT_CONFIG`, and a write of `core.hooksPath` or of an
 include. When a git command holds a hook-skipping word it cannot read, it
 refuses as a backstop, so it can refuse a command that was harmless
-(`GIT_CONFIG_GLOBAL=/dev/null git commit`, `git -c "$KV" ...`). The git hooks
+(`GIT_CONFIG_GLOBAL=/dev/null git commit`, `git -c "$KV" ...`, `ls *.md commit -n`). The git hooks
 still run in every case below except the last two groups, which change or
 route around the hooks themselves.
 
 ::: details The cases it does not catch
 - **Scripts it cannot see.** A shell reading its script from stdin or a file
-  (`bash <<EOF`, `... | sh`, `bash script.sh`, `source file`); shell functions
+  (`bash <<EOF`, `... | sh`, `sh < file`, `bash script.sh`, `source file`, `. file`); shell functions
   and aliases; other interpreters (`python -c`, `node -e`, `perl -e`), `make`,
   `npm run`, any script that runs git.
-- **Configuration it cannot see.** Git aliases already in a configuration
+- **Configuration it cannot see.** An alias value is read as a shell reads it, not with git's own splitting. Git aliases already in a configuration
   file or in the hook's own environment; another global configuration through
   `HOME=` or `XDG_CONFIG_HOME=`; `GIT_EXEC_PATH` or `--exec-path=` pointing git
   at other commands.
@@ -222,6 +222,9 @@ route around the hooks themselves.
 - **Shell readings.** Only bash 3.2 and zsh were run against the reader.
   Some zsh patterns, a brace expression whose separator comes from an
   expansion, and bash 5, dash or fish where they differ from both.
+- **False positives.** The backstop fails closed, so it can refuse a
+  harmless command: `ls *.md commit -n`, `git commit -m x *` (refused as
+  "may", since the shell could expand `*` to an option).
 - **Policies.** An `extends` cycle makes the Bash check fail open, as the git
   hooks do; `rness validate` reports it.
 - **Commits that run none of these hooks by design.** `git commit-tree` with
