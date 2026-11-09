@@ -303,4 +303,7 @@ route around the hooks themselves.
 - **The hooks themselves.** `rm`, `chmod -x` or an edit of `.git/hooks/*`, an
   edit of `.git/config` (the edit tools or `echo >>`), `git config --unset`
   of a team hook manager's path.
+- **Git's own state written by hand.** A `.git/MERGE_HEAD` naming a commit
+  that holds a refused line: at the merge conclusion, that line passes as a
+  branch's own.
 :::
