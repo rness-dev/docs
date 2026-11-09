@@ -1,7 +1,7 @@
 # rness docs
 
 <!-- BEGIN rness -->
-<!-- rness · scope: docs · contract: 1 · hash: f058f79c49ca · generated: run `rness sync`, never edit inside this block -->
+<!-- rness · scope: docs · contract: 1 · hash: 35c74b92b908 · generated: run `rness sync`, never edit inside this block -->
 This directory is scope `docs` of rness workspace `rness-dev`. Full context lives in
 `../../.rness/`: start at its `AGENTS.md`, then task-relevant `adr/`, `specs/`, `plans/`;
 live: `rness context --scope docs`. If `.rness/` is not reachable, this is a
@@ -270,6 +270,34 @@ scaffold does not mandate a CSS framework, component library, or theme tool.
 - Keep components focused and composable; avoid premature design-system
   abstractions.
 - Respect existing light, dark, and system-theme behavior when present.
+
+## Policies
+<!-- rness: policy/no-agent-trailers.md -->
+# No agent trailers
+- Refused at commit (the message): Remove the agent's Co-Authored-By trailer, then commit again.
+- Refused at commit (the message): Remove the Claude-Session trailer, then commit again.
+
+Commits are attributed to the developer who reviews them. Agents add their
+own trailer by default; this workspace does not keep it.
+
+<!-- rness: policy/no-em-dash.md -->
+# No em dash
+- Refused at commit (the message): Write " - ", a comma, a colon or a period instead of the em dash.
+- Refused at commit and on edit (added lines): Write " - ", a comma, a colon or a period instead of the em dash.
+- Standard: `standards/documentation.md`
+
+It reads as AI-generated. The rule and its reason are in the documentation
+standard.
+
+<!-- rness: policy/no-force-push.md -->
+# No force push
+- Refused at push (non-fast-forward): Rebase on the remote branch and push again, or push a new branch.
+
+Rewriting a shared branch breaks the clones of everyone who pulled it.
+This policy stops the push before it leaves the machine; the host's branch
+protection is the only guarantee on the server.
+
+To enable it, change `Disabled` to `Enabled` in a pull request.
 <!-- END rness -->
 
 Public documentation site of rness, built with VitePress. See
