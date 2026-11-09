@@ -46,7 +46,7 @@ only, and renews itself. `rness logout` forgets it.
 
 - Rness asks for the `repo` and `read:org` scopes. GitHub has no read-only
   scope for private repositories, but Rness only lists and clones them.
-  Where the workspace uses [Agent Pulse](./agent-pulse.md), it also asks for
+  Where the workspace has a [board](./boards.md), it also asks for
   `project`, to write the board.
 - An organization that restricts OAuth apps hides its private repositories
   until an owner approves "Rness". `rness create` opens the approval page
@@ -54,10 +54,15 @@ only, and renews itself. `rness logout` forgets it.
   link.
 - In CI, set `GITHUB_TOKEN` or `GH_TOKEN`. Either one takes precedence over
   the login.
+- On GitLab, `rness login --provider gitlab`: see [GitLab](./gitlab.md#log-in).
+- On Atlassian, `rness login --provider atlassian`, with two API tokens:
+  see [Atlassian](./atlassian.md#log-in).
 
 ## SSH or HTTPS
 
-`create` and `add` test your SSH access to github.com once. They write
+`create` and `add` test your SSH access to github.com once (gitlab.com in a
+[GitLab](./gitlab.md#ssh) workspace, ssh.bitbucket.org in an
+[Atlassian](./atlassian.md#ssh) one). They write
 `git@github.com:` URLs when GitHub accepts your key, and
 `https://github.com/` URLs otherwise. `--ssh` and `--https` choose without
 the test.
