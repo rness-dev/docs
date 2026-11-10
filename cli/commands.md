@@ -40,9 +40,11 @@ ran: `create` installs `.rness/` and hands the first sync to it.
 <div v-html="data.commands.add"></div>
 
 `add` clones the repository under `org/` — or adopts a clone already there —
-and declares it in `rness.json` for the whole team: an entry in `repos`, a
-scope of the same name, and one scope per `--scopes` directory, each extending
-the repository. Names are lowercased: `rness add dApp` declares `dapp` and
+and declares it in `rness.json` for the whole team: a scope with its `url`,
+and under it one scope per `--scopes` directory, with its `path`. A part
+inherits its repository by being nested in it, so `add` writes no `extends`.
+A name already declared elsewhere in `rness.json` is refused. Names are
+lowercased: `rness add dApp` declares `dapp` and
 clones into `org/dapp`, from the URL as you typed it. A clone already there
 under another case, `org/dApp`, is renamed `org/dapp` once its origin is
 checked: the confirmation says so. In a workspace that clones over SSH, a
@@ -88,7 +90,8 @@ clone that holds no scope it passes in silence.
 
 `context` prints the resolved context of one scope (standards, ADRs,
 specifications, plans, skills and policies): the global files of each
-collection, the scope's own, and everything along its `extends` chain. Each policy is printed
+collection, the scope's own, and everything it inherits: its parents, then
+the scopes in its `extends`. Each policy is printed
 with its status under its title, `Enabled` or `Disabled`. Without `--scope`, the scope
 owning the current directory; at the workspace root, the global files only.
 `--json` prints the same as one object. No prompt, no network.
@@ -261,6 +264,8 @@ the version in `.rness/package.json`, installs with the workspace's package
 manager, syncs through the new copy — the blocks and the agent files — then
 commits `.rness`
 ([the scaffold, merged with git](../guide/upgrade.md#update)).
+It also rewrites `rness.json` once, when it is still the former shape
+([`rness.json` and upgrades](../guide/upgrade.md#rness-json)).
 The next steps say what is left: push `.rness`, and per repository the files
 the sync changed. A hook refusing the commit leaves everything staged, and
 `upgrade` exits 1. `.rness` must be clean, with no merge in progress. It is

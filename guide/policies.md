@@ -101,8 +101,8 @@ expression language.
 
 `rness create`, `rness add` and `rness sync` write three hooks, `pre-commit`,
 `commit-msg` and `pre-push`, in the hooks directory of every clone under
-`org/` that `rness.json` declares, as a repository or as the home of a
-scope. They are local to your machine and never committed to the project.
+`org/` that `rness.json` declares: the repositories of `scopes`, whose parts
+share their repository's hooks. They are local to your machine and never committed to the project.
 They are written whatever the policies, and each passes at once while no
 enabled policy uses its check: a policy enabled in `.rness/` applies as soon
 as the clone has pulled it, with no `sync`. `.rness/` itself gets the same

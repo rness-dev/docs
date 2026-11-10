@@ -13,8 +13,8 @@ and declares it in `rness.json` for the whole team. Commit `rness.json` in
 `.rness`. A blank workspace has no organization, so there give
 `<owner>/<repo>` or a URL.
 
-A monorepo is a repository like any other. Its parts become scopes, each
-with its own context:
+A monorepo is a repository like any other. Its parts become scopes nested
+under it, each with its own context and inheriting the repository's:
 
 ```sh
 rness add platform --scopes apps/web,packages/ui

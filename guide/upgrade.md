@@ -43,6 +43,43 @@ To go to a given version, up or down: `pnpm rness upgrade 0.14.0`.
 If `rness` stops on the Node.js version before it starts, see
 [Troubleshooting](./troubleshooting.md#node-version).
 
+## `rness.json` is rewritten once {#rness-json}
+
+`rness.json` has one current shape, contract 2: no `repos` key, a
+repository and the parts of it all declared under `scopes` ([The workspace](./workspace.md#rness-json-the-list-of-repositories)).
+`upgrade` rewrites the file once, in the same commit as the new pin. It
+reads and checks the file first, before changing anything. If the file holds
+something the new shape cannot (a repository with no scope at
+`org/<name>`, a scope inside no repository, a scope outside `org/`), it
+stops with one line per problem, changes nothing and leaves the pin where it
+was: fix the file by hand, then run `upgrade` again. Meanwhile the current
+version keeps working. When a part now inherits its repository by nesting,
+`upgrade` says so (`scope "web" now inherits platform (nested)`).
+
+To do it in one step, use the new copy:
+
+```sh
+npx @rness/cli@latest upgrade
+```
+
+Run from the workspace's `.rness/`, `rness upgrade` of an older pin (`pnpm rness upgrade`) installs the new version but cannot rewrite the file. Its
+sync then stops with `rness.json is contract 1: run rness upgrade`. Run
+`rness upgrade` once more: it finishes the update, rewrites the file, syncs
+and commits. If a newer release came out between the two runs, finish with
+`rness upgrade <version>`, the version the first run installed.
+
+In a workspace whose `packageManager` is npm, `pnpm rness` fails: use
+`npm exec -- rness upgrade` or `npx rness upgrade`.
+
+Until the file is rewritten, every command but `upgrade`, `login` and
+`logout` stops with that line. The hooks do not block your commits: they
+print one line, `rness: policies not checked`, naming `rness upgrade`. Once rewritten, a downgrade below 0.25.0, the first version that
+reads contract 2, is refused: the older version cannot read the file.
+
+A teammate who joins with `rness create <org>` a workspace still on the
+former shape is told which version to use, in the form
+`npx @rness/cli@<version> create <org>`.
+
 ## Your teammates
 
 They pull `.rness`:
@@ -68,6 +105,12 @@ before anyone merges.
 2. Pull `.rness`, then run the update above. It finds the pin already
    moved, brings in the starter files, updates the repositories and
    commits.
+
+When the pull request moves the pin of a workspace still on the former shape
+to a version that reads contract 2, its `validate` check fails with `rness.json is contract 1: run rness upgrade`: the new version
+does not read the former shape. Tell the team once: one developer runs
+`rness upgrade` (on the pull request's branch before merging it, or on
+`main` after) and pushes; the others `git pull`.
 
 Dependabot checks weekly and waits 3 days after a release before opening
 the pull request, which guards against a compromised release. To get it
