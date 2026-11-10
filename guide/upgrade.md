@@ -53,7 +53,11 @@ something the new shape cannot (a repository with no scope at
 `org/<name>`, a scope inside no repository, a scope outside `org/`), it
 stops with one line per problem, changes nothing and leaves the pin where it
 was: fix the file by hand, then run `upgrade` again. Meanwhile the current
-version keeps working. When a part now inherits its repository by nesting,
+version keeps working, unless the pin already names a version that reads
+contract 2 (a Dependabot pull request merged first): every command then
+stops on the file, and Claude Code may not edit `.rness/`. Fix the file in
+your editor, outside Claude Code, or go back to the previous version first
+with `npx @rness/cli@0.24.0 upgrade 0.24.0`. When a part now inherits its repository by nesting,
 `upgrade` says so (`scope "web" now inherits platform (nested)`).
 
 To do it in one step, use the new copy:
@@ -63,33 +67,42 @@ npx @rness/cli@latest upgrade
 ```
 
 Run from the workspace's `.rness/`, `rness upgrade` of an older pin (`pnpm rness upgrade`) installs the new version but cannot rewrite the file. Its
-sync then stops with `rness.json is contract 1: run rness upgrade`. Run
-`rness upgrade` once more: it finishes the update, rewrites the file, syncs
-and commits. If a newer release came out between the two runs, finish with
-`rness upgrade <version>`, the version the first run installed.
+sync then stops with `rness.json is contract 1: run npx @rness/cli@latest upgrade`.
+Run that, or the pinned copy once more from `.rness/` (`pnpm rness upgrade`,
+`npm exec -- rness upgrade`): it finishes the update, rewrites the file,
+syncs and commits. A global `rness` older than 0.25.0 cannot: it answers
+that a merge is in progress, or that the workspace is already at that
+version. If a newer release came out between the two runs, name the version
+the first run installed: `upgrade <version>` finishes it.
 
 In a workspace whose `packageManager` is npm, `pnpm rness` fails: use
 `npm exec -- rness upgrade` or `npx rness upgrade`.
 
 Until the file is rewritten, every command but `upgrade`, `login` and
 `logout` stops with that line. The hooks do not block your commits: they
-print one line, `rness: policies not checked`, naming `rness upgrade`. Once rewritten, a downgrade below 0.25.0, the first version that
+print one line, `rness: policies not checked`, naming `npx @rness/cli@latest upgrade`. Once rewritten, a downgrade below 0.25.0, the first version that
 reads contract 2, is refused: the older version cannot read the file.
 
 A teammate who joins with `rness create <org>` a workspace still on the
 former shape is told which version to use, in the form
-`npx @rness/cli@<version> create <org>`.
+`npx @rness/cli@<version> create <org>`. If its pin already names a version
+that reads contract 2, they are told to have the update run first: a
+teammate runs `npx @rness/cli@latest upgrade` in `.rness/` and pushes, then
+they run `create` again.
 
 ## Your teammates
 
-They pull `.rness`:
+They pull `.rness`, then run any `rness` command, such as `rness status`,
+before opening Claude Code:
 
 ```sh
 git -C .rness pull
 ```
 
-Their next `rness` command sees the new pin, installs it, and carries on.
-There is nothing else to run.
+That command sees the new pin, installs it, and carries on. The hooks that
+Claude Code and git run use the version installed in `.rness` and never
+install one: until a command has, they run the previous version, which may
+not read the new `rness.json`.
 
 ## Hear about new releases
 
@@ -107,10 +120,12 @@ before anyone merges.
    commits.
 
 When the pull request moves the pin of a workspace still on the former shape
-to a version that reads contract 2, its `validate` check fails with `rness.json is contract 1: run rness upgrade`: the new version
+to a version that reads contract 2, its `validate` check fails with `rness.json is contract 1: run npx @rness/cli@latest upgrade`: the new version
 does not read the former shape. Tell the team once: one developer runs
-`rness upgrade` (on the pull request's branch before merging it, or on
-`main` after) and pushes; the others `git pull`.
+`npx @rness/cli@latest upgrade` in `.rness/` (on the pull request's branch
+before merging it, or on `main` after) and pushes; the others `git pull`,
+then run any `rness` command before opening Claude Code
+([Your teammates](#your-teammates)).
 
 Dependabot checks weekly and waits 3 days after a release before opening
 the pull request, which guards against a compromised release. To get it

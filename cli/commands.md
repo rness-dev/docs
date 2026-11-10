@@ -269,8 +269,9 @@ It also rewrites `rness.json` once, when it is still the former shape
 The next steps say what is left: push `.rness`, and per repository the files
 the sync changed. A hook refusing the commit leaves everything staged, and
 `upgrade` exits 1. `.rness` must be clean, with no merge in progress. It is
-never delegated: the copy you ran is the one that upgrades. Teammates' next
-`rness` command installs the new pin itself.
+never delegated: the copy you ran is the one that upgrades. Teammates run any
+`rness` command after they pull, before opening Claude Code: it installs the
+new pin itself ([Your teammates](../guide/upgrade.md#your-teammates)).
 
 ## `rness login`
 
