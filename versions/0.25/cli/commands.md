@@ -1,6 +1,6 @@
 <script setup>
 import { data as frozen } from '../../../.vitepress/frozen.data'
-const data = frozen['0.21']
+const data = frozen['0.25']
 </script>
 
 # CLI reference
@@ -26,9 +26,9 @@ whole catalogue. Logged in, it offers to create the private `<org>/.rness` on
 GitHub and push. A cancelled prompt writes nothing and exits 0.
 
 In a terminal, before the organization, it asks `Where does your
-organization live?`: GitHub, the one this version talks to; GitLab and
-Atlassian (Bitbucket + Jira) are listed, disabled. `--provider github`
-answers it off a terminal. The answer is written to `rness.json` as
+organization live?`: GitHub, [GitLab](../guide/gitlab.md) or
+[Atlassian](../guide/atlassian.md) (Bitbucket + Jira). `--provider github`,
+`--provider gitlab` or `--provider atlassian` answers it off a terminal. The answer is written to `rness.json` as
 `provider` ([the catalogue](../guide/workspace.md#rness-json-the-list-of-repositories)). A
 join asks too, then takes the provider the organization's `rness.json`
 names; `--blank` asks nothing.
@@ -41,9 +41,14 @@ ran: `create` installs `.rness/` and hands the first sync to it.
 <div v-html="data.commands.add"></div>
 
 `add` clones the repository under `org/` — or adopts a clone already there —
-and declares it in `rness.json` for the whole team: an entry in `repos`, a
-scope of the same name, and one scope per `--scopes` directory, each extending
-the repository. Names are lowercased. In a workspace that clones over SSH, a
+and declares it in `rness.json` for the whole team: a scope with its `url`,
+and under it one scope per `--scopes` directory, with its `path`. A part
+inherits its repository by being nested in it, so `add` writes no `extends`.
+A name already declared elsewhere in `rness.json` is refused. Names are
+lowercased: `rness add dApp` declares `dapp` and
+clones into `org/dapp`, from the URL as you typed it. A clone already there
+under another case, `org/dApp`, is renamed `org/dapp` once its origin is
+checked: the confirmation says so. In a workspace that clones over SSH, a
 failing SSH test offers `--https` for that repository only.
 
 ## `rness sync`
@@ -57,17 +62,38 @@ holding `@AGENTS.md` is created next to it when there is none. In a terminal,
 catalogue repositories missing from `org/` are offered for cloning first;
 with `--yes` or `--check` they are named on one `not cloned:` line instead. A
 clone `rness.json` does not know gets no block and a `not in rness.json:`
-line. `--check` writes nothing and exits 1 when a block is out of date — the
-command for a repository's CI. With agents declared in `rness.json`, it also
-writes the files those agents need ([agent targets](../guide/claude-code.md)).
+line; a directory whose name `rness.json` cannot hold, such as `org/dApp`,
+gets a `not read:` line saying what to do. `--check` writes nothing and exits
+1 when a block is out of date: the command for a repository's CI. With agents
+declared in `rness.json`, it also writes the files those agents need
+([agent targets](../guide/claude-code.md)).
+
+`sync` also writes the git hooks that apply the workspace's
+[policies](../guide/policies.md): `pre-commit`, `commit-msg` and `pre-push`
+in the hooks directory of every clone under `org/` that `rness.json`
+declares, never in `.rness/` and never with `--check`. It lists them as
+`updated <repository> git hooks (pre-commit, commit-msg, pre-push)` when it
+writes or rewrites any. A hook file Rness did not write is left as it is,
+and a clone with `core.hooksPath` set is left alone; each is reported once
+per clone, until the cause changes, as a `skipped` line followed by the lines
+to add to your own hook manager. `sync` also prunes the refusals recorded
+more than 30 days ago, in the clones and in `.rness/`.
+
+`rness policy check <hook>` is the command the hooks run. It is internal and
+hidden from `--help`: a person never runs it. It exits 20 for a refusal,
+which each hook turns into exit 1; any other status is one line
+(`rness: policies not checked: ...`) and the commit or push goes on. In a
+clone that holds no scope it passes in silence.
 
 ## `rness context`
 
 <div v-html="data.commands.context"></div>
 
-`context` prints the resolved context — standards, ADRs, specifications, plans
-and skills — of one scope: the global files of each collection, the scope's
-own, and everything along its `extends` chain. Without `--scope`, the scope
+`context` prints the resolved context of one scope (standards, ADRs,
+specifications, plans, skills and policies): the global files of each
+collection, the scope's own, and everything it inherits: its parents, then
+the scopes in its `extends`. Each policy is printed
+with its status under its title, `Enabled` or `Disabled`. Without `--scope`, the scope
 owning the current directory; at the workspace root, the global files only.
 `--json` prints the same as one object. No prompt, no network.
 
@@ -145,61 +171,90 @@ MCP revision `2026-07-28` and the earlier ones that open with `initialize`
 it in each repository ([agent targets](../guide/claude-code.md)).
 Another agent can run the same command from a clone.
 
-## `rness pulse`
+## `rness board`
 
-<div v-html="data.commands.pulse"></div>
+<div v-html="data.commands.board"></div>
 
-`pulse` shows the documents of `.rness/`, and the agent at work on them, in
-the organization's GitHub Projects: a project named **Agent Pulse**, a board
-per directory, each document an issue of `<org>/.rness` whose body is the
-document ([Agent Pulse](../guide/agent-pulse.md)).
+`rness board push` shows the documents of `.rness/`, and the agent at work
+on them, on the boards `rness.json` declares under `boards`: on GitHub,
+projects of the organization; on GitLab, issue boards of the project
+`<group>/rness`, one per board view ([GitLab](../guide/gitlab.md#boards));
+on Atlassian, the one board of the workspace's Jira space
+([Atlassian](../guide/atlassian.md#boards)). **Agent Pulse** (`pulse`) holds every
+collection, a board per directory, each document an issue of
+`<org>/.rness` whose body is the document ([Boards](../guide/boards.md)).
 
-`rness pulse create`, once per organization, needs an `org` in `rness.json`
-— a blank workspace is refused — and no pulse declared yet. It creates the
-project and at once writes `"projects": { "pulse": <number> }`, and the
-`provider`, into `rness.json`; then it adds the fields and the views and runs
-a first sync, its `created` line saying what it added. A step failing after
-the project exits 1 with the pulse declared: `rness pulse sync` completes the
-layout. Commit `rness.json` in `.rness`. A workspace with no `provider` whose
-repositories look like GitLab is refused before anything is created: write
-`"provider": "github"` if the organization is on GitHub.
+A board declared without its `number`, or by its preset's name
+(`"pulse": "agent-pulse"`, `"roadmap": "collection"`), is not on GitHub
+yet: push creates it first. Its name is `pulse` or a collection of
+`.rness/` — a directory whose documents carry a status — else it is
+refused before GitHub is asked anything. In a terminal push asks once
+before it creates a project; `-y` does not ask. Off a terminal without
+`-y`, or declined, it creates none, pushes the other boards and exits 1:
 
-`rness pulse create <collection>` gives a collection of `.rness/` — a
-directory whose documents carry a status — a project of its own, named after
-it, and adds it to `projects`; its documents leave Agent Pulse. `pulse`, a
-collection declared already or a directory with no document is refused
-([a collection's own project](../guide/agent-pulse.md#a-collection-s-own-project)).
+```text
+not created: pulse — rness board push in a terminal, or with --yes, creates it
+```
 
-Both need Issues on `<org>/.rness`. Without them they stop before writing
+Creating needs an `org` in `rness.json` — a blank workspace is refused. Push
+creates the project and at once writes its number into `rness.json`, the
+board written whole from its preset, with the `provider`; then it adds the
+fields and the views and fills it, its `created` lines saying what it
+added. A step failing after the project exits 1 with the number written:
+the next `rness board push` completes the layout. Commit `rness.json` in
+`.rness`. A workspace with no `provider` whose repositories look like
+GitLab is refused before anything is created: write `"provider": "gitlab"`,
+or `"github"` if the organization is on GitHub. On Atlassian push creates
+no board and writes nothing back: the board is the Jira space's own, and
+the first push asks instead to set up the space's statuses
+([Atlassian](../guide/atlassian.md#boards)).
+
+Push needs Issues on `<org>/.rness`. Without them it stops before writing
 anything, with:
 
 ```text
-the pulse needs Issues on <org>/.rness: turn them on in its Settings
+boards need Issues on <org>/.rness: turn them on in its Settings
 ```
 
-`rness pulse sync`, as often as wanted, syncs every declared project, the
-collections' own first and Agent Pulse last. On each it works in two passes. First each
-document gets its issue — created, or reopened — with its label and
-fields; then the bodies that changed are written, since a body links to
-other documents' issues. It archives the
-items whose document is gone and adds the option or the board a new status
-or directory needs. It says what it did to the issues, then to the items:
-`created 1 issue`, `reopened 1 issue`, `synced 52 items: 1 created, 2
-updated, 49 unchanged`.
+`rness board push`, as often as wanted, brings every board up to date, the
+collections' own first and Agent Pulse last. On each it works in two
+passes. First each document gets its issue — created, or reopened — with
+its label and fields; then the bodies that changed are written, since a
+body links to other documents' issues. It archives the items whose document
+is gone and adds the option or the board a new status or directory needs.
+It says what it did to the issues, then to the items: `created 1 issue`,
+`reopened 1 issue`, `synced 52 items: 1 created, 2 updated, 49 unchanged`.
 
 The `synced` line also counts the items it archived. On one of GitHub's
 rate limits it waits as GitHub says, and says so as it begins
 (`waiting  60 s — GitHub's rate limit`), 10 minutes at most in all; past
-that it stops with how many changes it did not make, and the next sync
+that it stops with how many changes it did not make, and the next push
 makes them.
 
-Both also need a login with the `project` scope ([`rness login`](#rness-login)).
-Without one, `create` offers to log in, in a terminal; with `-y` or off a
-terminal, the pulse stops with `the pulse needs a GitHub login: run rness
-login` or `the pulse needs the project scope: run rness login`. A classic
+Push also needs a login with the `project` scope ([`rness login`](#rness-login)).
+Without one, when it creates a board, it offers to log in, in a terminal;
+with `-y` or off a terminal it stops with `boards need a GitHub login: run
+rness login` or `boards need the project scope: run rness login`. A classic
 `GITHUB_TOKEN` works when it carries the scope; a fine-grained or GitHub App
-token reports no scope, and the pulse refuses it. When GitHub cannot be
+token reports no scope, and boards refuse it. When GitHub cannot be
 reached, it says so (`cannot reach GitHub: …`) instead of asking for a login.
+
+::: details `rness pulse`
+The former name of `rness board` still runs, hidden from the help: each
+command as its new one, said once on stderr (`rness pulse sync is now rness
+board push`). `rness pulse create [<collection>]` adds the board to `boards`
+by its preset's name, then pushes without asking.
+:::
+
+## `rness note`
+
+<div v-html="data.commands.note"></div>
+
+A note of the [agent's journal](../guide/boards.md#the-agent-s-journal) on
+the plan in progress: the text, or stdin. `--kind` titles it (`approach`,
+`deviation`, `blocker`, `done`); `--plan` names the plan when several are
+in progress. It posts with your login, where the board's `journal` hook
+says, and prints the issue it went to.
 
 ## `rness upgrade`
 
@@ -210,11 +265,14 @@ the version in `.rness/package.json`, installs with the workspace's package
 manager, syncs through the new copy — the blocks and the agent files — then
 commits `.rness`
 ([the scaffold, merged with git](../guide/upgrade.md#update)).
+It also rewrites `rness.json` once, when it is still the former shape
+([`rness.json` and upgrades](../guide/upgrade.md#rness-json)).
 The next steps say what is left: push `.rness`, and per repository the files
 the sync changed. A hook refusing the commit leaves everything staged, and
 `upgrade` exits 1. `.rness` must be clean, with no merge in progress. It is
-never delegated: the copy you ran is the one that upgrades. Teammates' next
-`rness` command installs the new pin itself.
+never delegated: the copy you ran is the one that upgrades. Teammates run any
+`rness` command after they pull, before opening Claude Code: it installs the
+new pin itself ([Your teammates](../guide/upgrade.md#your-teammates)).
 
 ## `rness login`
 
@@ -230,11 +288,23 @@ credential helper for github.com, for your own `git pull` and `git push`; it
 needs a global install.
 
 It asks for the `repo` and `read:org` scopes, and for `project` too where
-the workspace declares a pulse, or when `rness pulse create` runs it: a
-developer who never uses the [pulse](#rness-pulse) grants nothing more. A
-login made before the pulse was declared lacks the scope: run `rness login`
+the workspace declares a board, or when `rness board push` creates one: a
+developer who never uses [boards](#rness-board) grants nothing more. A
+login made before a board was declared lacks the scope: run `rness login`
 again. A `provider` written in `rness.json` that this version cannot talk to
 is refused.
+
+`--provider gitlab` logs in to gitlab.com instead, with its device flow
+and the scopes `api` and `write_repository`; inside a GitLab workspace the
+flag is not needed ([GitLab](../guide/gitlab.md#log-in)). `GITLAB_TOKEN`
+wins over that login.
+
+`--provider atlassian` asks for two API tokens instead, each typed into a
+masked prompt: a Bitbucket token with scopes, then the Jira site, your
+account's email, and a Jira token ([Atlassian](../guide/atlassian.md#log-in)). Nothing is stored
+until both answer. `BITBUCKET_TOKEN`, and `JIRA_EMAIL` with
+`JIRA_API_TOKEN`, win over that login; off a terminal, the command exits 1
+and names them.
 
 ## `rness logout`
 
@@ -242,7 +312,9 @@ is refused.
 
 `logout` forgets the login of this machine and undoes the git credential
 helper. The authorization itself is revoked in GitHub's settings; the command
-prints the link.
+prints the link. `--provider gitlab` forgets the GitLab login only;
+`--provider atlassian` forgets the Bitbucket and Jira logins, and prints
+the page where the tokens are revoked.
 
 ## Environment
 
@@ -252,6 +324,9 @@ prints the link.
 | `RNESS_NO_DELEGATE=1` | Run the copy you invoked, never the pinned one. |
 | `RNESS_DEBUG=1` | Stack traces on errors, and a line naming the copy delegated to. |
 | `GITHUB_TOKEN`, `GH_TOKEN` | Used before the stored login, in that order: CI needs no `rness login`. |
+| `GITLAB_TOKEN` | The same on GitLab: used before the stored GitLab login. |
+| `BITBUCKET_TOKEN` | The same on Atlassian: used before the stored Bitbucket token. |
+| `JIRA_EMAIL`, `JIRA_API_TOKEN` | Together, used before the stored Jira login, for the workspace's Jira site. |
 | `NO_COLOR=1`, `FORCE_COLOR=1` | Plain output, or coloured output through a pipe. Output through a pipe or in CI is plain by default. |
 
 ## Exit codes

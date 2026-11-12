@@ -35,11 +35,12 @@ and the `/rness:*` commands stay hidden: see
 | At start | A line such as `rness 0.19.0 · acme · scope web — 10 standards, 9 decisions`, and the scope's documents for the model. When the context may be wrong, both say why. A Claude Code older than 2.1.280, which shows no band, footer label or pane, is told once per version to run `claude update` when it names its version, as 2.1.240 does. |
 | Above the prompt | Whenever something needs action (a pin not installed, problems `rness validate` would report): what, until it is fixed. |
 | In the prompt footer | `rness · web · 1 in progress`, dim, among the session modes (`focus`), with `⚠ 1` at the end when something needs action. |
-| Before an edit | Refused when it would change what `rness sync` generates: the block of an `AGENTS.md` or `CLAUDE.md` (the agent is told which standard to edit instead) or a file of `.claude/skills/rness/`. Refused too when it would add a problem to a document of `.rness/`. |
+| Before an edit | Refused when it would change what `rness sync` generates: the block of an `AGENTS.md` or `CLAUDE.md` (the agent is told which standard to edit instead) or a file of `.claude/skills/rness/`. Refused too when it would add a problem to a document of `.rness/`, or a line an enabled [policy](./policies.md) refuses. |
+| Before a command | A `Bash` command that would skip the git hooks (`git commit --no-verify` or `-n`, `git push --no-verify`, `git -c core.hooksPath=...`, and the other forms listed in [Policies](./policies.md#what-the-claude-code-guard-does-not-see)) is refused while an enabled policy applies. The reason tells the agent to run it without skipping the hooks and fix what they refuse. Every command is parsed; one that skips no hook passes at once. |
 | After an edit in `.rness/` | The problems of that document's front matter go back to the model, which fixes them in the same turn. |
 | On demand | The `rness` MCP server lets the model find what applies and where a subject was decided. |
 | `/rness:*` | The commands below. |
-| With [Agent Pulse](./agent-pulse.md) | The board shows what the agent works on, and follows its status changes. With its [journal](./agent-pulse.md#the-agent-s-journal), the agent is told at start how to note its decisions on the plan's issue. |
+| With a [board](./boards.md) | The board shows what the agent works on, and follows its status changes. With its [journal](./boards.md#the-agent-s-journal), the agent is told at start how to note its decisions on the plan's issue. |
 
 The session reads `.rness/` next to the repository without asking for
 permission.
@@ -97,7 +98,7 @@ Pulse gives it, no model turn. It takes the keyboard as it opens: ↑/↓
 select a line, Tab and Shift+Tab change the tab (a tab's digit too),
 Enter or a click on a line shows the document in the pane, `q` brings
 the list back; Esc and `q` close it. When the workspace has a
-pulse, `Agent Pulse` is a link: the board from the list, the document's
+board, `Agent Pulse` is a link: the board from the list, the document's
 item from the document. The band above the prompt,
 the footer's label and the pane are drawn by a Claude Code mod that comes with
 the commands. A Claude Code without mods ignores it (2.1.280 and later
@@ -136,7 +137,7 @@ dialog. It is local, and read-only but for `rness_note`:
 | `rness_list` | Every document of a collection, optionally of one status |
 | `rness_read` | One file of `.rness/` |
 | `rness_search` | The documents that match a query, with the matching lines |
-| `rness_note` | Posts a note of the [agent's journal](./agent-pulse.md#the-agent-s-journal) with your login; listed only when a board keeps one as the session starts |
+| `rness_note` | Posts a note of the [agent's journal](./boards.md#the-agent-s-journal) with your login; listed only when a board keeps one as the session starts |
 
 Other agents can run the same server with `rness mcp`; Rness writes no
 configuration for them.
@@ -148,7 +149,7 @@ configuration for them.
   version pinned in `.rness/`. The hooks read `.rness/`, write no file of
   the workspace and install nothing; with a journal, the session start
   records your clone's `HEAD` in its git directory. They reach the network
-  only for [Agent Pulse](./agent-pulse.md).
+  only for [boards](./boards.md).
 - `.mcp.json` in each repository: the `rness` server.
 - `.claude/skills/rness/` in each repository: the `/rness:*` commands, and
   the mod (`hooks/`, `types/`) that draws the band, the footer's label and

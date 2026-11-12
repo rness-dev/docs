@@ -18,39 +18,47 @@ both see the same context. The workspace root is not a git repository.
 
 ```json
 {
-  "contract": 1,
+  "contract": 2,
   "provider": "github",
   "org": "acme",
   "agents": ["claude"],
-  "projects": { "pulse": { "number": 3, "preset": "agent-pulse/1", "…": "…" } },
-  "repos": {
-    "app": { "url": "git@github.com:acme/app.git" },
-    "platform": { "url": "https://github.com/acme/platform.git" }
-  },
+  "boards": { "pulse": { "number": 3, "preset": "agent-pulse/1", "…": "…" } },
   "scopes": {
-    "app": { "path": "org/app" },
-    "platform": { "path": "org/platform" },
-    "web": { "path": "org/platform/apps/web", "extends": ["platform"] }
+    "app": { "url": "git@github.com:acme/app.git" },
+    "platform": {
+      "url": "https://github.com/acme/platform.git",
+      "scopes": {
+        "web": { "path": "apps/web" },
+        "ui": { "path": "packages/ui", "extends": ["web"] }
+      }
+    }
   }
 }
 ```
 
 | Key | Holds |
 | --- | --- |
-| `org` | The GitHub organization. Absent in a blank workspace. |
-| `repos` | Every repository Rness knows about. `rness add` declares one. |
-| `scopes` | Where context applies: a repository, or a directory inside one (the parts of a monorepo). `extends` inherits another scope's context. |
+| `org` | The organization: a GitHub organization, a GitLab group or a Bitbucket workspace. Absent in a blank workspace. |
+| `scopes` | Every repository Rness knows about, and where context applies. A scope with a `url` is a repository, cloned at `org/<name>`; `rness add` declares one. A scope nested in a repository's own `scopes` is a part of it (a directory of a monorepo): its `path` is relative to its parent, and it inherits its parent's context first. `extends` inherits the context of any other scope. |
 | `agents` | The agents your team uses; Rness writes their files ([Claude Code](./claude-code.md)). |
-| `projects` | The organization's GitHub Projects, each board written whole: its collections, statuses, colours, fields and views ([Shaped in `rness.json`](./agent-pulse.md#shaped-in-rness-json)). `pulse` is [Agent Pulse](./agent-pulse.md), any other name a [collection's own project](./agent-pulse.md#a-collection-s-own-project). Written by `rness pulse create`, edited by the team. Every key: [Boards in `rness.json`](../cli/boards.md). |
-| `provider` | Where the organization lives. `github` is the one Rness talks to today. |
+| `boards` | The [boards](./boards.md): on GitHub, the organization's Projects, each board written whole: its collections, statuses, colours, fields and views ([Shaped in `rness.json`](./boards.md#shaped-in-rness-json)). `pulse` is [Agent Pulse](./boards.md), any other name a [collection's own board](./boards.md#a-collection-s-own-board). Declared by the team, its number written by `rness board push` when it creates it. Every key: [Boards in `rness.json`](../cli/boards.md). |
+| `provider` | Where the organization lives: `github`, `gitlab` or `atlassian`. |
+| `jira` | On Atlassian only, the Jira site and space of the cards and the journal: `{ "site": "acme.atlassian.net", "space": "RNESS" }` ([Atlassian](./atlassian.md#the-jira-space)). |
 
 Commit `rness.json` in `.rness` whenever a command changes it: it is the
 team's.
 
+A name is used once in the whole file, whatever its depth: `web` cannot be
+declared under two repositories. `--scope web` and `standards/web/` use the
+name alone. A repository has no `path` (it is `org/app`), and a part has no
+`url`.
+
 ::: details Names and URLs
 A repository or scope name is lowercase: letters, digits, `.`, `_` and
-`-`. `org` keeps its case. A URL is cloned as written: `git@github.com:`
-when your SSH key works, `https://github.com/` otherwise
+`-`. Typed in another case, it is lowercased: `dApp` is `dapp`, in
+`rness.json` and under `org/`. `org` keeps its case. A URL is cloned as
+written: `git@github.com:` when your SSH key works, `https://github.com/`
+otherwise
 ([SSH or HTTPS](./repositories.md#ssh-or-https)).
 :::
 
@@ -63,6 +71,7 @@ when your SSH key works, `https://github.com/` otherwise
 | `specs/` | What is proposed, and why | `Draft`, `Proposed`, `Approved`, `Implemented`, `Superseded`, `Rejected` |
 | `plans/` | Ordered steps to implement a specification | `Draft`, `Ready`, `In progress`, `Blocked`, `Completed`, `Abandoned` |
 | `skills/` | Reusable agent skills | none |
+| `policy/` | Rules refused at commit, push and edit ([Policies](./policies.md)); not numbered | `Enabled`, `Disabled` |
 
 A decision, specification or plan starts with front matter:
 
