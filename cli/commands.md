@@ -170,6 +170,31 @@ MCP revision `2026-07-28` and the earlier ones that open with `initialize`
 it in each repository ([agent targets](../guide/claude-code.md)).
 Another agent can run the same command from a clone.
 
+## `rness skill`
+
+<div v-html="data.commands.skill"></div>
+
+`skill` manages the [team skills](../guide/skills.md) of the workspace.
+
+- `add <source>` fetches a skill from `github:<owner>/<repo>`, `git:<url>` or
+  `path:<dir>`, checks it, copies it into `.rness/skills/` and declares it in
+  `rness.json`. `--path` names its directory in a repository, `--ref` a tag,
+  a branch or a full commit, `--name` another name, `--scope` a repository or
+  part. It changes `.rness` only and commits nothing.
+- `update [names...]` fetches the declared skills again and replaces their
+  copies, saying how many files were added, changed and removed. `--ref` moves
+  one skill to another tag, branch or commit.
+- `remove <name>` undeclares a skill and deletes its copy.
+- `install [names...]` lists the skills awaiting your consent, records your
+  answer (`Install`, `Decline` or `Details`) and installs the accepted ones in
+  your clones, never in your home directory. `--yes` accepts without the
+  question.
+- `list` shows each skill that applies and its state: installed, pending,
+  declined or changed since accepted.
+
+`rness sync` reinstalls the skills you accepted and prints one line when some
+are pending; it never installs a new one.
+
 ## `rness board`
 
 <div v-html="data.commands.board"></div>
