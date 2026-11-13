@@ -133,17 +133,17 @@ write, is skipped, and `rness sync` and `rness skill install` say so.
 
 The exclude hides the copies from git, not from every tool. As of 2026-11-13,
 prettier 3.10.1, eslint 10.14.0, vitest 5.1.0 and jest 30.5.2 read them (none
-reads `.git/info/exclude`), and biome 2.6.7 too unless `vcs.useIgnoreFile` is
-on. tsc 7.0.2 and `node --test` skip dot directories. Rness never edits these
-tools' files: add the line yourself.
+reads `.git/info/exclude`), and biome 2.6.7 too unless its `vcs` block is
+enabled for git with `useIgnoreFile`. tsc 7.0.2 and `node --test` skip dot
+directories. Rness never edits these tools' files: add the line yourself.
 
 | Tool | Line |
 | --- | --- |
 | prettier | `/.claude/skills/` and `/.agents/skills/` in `.prettierignore` |
 | eslint | `ignores: [".claude/skills/", ".agents/skills/"]` |
 | vitest | `test.exclude: [...configDefaults.exclude, ".claude/**", ".agents/**"]` |
-| jest | `testPathIgnorePatterns: ["/\\.claude/", "/\\.agents/"]` |
-| biome | `vcs.useIgnoreFile: true` |
+| jest | `testPathIgnorePatterns: ["/node_modules/", "/\\.claude/", "/\\.agents/"]` (replaces jest's default) |
+| biome | `vcs: { enabled: true, clientKind: "git", useIgnoreFile: true }` |
 
 **Never** in your home directory (`~/.claude/skills`, `~/.agents/skills`), and
 never outside the workspace. A skill installed for the organization does not
