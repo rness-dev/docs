@@ -189,11 +189,15 @@ Another agent can run the same command from a clone.
   answer (`Install`, `Decline` or `Details`) and installs the accepted ones in
   your clones, never in your home directory. `--yes` accepts without the
   question.
+- `uninstall <names...>` removes skills from your clones: the answer is
+  recorded as declined, the installed copies are removed, and they are never
+  proposed again until you `install` them. Where two skills share a name, give
+  the id, such as `web/deploy`.
 - `list` shows each skill that applies and its state: installed, pending,
-  declined or changed since accepted.
+  declined or invalid.
 
-`rness sync` reinstalls the skills you accepted and prints one line when some
-are pending; it never installs a new one.
+`rness sync` reinstalls the skills you accepted, installs their new versions
+and prints one line when some are pending; it never installs a new skill.
 
 ## `rness board`
 

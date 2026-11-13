@@ -27,8 +27,9 @@ added     skill brainstorming (github:obra/superpowers@v7.0.0, 9 files, 14 KB)
 the `source`, `path` and `ref` you gave, the `commit` the ref resolved to and
 the `tree` of the copy: the id git gives it in `.rness` (git decides which
 files belong to it, its ignore rules and the skill's own `.gitignore`
-included), the same before the commit, after it and in every clone. It changes `.rness` only and commits nothing: review
-it in a pull request like any other change.
+included), the same before the commit, after it and in every clone. It
+changes `.rness` only and commits nothing: review it in a pull request like
+any other change.
 
 | Option | What it does |
 | --- | --- |
@@ -58,7 +59,7 @@ make it the team's own.
 - `rness skill remove <name>` undeclares the skill and deletes its copy. The
   next `rness sync` of each developer removes the installed copies.
 
-`rness validate` reports a declared copy that whose tree differs from its `tree`.
+`rness validate` reports a declared copy whose tree differs from its `tree`.
 
 ## Consent
 
@@ -92,12 +93,12 @@ applies and its state: installed, pending, declined or invalid (its committed
 copy fails the checks, or it is not committed yet).
 
 ```sh
-rness skill decline <name>...
+rness skill uninstall <name>...
 ```
 
-Declines skills, accepted or not: the answer is recorded and their installed
-copies are removed from every clone and the workspace root. `rness skill
-install <name>` installs a declined skill again.
+Uninstalls skills, accepted or not: the answer is recorded as declined and
+their installed copies are removed from every clone and the workspace root.
+`rness skill install <name>` installs one again.
 
 Your answers are kept per workspace in the git directory of `.rness`, never
 committed. `allowed-tools` pre-approves tools for the turn that invokes the
@@ -126,8 +127,9 @@ leak into your other projects.
 ## `rness sync`
 
 `rness sync` installs again, as committed in `.rness`, the skills you
-accepted (a new clone, a removed copy, a new version) and removes the ones no longer accepted
-or no longer declared. When skills are pending it prints one line, and goes on:
+accepted (a new clone, a removed copy, a new version) and removes the ones no
+longer accepted or no longer declared. When skills are pending it prints one
+line, and goes on:
 
 ```
 skills    2 team skills await your consent: rness skill install
@@ -138,6 +140,13 @@ It never installs a skill you have not accepted. A pending skill does not fail
 `CLAUDE.md` blocks gain a `## Team skills` section listing, for each scope, the
 name and description of the skills that apply, so an agent without the skill
 installed learns it exists.
+
+## Teammates on 0.25.x
+
+As of 2026-11-13, Rness 0.25.x refuses a `rness.json` that declares `skills`
+(`rness.json: unknown key "skills"`), and its hooks never catch up a moved pin.
+A teammate who pulls a `.rness` that declares skills runs `rness sync` once: it
+installs the pinned version.
 
 ## In Claude Code
 
@@ -185,10 +194,3 @@ yours is the one Claude Code uses.
 
 Rness writes the standard directories these agents read and nothing of their
 configuration. Plugins, marketplaces and automatic updates are not part of it.
-
-## Teammates on 0.25.x
-
-Rness 0.25.x refuses a `rness.json` that declares `skills`
-(`rness.json: unknown key "skills"`), and its hooks never catch up a moved pin.
-A teammate who pulls a `.rness` that declares skills runs `rness sync` once: it
-installs the pinned version.
