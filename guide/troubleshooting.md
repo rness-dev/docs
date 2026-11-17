@@ -53,7 +53,11 @@ Claude Code loads a project plugin, the `rness` plugin rness writes at
 `.claude/skills/rness/`, only in a folder trusted itself: trusting a parent
 folder, such as `~/Projects`, is not enough. In a folder inside a trusted
 one Claude Code shows no trust dialog and runs the hooks, so the rness line
-appears, but it skips the plugin.
+appears, but it skips the plugin. When the workspace declares `claude`, the
+session start says so: a line naming the folder, "Claude Code did not load
+the rness plugin here: this folder is not trusted itself (a parent folder
+is)". rness finds it by reading `~/.claude.json` (or
+`$CLAUDE_CONFIG_DIR/.claude.json`), and never writes it.
 
 Fix: set `projects["<path>"].hasTrustDialogAccepted` to `true` in
 `~/.claude.json`, `<path>` being the repository root, or the folder Claude
