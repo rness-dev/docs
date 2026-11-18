@@ -27,6 +27,9 @@ Claude Code applies these files once you trust the folder, in an
 interactive session. A folder inside one you already trust is never asked,
 and the `/rness:*` commands stay hidden: see
 [Troubleshooting](./troubleshooting.md#rness-commands-missing).
+Claude Code loads the `rness` plugin only in a folder trusted itself, not
+in one whose parent is trusted: `/rness:status` then answers `Unknown
+command`, see [Troubleshooting](./troubleshooting.md#rness-status-unknown).
 
 ## What it gives you
 

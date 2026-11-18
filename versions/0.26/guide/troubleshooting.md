@@ -42,6 +42,37 @@ Claude Code apply the `.claude/` files it holds: do it for a workspace you
 know. Observed with Claude Code 2.1.287 (2026-10-02).
 :::
 
+### `/rness:status` is an unknown command {#rness-status-unknown}
+
+Typing `/rness:status`, `/rness:plan` or another `/rness:` command answers
+`Unknown command`, and the team skills installed in the plugin
+(`/rness:<name>`) are missing too, while the session still opens with the
+rness line.
+
+Claude Code loads a project plugin, the `rness` plugin rness writes at
+`.claude/skills/rness/`, only in a folder trusted itself: trusting a parent
+folder, such as `~/Projects`, is not enough. In a folder inside a trusted
+one Claude Code shows no trust dialog and runs the hooks, so the rness line
+appears, but it skips the plugin. When the workspace declares `claude`, the
+session start says so: a line naming the folder, "Claude Code did not load
+the rness plugin here: this folder is not trusted itself", when the plugin
+is written there. rness finds it by reading `~/.claude.json` (or
+`$CLAUDE_CONFIG_DIR/.claude.json`), and never writes it.
+
+Fix: set `projects["<path>"].hasTrustDialogAccepted` to `true` in
+`~/.claude.json`, `<path>` being the repository root, or the folder Claude
+Code was started in outside a repository. For an rness workspace, that is
+the workspace root and each clone `org/<repo>` where you open sessions. The
+steps and the command are in
+[the `/rness:*` commands do not appear](#rness-commands-missing). Claude
+Code has no slash command or flag for it, and rness does not edit that file
+for you.
+
+The Claude Code documentation describes this in
+[What runs before you trust a folder](https://code.claude.com/docs/en/permissions.md#what-runs-before-you-trust-a-folder)
+and [Loading plugins](https://code.claude.com/docs/en/plugins/loading.md).
+Verified with Claude Code 2.1.325 (2026-11-16).
+
 ### A formatter or a linter fails on `.claude/skills/rness/` {#generated-files-linted}
 
 `prettier --check .`, `eslint .` or a type check reports files under
