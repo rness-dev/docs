@@ -9,8 +9,11 @@ it. Rness never runs a skill, and never writes one outside the workspace.
 
 The skills the team writes itself take the same path: a directory of
 `.rness/skills/` (`.rness/skills/scopes/<scope>/` for one scope) with a
-`SKILL.md`. A skill keeps its own name: `/brainstorming`, not
-`/rness:brainstorming`.
+`SKILL.md`. In Claude Code, a skill the team writes is `/rness:<name>`
+(`/rness:release`); a declared skill keeps its own name (`/brainstorming`).
+Codex and Cursor read both under the plain name. The names `status`, `adr`,
+`spec` and `plan` (Rness's own skills) and the retired `done` are refused for
+a skill the team writes.
 
 ## Declare a skill
 
@@ -110,7 +113,13 @@ Each accepted skill is copied into every clone it applies to: a skill of the
 whole organization into every clone, a scope's skill into the clones of that
 scope and of the scopes that extend it, a part's skill into its repository's
 clone root. In each clone it goes to `.claude/skills/<name>/` when `claude` is
-among the declared agents, and to `.agents/skills/<name>/`. The top-level
+among the declared agents, and to `.agents/skills/<name>/`. A skill the team
+writes goes for Claude Code inside the `rness` plugin,
+`.claude/skills/rness/skills/<name>/`, so it is invoked as `/rness:<name>`;
+the `CLAUDE.md` block line reads `- release (Claude Code: /rness:release): ...`.
+A 0.26.0 copy of such a skill moves at the next `rness sync`. Like
+`/rness:status`, these load only when Claude Code is opened at a repository
+root, in a trusted folder. The top-level
 skills also go to the workspace root's `.claude/skills/`, for a session opened
 there. Files keep their bytes and executable bits.
 
@@ -119,6 +128,22 @@ The paths are excluded from git in each clone (`.git/info/exclude`), so
 `rness skill install` does. A clone where `.claude/skills/<name>` or
 `.agents/skills/<name>` is tracked by git, or holds a directory Rness did not
 write, is skipped, and `rness sync` and `rness skill install` say so.
+
+### Tools that see the installed copies
+
+The exclude hides the copies from git, not from every tool. As of 2026-11-13,
+prettier 3.10.1, eslint 10.14.0, vitest 5.1.0 and jest 30.5.2 read them (none
+reads `.git/info/exclude`), and biome 2.6.7 too unless its `vcs` block is
+enabled for git with `useIgnoreFile`. tsc 7.0.2 and `node --test` skip dot
+directories. Rness never edits these tools' files: add the line yourself.
+
+| Tool | Line |
+| --- | --- |
+| prettier | `/.claude/skills/` and `/.agents/skills/` in `.prettierignore` |
+| eslint | `ignores: [".claude/skills/", ".agents/skills/"]` |
+| vitest | `test.exclude: [...configDefaults.exclude, ".claude/**", ".agents/**"]` |
+| jest | `testPathIgnorePatterns: ["/node_modules/", "/\\.claude/", "/\\.agents/"]` (replaces jest's default) |
+| biome | `vcs: { enabled: true, clientKind: "git", useIgnoreFile: true }` |
 
 **Never** in your home directory (`~/.claude/skills`, `~/.agents/skills`), and
 never outside the workspace. A skill installed for the organization does not
@@ -170,7 +195,9 @@ Checked when you add or update a skill, and by `rness validate` on the copies:
 - no control character in a file name, in the `description` or in
   `allowed-tools`;
 - at most 1 MB of file content;
-- not the name `rness`, which collides with the plugin's directory.
+- not the name `rness`, which collides with the plugin's directory; for a
+  skill the team writes, not `status`, `adr`, `spec`, `plan` or `done`
+  either.
 
 A name declared twice in one clone, or both declared and written by the team,
 is refused by `rness validate`.
